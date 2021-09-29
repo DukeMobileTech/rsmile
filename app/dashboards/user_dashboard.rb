@@ -13,6 +13,8 @@ class UserDashboard < Administrate::BaseDashboard
     password_digest: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
+    password: Field::Password,
+    password_confirmation: Field::Password,
     api_keys: Field::HasMany,
   }.freeze
 
@@ -21,31 +23,29 @@ class UserDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = %i[
-    id
-    email
-    password_digest
-    api_keys
+  COLLECTION_ATTRIBUTES = [
+    :id,
+    :email,
+    :api_keys
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = %i[
-    id
-    email
-    password_digest
-    created_at
-    updated_at
-    api_keys
+  SHOW_PAGE_ATTRIBUTES = [
+    :id,
+    :email,
+    :created_at,
+    :updated_at,
+    :api_keys
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = %i[
-    email
-    password_digest
-    api_keys
+  FORM_ATTRIBUTES = [
+    :email,
+    :password,
+    :password_confirmation,
   ].freeze
 
   # COLLECTION_FILTERS

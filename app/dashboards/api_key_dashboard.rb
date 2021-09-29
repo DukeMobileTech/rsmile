@@ -8,9 +8,10 @@ class ApiKeyDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    bearer: Field::Polymorphic,
+    bearer: Field::Polymorphic.with_options(classes: [User], order: "id"),
     id: Field::Number,
     token_digest: Field::String,
+    token: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }.freeze
@@ -23,7 +24,6 @@ class ApiKeyDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     bearer
     id
-    token_digest
     created_at
   ].freeze
 
@@ -40,9 +40,9 @@ class ApiKeyDashboard < Administrate::BaseDashboard
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = %i[
-    bearer
-    token_digest
+  FORM_ATTRIBUTES = [
+    :bearer,
+    :token
   ].freeze
 
   # COLLECTION_FILTERS

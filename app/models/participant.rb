@@ -20,4 +20,6 @@
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy
+  validates :email, presence: true, uniqueness: true
+  validates :phone_number, :country, presence: true
 end
