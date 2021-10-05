@@ -17,9 +17,5 @@ Rails.application.routes.draw do
       resources :participants
     end
   end
-  root "participants#index"
-  resources :participants do
-    resources :survey_responses
-  end
-  resources :api_keys, path: 'api-keys', only: %i[index create destroy]
+  root "admin/participants#index"
 end

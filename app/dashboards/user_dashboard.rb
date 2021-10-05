@@ -10,7 +10,6 @@ class UserDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     email: Field::String,
-    password_digest: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     password: Field::Password,
