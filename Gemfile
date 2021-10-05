@@ -20,7 +20,7 @@ gem 'turbolinks', '~> 5'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
-# gem 'bcrypt', '~> 3.1.16'
+gem 'bcrypt', '~> 3.1.16'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -29,7 +29,8 @@ gem 'turbolinks', '~> 5'
 gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'administrate', '~> 0.16.0'
-gem 'rswag', '~> 2.4'
+gem 'rswag-api', '~> 2.4'
+gem 'rswag-ui', '~> 2.4'
 gem 'active_model_serializers', '~> 0.10.12'
 gem 'clearance', '~> 2.5'
 
@@ -38,6 +39,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'annotate', '~> 3.1', '>= 3.1.1'
   gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
+  gem 'rswag-specs', '~> 2.4'
   gem 'rexml', '~> 3.2', '>= 3.2.5'
   gem 'faker', '~> 2.19'
 end
@@ -51,6 +53,12 @@ group :development do
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  # Capistrano deployment
+  gem 'capistrano', '~> 3.16', require: false
+  gem 'capistrano-rvm', '~> 0.1.2'
+  gem 'capistrano-bundler', '~> 2.0', '>= 2.0.1'
+  gem 'capistrano-rails', '~> 1.6', '>= 1.6.1', require: false
+  gem 'capistrano-passenger', '~> 0.2.1'
 end
 
 group :test do
