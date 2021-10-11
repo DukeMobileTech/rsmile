@@ -33,6 +33,9 @@ gem 'rswag-api', '~> 2.4'
 gem 'rswag-ui', '~> 2.4'
 gem 'active_model_serializers', '~> 0.10.12'
 gem 'clearance', '~> 2.5'
+gem 'twilio-ruby', '~> 5.59.0'
+gem 'sidekiq', '~> 6.2', '>= 6.2.2'
+gem 'rack-cors', '~> 1.1', '>= 1.1.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
