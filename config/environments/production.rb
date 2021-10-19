@@ -74,6 +74,7 @@ Rails.application.configure do
     user_name: Rails.application.credentials.config[:SMTP_USERNAME],
     password: Rails.application.credentials.config[:SMTP_PASSWORD]
   }
+  config.action_mailer.default_url_options = { host: "#{Rails.application.credentials.config[:SMTP_HOSTNAME]}" }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

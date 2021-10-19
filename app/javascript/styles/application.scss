@@ -1,25 +1,58 @@
 #clearance {
   position: absolute;
-  top: 40%;
-  left: 40%;
+  top: 25%;
+  left: 25%;
   margin-top: -50px;
   margin-left: -50px;
-  width: 300px;
-  height: 300px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.2);
+  padding: 25px;
+  min-width: 800px;
 }
 
-.text-field {
-  margin-top: 10px;
+.field-unit {
+  align-items: center;
+  display: flex;
+  margin-bottom: 1.5em;
+  position: relative;
+  width: 100%;
 }
 
-.password-field {
-  margin-top: 10px;
+.field-unit-label {
+  float: left;
+  margin-left: 1rem;
+  text-align: right;
+  width: calc(15% - 1rem);
+}
+
+.field-unit-field {
+  float: left;
+  margin-left: 2rem;
+  max-width: 50rem;
+  width: 100%;
 }
 
 .submit-field {
   margin-top: 10px;
+  text-align: center;
 }
 
 .other-links {
   margin-top: 10px;
+  text-align: center;
+}
+
+button, input[type="button"], input[type="reset"], input[type="submit"], .button {
+  background-color: #1976d2;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0.75em 1.5em;
+}
+
+[type="email"], [type="password"] {
+  border: 1px solid #dfe0e1;
+  border-radius: 4px;
+  padding: 0.5em;
 }

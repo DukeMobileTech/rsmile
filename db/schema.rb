@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_01_151919) do
+ActiveRecord::Schema.define(version: 2021_10_14_145506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,19 @@ ActiveRecord::Schema.define(version: 2021_10_01_151919) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["bearer_id", "bearer_type"], name: "index_api_keys_on_bearer_id_and_bearer_type"
     t.index ["token_digest"], name: "index_api_keys_on_token_digest", unique: true
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "invite_code", limit: 40
+    t.datetime "invited_at"
+    t.datetime "redeemed_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["id", "email"], name: "index_invites_on_id_and_email", unique: true
+    t.index ["id", "invite_code"], name: "index_invites_on_id_and_invite_code", unique: true
   end
 
   create_table "participants", force: :cascade do |t|
