@@ -24,13 +24,13 @@ class Participant < ApplicationRecord
   validates :phone_number, :country, presence: true
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
   before_create :assign_identifiers
-  after_create :send_welcome_message
-
-  private
 
   def send_welcome_message
-    ParticipantWelcomeJob.perform_now id
+    ParticipantWelcomeEmailJob.perform_now id
+    ParticipantWelcomeSmsJob.perform_now id
   end
+
+  private
 
   def assign_identifiers
     self.code = "#{self.country[0].upcase}-#{Random.rand(10000...99999)}" if self.code.blank?

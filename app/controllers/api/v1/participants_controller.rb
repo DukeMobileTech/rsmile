@@ -20,6 +20,7 @@ class Api::V1::ParticipantsController < Api::ApiController
       )
     end
     if @participant.save
+      @participant.send_welcome_message
       render json: @participant, status: :created
     else
       render json: @participant.errors, status: :unprocessable_entity

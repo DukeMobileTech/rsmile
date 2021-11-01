@@ -1,11 +1,8 @@
-class ParticipantWelcomeJob < ApplicationJob
+class ParticipantWelcomeSmsJob < ApplicationJob
   queue_as :default
 
   def perform(participant_id)
     participant = Participant.find(participant_id)
-    # Send welcome email
-    ParticipantMailer.with(participant: participant).welcome_email.deliver_now
-    # Send welcome sms
     account_sid = Rails.application.credentials.config[:TWILIO_SID]
     auth_token = Rails.application.credentials.config[:TWILIO_AUTH]
     @client = Twilio::REST::Client.new account_sid, auth_token
