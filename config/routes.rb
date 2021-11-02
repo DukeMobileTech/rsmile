@@ -1,9 +1,10 @@
 # == Route Map
 #
-
+require 'sidekiq/web'
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
+  mount Sidekiq::Web, at: '/admin/sidekiq', as: 'sidekiq'
   namespace :admin do
     resources :api_keys
     resources :participants
