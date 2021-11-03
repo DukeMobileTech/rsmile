@@ -20,7 +20,12 @@ Rails.application.routes.draw do
   end
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :participants
+      resources :participants do
+        collection do
+          post '/verify' => 'participants#verify', as: 'verify'
+          put '/amend' => 'participants#amend', as: 'amend'
+        end
+      end
     end
   end
   root "admin/participants#index"

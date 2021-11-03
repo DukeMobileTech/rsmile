@@ -50,10 +50,76 @@ paths:
                   type: string
                 quota:
                   type: string
+                preferred_contact_method:
+                  type: string
               required:
               - email
               - phone_number
               - country
+  "/api/v1/participants/verify":
+    post:
+      summary: verify participant
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                verification_code:
+                  type: string
+                email:
+                  type: string
+              required:
+              - verification_code
+  "/api/v1/participants/amend":
+    put:
+      summary: update participant attributes
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                phone_number:
+                  type: string
+                country:
+                  type: string
+                self_generated_id:
+                  type: string
+                study_id:
+                  type: string
+                rds_id:
+                  type: string
+                code:
+                  type: string
+                referrer_code:
+                  type: string
+                sgm_group:
+                  type: string
+                referrer_sgm_group:
+                  type: string
+                match:
+                  type: string
+                quota:
+                  type: string
+                preferred_contact_method:
+                  type: string
+              required:
+              - email
   "/api/v1/participants/{id}":
     parameters:
     - name: id
@@ -106,6 +172,8 @@ paths:
                 match:
                   type: string
                 quota:
+                  type: string
+                preferred_contact_method:
                   type: string
               required:
               - id

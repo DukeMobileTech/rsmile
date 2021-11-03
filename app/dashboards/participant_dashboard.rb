@@ -24,6 +24,8 @@ class ParticipantDashboard < Administrate::BaseDashboard
     quota: Field::Number,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
+    preferred_contact_method: Field::String,
+    verified: Field::Boolean
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -36,6 +38,7 @@ class ParticipantDashboard < Administrate::BaseDashboard
     email
     phone_number
     country
+    verified
     self_generated_id
     study_id
     survey_responses
@@ -58,6 +61,8 @@ class ParticipantDashboard < Administrate::BaseDashboard
     referrer_sgm_group
     match
     quota
+    preferred_contact_method
+    verified
     created_at
     updated_at
   ].freeze
@@ -79,6 +84,8 @@ class ParticipantDashboard < Administrate::BaseDashboard
     referrer_sgm_group
     match
     quota
+    preferred_contact_method
+    verified
   ].freeze
 
   # COLLECTION_FILTERS

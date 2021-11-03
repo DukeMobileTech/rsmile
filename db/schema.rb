@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_14_145506) do
+ActiveRecord::Schema.define(version: 2021_11_04_200748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,8 @@ ActiveRecord::Schema.define(version: 2021_10_14_145506) do
     t.integer "quota"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "preferred_contact_method"
+    t.boolean "verified", default: false
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
   end
@@ -64,6 +66,8 @@ ActiveRecord::Schema.define(version: 2021_10_14_145506) do
     t.boolean "survey_complete"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "survey_title"
+    t.index ["response_uuid"], name: "index_survey_responses_on_response_uuid", unique: true
   end
 
   create_table "users", force: :cascade do |t|

@@ -11,6 +11,7 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     participant: Field::BelongsTo,
     id: Field::Number,
     survey_uuid: Field::String,
+    survey_title: Field::String,
     response_uuid: Field::String,
     survey_complete: Field::Boolean,
     created_at: Field::DateTime,
@@ -26,6 +27,7 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     participant
     id
     survey_uuid
+    survey_title
     response_uuid
   ].freeze
 
@@ -35,6 +37,7 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     participant
     id
     survey_uuid
+    survey_title
     response_uuid
     survey_complete
     created_at
@@ -47,6 +50,7 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
     participant
     survey_uuid
+    survey_title
     response_uuid
     survey_complete
   ].freeze
