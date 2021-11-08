@@ -13,7 +13,10 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     survey_uuid: Field::String,
     survey_title: Field::String,
     response_uuid: Field::String,
+    country: Field::String,
     survey_complete: Field::Boolean,
+    eligible: Field::Boolean,
+    consented: Field::Boolean,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }.freeze
@@ -24,11 +27,13 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
-    participant
     id
     survey_uuid
     survey_title
     response_uuid
+    country
+    eligible
+    consented
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -40,6 +45,9 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     survey_title
     response_uuid
     survey_complete
+    country
+    eligible
+    consented
     created_at
     updated_at
   ].freeze
@@ -53,6 +61,9 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     survey_title
     response_uuid
     survey_complete
+    country
+    eligible
+    consented
   ].freeze
 
   # COLLECTION_FILTERS

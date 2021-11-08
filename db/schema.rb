@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_04_200748) do
+ActiveRecord::Schema.define(version: 2021_11_08_193734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,9 @@ ActiveRecord::Schema.define(version: 2021_11_04_200748) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "survey_title"
+    t.string "country"
+    t.boolean "eligible", default: true
+    t.boolean "consented", default: true
     t.index ["response_uuid"], name: "index_survey_responses_on_response_uuid", unique: true
   end
 

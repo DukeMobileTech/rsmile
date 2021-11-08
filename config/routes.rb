@@ -26,6 +26,7 @@ Rails.application.routes.draw do
           put '/amend' => 'participants#amend', as: 'amend'
         end
       end
+      resources :survey_responses
     end
   end
   root "admin/participants#index"

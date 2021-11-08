@@ -52,6 +52,22 @@ paths:
                   type: string
                 preferred_contact_method:
                   type: string
+                survey_uuid:
+                  type: string
+                response_uuid:
+                  type: string
+                survey_complete:
+                  type: boolean
+                survey_title:
+                  type: string
+                c_survey_uuid:
+                  type: string
+                c_response_uuid:
+                  type: string
+                c_survey_complete:
+                  type: boolean
+                c_survey_title:
+                  type: string
               required:
               - email
               - phone_number
@@ -184,6 +200,35 @@ paths:
       responses:
         '200':
           description: successful
+  "/api/v1/survey_responses":
+    post:
+      summary: create survey_response
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                survey_uuid:
+                  type: string
+                response_uuid:
+                  type: string
+                survey_complete:
+                  type: boolean
+                survey_title:
+                  type: string
+                country:
+                  type: string
+                eligible:
+                  type: boolean
+                consented:
+                  type: boolean
 servers:
 - url: http://{defaultHost}
   variables:

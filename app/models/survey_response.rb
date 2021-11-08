@@ -10,8 +10,25 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  survey_title    :string
+#  country         :string
+#  eligible        :boolean          default(TRUE)
+#  consented       :boolean          default(TRUE)
 #
 class SurveyResponse < ApplicationRecord
-  belongs_to :participant
+  belongs_to :participant, optional: true
   validates :response_uuid, presence: true, uniqueness: true
+  before_save { self.country = ActionView::Base.full_sanitizer.sanitize self.country }
+
+  def country
+    if read_attribute(:country).blank?
+      participant&.country
+    else
+      read_attribute(:country)
+    end
+  end
+
+  def country=(str)
+    str = participant.country if str.blank? && participant
+    write_attribute(:country, str)
+  end
 end

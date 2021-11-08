@@ -26,6 +26,20 @@ class Api::V1::ParticipantsController < Api::ApiController
         )
       end
     end
+    unless params[:c_survey_uuid].blank? && params[:c_response_uuid].blank?
+      response = SurveyResponse.find_by(response_uuid: params[:c_response_uuid])
+      if response
+        response.update(survey_complete: params[:c_survey_complete],
+                                    survey_title: params[:c_survey_title])
+      else
+        @participant.survey_responses.build(
+          survey_uuid: params[:c_survey_uuid],
+          response_uuid: params[:c_response_uuid],
+          survey_complete: params[:c_survey_complete],
+          survey_title: params[:c_survey_title]
+        )
+      end
+    end
     if @participant.save
       @participant.send_welcome_message
       render json: @participant, status: :created
@@ -67,7 +81,8 @@ class Api::V1::ParticipantsController < Api::ApiController
     params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
       :study_id, :rds_id, :code, :referrer_code, :sgm_group, :referrer_sgm_group, :match, :quota,
       :preferred_contact_method,
-      survey_responses_attributes: [ :survey_uuid, :response_uuid, :survey_complete, :survey_title ]
+      survey_responses_attributes: [ :survey_uuid, :response_uuid, :survey_complete, :survey_title,
+                                     :c_survey_uuid, :c_response_uuid, :c_survey_complete, :c_survey_title ]
     )
   end
 
