@@ -27,6 +27,7 @@ Rails.application.routes.draw do
         end
       end
       resources :survey_responses
+      resources :consents, only: [:create]
     end
   end
   root "admin/participants#index"

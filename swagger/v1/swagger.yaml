@@ -4,6 +4,28 @@ info:
   title: API V1
   version: v1
 paths:
+  "/api/v1/consents":
+    post:
+      summary: send consent form
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                language:
+                  type: string
+                email:
+                  type: string
+              required:
+              - language
+              - email
   "/api/v1/participants":
     get:
       summary: list participants
