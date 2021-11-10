@@ -36,6 +36,7 @@ gem 'clearance', '~> 2.5'
 gem 'twilio-ruby', '~> 5.59.0'
 gem 'sidekiq', '~> 6.2', '>= 6.2.2'
 gem 'rack-cors', '~> 1.1', '>= 1.1.1'
+gem 'exception_notification', '~> 4.4', '>= 4.4.3'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

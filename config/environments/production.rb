@@ -126,4 +126,10 @@ Rails.application.configure do
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
+  config.middleware.use ExceptionNotification::Rack,
+                        email: {
+                          email_prefix: Rails.application.credentials.config[:EMAIL_PREFIX],
+                          sender_address: Rails.application.credentials.config[:from_email],
+                          exception_recipients: Rails.application.credentials.config[:RECIPIENTS]
+                        }
 end
