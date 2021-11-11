@@ -10,6 +10,15 @@ class Api::V1::SurveyResponsesController < Api::ApiController
     end
   end
 
+  def amend
+    @survey_response = SurveyResponse.find_by(response_uuid: params[:response_uuid])
+    if @survey_response.update(survey_response_params)
+      render json: @survey_response, status: :ok
+    else
+      render json: @survey_response.errors, status: :unprocessable_entity
+    end
+  end
+  
   private
 
   def survey_response_params

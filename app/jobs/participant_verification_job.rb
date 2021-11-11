@@ -1,4 +1,4 @@
-class ParticipantWelcomeJob < ApplicationJob
+class ParticipantVerificationJob < ApplicationJob
   queue_as :default
 
   def perform(participant_id, channel)

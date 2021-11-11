@@ -251,6 +251,37 @@ paths:
                   type: boolean
                 consented:
                   type: boolean
+  "/api/v1/survey_responses/amend":
+    put:
+      summary: update survey_response attributes
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                survey_uuid:
+                  type: string
+                response_uuid:
+                  type: string
+                survey_complete:
+                  type: boolean
+                survey_title:
+                  type: string
+                country:
+                  type: string
+                eligible:
+                  type: boolean
+                consented:
+                  type: boolean
+              required:
+              - response_uuid
 servers:
 - url: http://{defaultHost}
   variables:

@@ -26,7 +26,11 @@ Rails.application.routes.draw do
           put '/amend' => 'participants#amend', as: 'amend'
         end
       end
-      resources :survey_responses
+      resources :survey_responses do
+        collection do
+          put '/amend' => 'survey_responses#amend', as: 'amend'
+        end
+      end
       resources :consents, only: [:create]
     end
   end

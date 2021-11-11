@@ -28,9 +28,9 @@ class Participant < ApplicationRecord
   before_create :assign_identifiers
   before_save { self.email = self.email&.downcase }
 
-  def send_welcome_message
-    return if verified
-    ParticipantWelcomeJob.perform_now(id, preferred_contact_method)
+  def send_verification_message
+    # return if verified
+    ParticipantVerificationJob.perform_now(id, preferred_contact_method)
   end
 
   def self.verify(verification_code, email)
