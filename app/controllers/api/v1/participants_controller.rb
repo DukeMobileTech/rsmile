@@ -67,7 +67,11 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
 
   def amend
-    @participant = Participant.find_by(email: params[:email])
+    if !params[:email].blank?
+      @participant = Participant.find_by(email: params[:email])
+    elsif !params[:id].blank?
+      @participant = Participant.find(params[:id])
+    end
     if @participant.update(participant_params)
       render json: @participant, status: :ok
     else
