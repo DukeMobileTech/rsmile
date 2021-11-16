@@ -72,6 +72,9 @@ class Api::V1::ParticipantsController < Api::ApiController
     elsif !params[:id].blank?
       @participant = Participant.find(params[:id])
     end
+    
+    render json: { error: "not found" }, status: :not_found if @participant.nil?
+
     if @participant.update(participant_params)
       render json: @participant, status: :ok
     else

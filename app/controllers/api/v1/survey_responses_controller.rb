@@ -12,18 +12,22 @@ class Api::V1::SurveyResponsesController < Api::ApiController
 
   def amend
     @survey_response = SurveyResponse.find_by(response_uuid: params[:response_uuid])
+
+    render json: { error: "not found" }, status: :not_found if @survey_response.nil?
+
     if @survey_response.update(survey_response_params)
       render json: @survey_response, status: :ok
     else
       render json: @survey_response.errors, status: :unprocessable_entity
     end
   end
-  
+
   private
 
   def survey_response_params
-    params.fetch(:survey_response, {}).permit(:survey_uuid, :response_uuid,
-      :survey_complete, :survey_title, :country, :consented, :eligible
+    params.fetch(:survey_response, {}).permit(:participant_id, :survey_uuid,
+      :response_uuid, :survey_complete, :survey_title, :country, :consented,
+      :eligible
     )
   end
 end
