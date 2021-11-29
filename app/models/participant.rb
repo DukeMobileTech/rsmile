@@ -25,7 +25,7 @@ class Participant < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :phone_number, :country, presence: true
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
-  before_create :assign_identifiers
+  before_save :assign_identifiers
   before_save { self.email = self.email&.downcase }
 
   def send_verification_message
