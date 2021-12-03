@@ -11,7 +11,11 @@ class Api::V1::SurveyResponsesController < Api::ApiController
   end
 
   def amend
-    @survey_response = SurveyResponse.find_by(response_uuid: params[:response_uuid])
+    if !params[:response_uuid].blank?
+      @survey_response = SurveyResponse.find_by(response_uuid: params[:response_uuid])
+    elsif !params[:id].blank?
+      @survey_response = SurveyResponse.find(params[:id])
+    end
 
     render json: { error: "not found" }, status: :not_found if @survey_response.nil?
 
