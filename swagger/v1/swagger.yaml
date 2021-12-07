@@ -251,6 +251,10 @@ paths:
                   type: boolean
                 consented:
                   type: boolean
+                source:
+                  type: string
+                language:
+                  type: string
   "/api/v1/survey_responses/amend":
     put:
       summary: update survey_response attributes
@@ -280,6 +284,10 @@ paths:
                   type: boolean
                 consented:
                   type: boolean
+                source:
+                  type: string
+                language:
+                  type: string
               required:
               - response_uuid
 servers:

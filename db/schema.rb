@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_08_193734) do
+ActiveRecord::Schema.define(version: 2021_12_07_143154) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "hstore"
   enable_extension "plpgsql"
 
   create_table "api_keys", force: :cascade do |t|
@@ -70,6 +71,8 @@ ActiveRecord::Schema.define(version: 2021_11_08_193734) do
     t.string "country"
     t.boolean "eligible", default: true
     t.boolean "consented", default: true
+    t.hstore "metadata"
+    t.index ["metadata"], name: "index_survey_responses_on_metadata", using: :gist
     t.index ["response_uuid"], name: "index_survey_responses_on_response_uuid", unique: true
   end
 

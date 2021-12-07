@@ -31,7 +31,9 @@ RSpec.describe 'api/v1/survey_responses', type: :request do
           survey_title: { type: :string },
           country: { type: :string },
           eligible: { type: :boolean },
-          consented: { type: :boolean }
+          consented: { type: :boolean },
+          source: { type: :string },
+          language: { type: :string }
         }
       }
 
@@ -64,7 +66,9 @@ RSpec.describe 'api/v1/survey_responses', type: :request do
           survey_title: { type: :string },
           country: { type: :string },
           eligible: { type: :boolean },
-          consented: { type: :boolean }
+          consented: { type: :boolean },
+          source: { type: :string },
+          language: { type: :string }
         },
         required: [ 'response_uuid' ]
       }

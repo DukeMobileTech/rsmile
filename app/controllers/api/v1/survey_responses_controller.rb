@@ -31,7 +31,7 @@ class Api::V1::SurveyResponsesController < Api::ApiController
   def survey_response_params
     params.fetch(:survey_response, {}).permit(:participant_id, :survey_uuid,
       :response_uuid, :survey_complete, :survey_title, :country, :consented,
-      :eligible
+      :eligible, :metadata, :language, :source, :sgm_group
     )
   end
 end

@@ -13,11 +13,13 @@
 #  country         :string
 #  eligible        :boolean          default(TRUE)
 #  consented       :boolean          default(TRUE)
+#  metadata        :hstore
 #
 class SurveyResponse < ApplicationRecord
   belongs_to :participant, optional: true
   validates :response_uuid, presence: true, uniqueness: true
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize self.country }
+  store_accessor :metadata, :source, :language, :sgm_group
 
   def country
     if read_attribute(:country).blank?

@@ -17,6 +17,9 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     survey_complete: Field::Boolean,
     eligible: Field::Boolean,
     consented: Field::Boolean,
+    source: Field::String,
+    language: Field::String,
+    sgm_group: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }.freeze
@@ -28,12 +31,14 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
     id
-    survey_uuid
     survey_title
     response_uuid
     country
     eligible
     consented
+    source
+    language
+    sgm_group
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -48,6 +53,9 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     country
     eligible
     consented
+    source
+    language
+    sgm_group
     created_at
     updated_at
   ].freeze
@@ -64,6 +72,9 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     country
     eligible
     consented
+    source
+    language
+    sgm_group
   ].freeze
 
   # COLLECTION_FILTERS
