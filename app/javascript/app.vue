@@ -1,6 +1,11 @@
 <template>
   <div id="app" class="container">
-    <p>{{ message }}</p>
+    <nav class="nav nav-pills nav-fill mt-2 mb-2">
+      <li class="nav-item"><h1>{{ message }}</h1></li>
+      <li class="nav-item">
+        <a class="nav-link" :href="admin">Admin</a>
+      </li>
+    </nav>
     <Participant />
   </div>
 </template>
@@ -11,7 +16,8 @@
 export default {
   data: function () {
     return {
-      message: "SMILE Study"
+      message: "SMILE Study",
+      admin: `${this.$basePrefix}admin`
     }
   },
 
@@ -21,10 +27,3 @@ export default {
 
 }
 </script>
-
-<style scoped>
-p {
-  font-size: 2em;
-  text-align: center;
-}
-</style>

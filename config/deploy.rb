@@ -1,20 +1,32 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.16.0"
+lock '~> 3.16.0'
 
-set :application, "rsmile"
-set :repo_url, "git@github.com:DukeMobileTech/rsmile.git"
+set :application, 'rsmile'
+set :repo_url, 'git@github.com:DukeMobileTech/rsmile.git'
 set :use_sudo, false
 set :deploy_via, :copy
 set :pty, false
 set :format, :airbrussh
-set :format_options, command_output: true, log_file: "log/capistrano.log", color: :auto, truncate: :auto
+set :format_options, command_output: true, log_file: 'log/capistrano.log', color: :auto, truncate: :auto
 set :keep_releases, 5
 set :linked_files, %w[config/database.yml config/master.key]
-set :linked_dirs, %w[log tmp/pids tmp/cache tmp/sockets vendor/bundle]
+set :linked_dirs, %w[log tmp/pids tmp/cache tmp/sockets vendor/bundle public/packs .bundle node_modules]
 set :linked_dirs, fetch(:linked_dirs) + %w[storage]
 set :bundle_binstubs, nil
 set :rvm_ruby_version, '3.0.2'
 set :passenger_restart_with_touch, true
+
+before 'deploy:assets:precompile', 'deploy:yarn_install'
+namespace :deploy do
+  desc 'Run rake yarn install'
+  task :yarn_install do
+    on roles(:web) do
+      within release_path do
+        execute("cd #{release_path} && yarn install --silent --no-progress --no-audit --no-optional")
+      end
+    end
+  end
+end
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp

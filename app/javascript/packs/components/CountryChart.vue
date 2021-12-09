@@ -1,7 +1,11 @@
 <template>
-  <div class="card">
-    <h5>Participants Per Country</h5>
-    <BarChart :chartdata="chartData" :options="chartOptions"></BarChart>
+  <div class="card mb-5">
+    <div class="card-header">
+      <h5 class="card-title">Participants Per Country</h5>
+    </div>
+    <div class="card-body">
+      <BarChart :chartdata="chartData" :options="chartOptions"></BarChart>
+    </div>
   </div>
 </template>
 

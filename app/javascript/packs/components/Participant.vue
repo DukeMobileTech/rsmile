@@ -1,6 +1,6 @@
 <template>
 <div>
-   <div class="card">
+   <div class="card mb-5">
      <div class="card-header">
        <h3 class="card-title">
          Summary Statistics
@@ -53,8 +53,12 @@
 
    methods: {
      fetchParticipants () {
+       let prefix = "/";
+       if (process.env.NODE_ENV !== 'development') {
+         prefix = "/smile/";
+       }
        this.loaded = false;
-       axios.get('/participants').then(response => {
+       axios.get(`${this.$basePrefix}participants`).then(response => {
          this.participantsPerCountry = response.data;
          this.loaded = true;
        });
