@@ -26,7 +26,7 @@ class Participant < ApplicationRecord
   validates :phone_number, :country, presence: true
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
   before_save :assign_identifiers
-  before_save { self.email = self.email&.downcase }
+  before_save { self.email = email&.downcase }
 
   def send_verification_message
     # return if verified
@@ -34,31 +34,38 @@ class Participant < ApplicationRecord
   end
 
   def self.verify(verification_code, email)
-    participant = self.find_by(email: email)
-    if participant.preferred_contact_method == "1"
-      to = participant.email
-    else
-      to = participant.phone_number
-    end
+    participant = find_by(email: email)
+    to = if participant.preferred_contact_method == '1'
+           participant.email
+         else
+           participant.phone_number
+         end
     client = Twilio::REST::Client.new(Rails.application.credentials.config[:TWILIO_SID],
-                                Rails.application.credentials.config[:TWILIO_AUTH])
+                                      Rails.application.credentials.config[:TWILIO_AUTH])
     verification_check = client.verify
-                            .services(Rails.application.credentials.config[:TWILIO_SERVICE])
-                            .verification_checks
-                            .create(to: to, code: verification_code)
+                               .services(Rails.application.credentials.config[:TWILIO_SERVICE])
+                               .verification_checks
+                               .create(to: to, code: verification_code)
     status = verification_check.status
-    if status == "approved"
+    if status == 'approved'
       participant.verified = true
       participant.save
     end
     status
   end
 
+  def self.summary_stats
+    stats = {}
+    Participant.all.group_by(&:country).each do |country, participants|
+      stats[country] = participants.size
+    end
+    stats
+  end
+
   private
 
   def assign_identifiers
-    self.code = "#{self.country[0].upcase}-#{Random.rand(10000...99999)}" if self.code.blank?
-    self.study_id = "#{self.country[0].upcase}-#{Random.rand(10000...99999)}" if self.study_id.blank?
+    self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if code.blank?
+    self.study_id = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if study_id.blank?
   end
-
 end

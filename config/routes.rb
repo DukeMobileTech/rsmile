@@ -34,5 +34,6 @@ Rails.application.routes.draw do
       resources :consents, only: [:create]
     end
   end
-  root "admin/participants#index"
+  root "landing#index"
+  resources :participants
 end
