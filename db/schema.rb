@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_07_143154) do
+ActiveRecord::Schema.define(version: 2021_12_10_165433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 2021_12_07_143154) do
     t.string "encrypted_password", limit: 128
     t.string "confirmation_token", limit: 128
     t.string "remember_token", limit: 128
+    t.boolean "admin", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["remember_token"], name: "index_users_on_remember_token"
   end

@@ -1,4 +1,4 @@
-require "administrate/base_dashboard"
+require 'administrate/base_dashboard'
 
 class UserDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -13,8 +13,8 @@ class UserDashboard < Administrate::BaseDashboard
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     password: Field::Password,
-    # password_confirmation: Field::Password,
     api_keys: Field::HasMany,
+    admin: Field::Boolean
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -22,29 +22,31 @@ class UserDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :id,
-    :email,
-    :api_keys
+  COLLECTION_ATTRIBUTES = %i[
+    id
+    email
+    admin
+    api_keys
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :id,
-    :email,
-    :created_at,
-    :updated_at,
-    :api_keys
+  SHOW_PAGE_ATTRIBUTES = %i[
+    id
+    email
+    admin
+    created_at
+    updated_at
+    api_keys
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :email,
-    :password
-    # :password_confirmation
+  FORM_ATTRIBUTES = %i[
+    email
+    password
+    admin
   ].freeze
 
   # COLLECTION_FILTERS

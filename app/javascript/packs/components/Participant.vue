@@ -16,6 +16,7 @@
            <th>SMILE Consent</th>
            <th>SMILE Contact Info Form - Baseline</th>
            <th>SMILE Survey - Baseline</th>
+           <th>Safety Planning</th>
          </tr>
        </thead>
 
@@ -27,6 +28,7 @@
            <td>{{countryData['SMILE Consent']}}</td>
            <td>{{countryData['SMILE Contact Info Form - Baseline']}}</td>
            <td>{{countryData['SMILE Survey - Baseline']}}</td>
+           <td>{{countryData['Safety Planning']}}</td>
          </tr>
        </tbody>
      </table>
@@ -61,10 +63,6 @@
 
    methods: {
      fetchParticipants () {
-       let prefix = "/";
-       if (process.env.NODE_ENV !== 'development') {
-         prefix = "/smile/";
-       }
        this.loaded = false;
        axios.get(`${this.$basePrefix}participants`).then(response => {
          this.participantsPerCountry = response.data;

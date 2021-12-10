@@ -1,5 +1,4 @@
 class Api::V1::SurveyResponsesController < Api::ApiController
-
   def create
     @survey_response = SurveyResponse.where(response_uuid: params[:response_uuid]).first_or_initialize(survey_response_params)
     @survey_response.assign_attributes(survey_response_params)
@@ -13,11 +12,12 @@ class Api::V1::SurveyResponsesController < Api::ApiController
   def amend
     if !params[:response_uuid].blank?
       @survey_response = SurveyResponse.find_by(response_uuid: params[:response_uuid])
+      @survey_response ||= SurveyResponse.create(survey_response_params)
     elsif !params[:id].blank?
       @survey_response = SurveyResponse.find(params[:id])
     end
 
-    render json: { error: "not found" }, status: :not_found if @survey_response.nil?
+    render json: { error: 'not found' }, status: :not_found if @survey_response.nil?
 
     if @survey_response.update(survey_response_params)
       render json: @survey_response, status: :ok
@@ -30,8 +30,7 @@ class Api::V1::SurveyResponsesController < Api::ApiController
 
   def survey_response_params
     params.fetch(:survey_response, {}).permit(:participant_id, :survey_uuid,
-      :response_uuid, :survey_complete, :survey_title, :country, :consented,
-      :eligible, :metadata, :language, :source, :sgm_group
-    )
+                                              :response_uuid, :survey_complete, :survey_title, :country, :consented,
+                                              :eligible, :metadata, :language, :source, :sgm_group)
   end
 end
