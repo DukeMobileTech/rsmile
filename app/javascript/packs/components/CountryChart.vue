@@ -20,7 +20,7 @@ export default {
     const countries = Object.keys(this.participantsPerCountry);
     const participants = [];
     countries.forEach((country) => {
-      participants.push(this.participantsPerCountry[country]);
+      participants.push(this.participantsPerCountry[country]['participants']);
     });
 
     return {

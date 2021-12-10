@@ -56,8 +56,17 @@ class Participant < ApplicationRecord
 
   def self.summary_stats
     stats = {}
+    surveys = SurveyResponse.all
+    survey_titles = ['SMILE Contact Info Form - Baseline', 'SMILE Consent', 'SMILE Survey - Baseline']
     Participant.all.group_by(&:country).each do |country, participants|
-      stats[country] = participants.size
+      country_surveys = surveys.select { |s| s.country == country }
+      stats[country] = { 'participants': participants.size, 'surveys': country_surveys.size }
+      survey_titles.each do |title|
+        title_surveys = country_surveys.select { |s| s.survey_title == title }
+        country_stats = stats[country]
+        country_stats[title] = title_surveys.size
+        stats[country] = country_stats
+      end
     end
     stats
   end
