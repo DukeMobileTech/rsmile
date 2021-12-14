@@ -1,4 +1,4 @@
-require "administrate/base_dashboard"
+require 'administrate/base_dashboard'
 
 class SurveyResponseDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -20,8 +20,8 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     source: Field::String,
     language: Field::String,
     sgm_group: Field::String,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    created_at: Field::DateTime.with_options(format: '%Y-%m-%d %I:%M %p'),
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -39,6 +39,7 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     source
     language
     sgm_group
+    created_at
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES

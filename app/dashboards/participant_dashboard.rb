@@ -1,4 +1,4 @@
-require "administrate/base_dashboard"
+require 'administrate/base_dashboard'
 
 class ParticipantDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -23,7 +23,7 @@ class ParticipantDashboard < Administrate::BaseDashboard
     match: Field::Boolean,
     quota: Field::Number,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime.with_options(format: '%Y-%m-%d %I:%M %p'),
     preferred_contact_method: Field::String,
     verified: Field::Boolean
   }.freeze
@@ -40,8 +40,8 @@ class ParticipantDashboard < Administrate::BaseDashboard
     country
     verified
     self_generated_id
-    study_id
     survey_responses
+    updated_at
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
