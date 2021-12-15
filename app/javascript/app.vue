@@ -1,32 +1,36 @@
 <template>
   <div id="app" class="container">
-    <nav class="nav nav-pills nav-fill mt-2 mb-2">
-      <li class="nav-item"><h1>{{ message }}</h1></li>
-      <!-- <li class="nav-item">
-        <a class="nav-link" :href="admin">Admin</a>
-      </li> -->
-      <li class="nav-item">
-        <button v-on:click="handleLogout" class="btn btn-danger" >Sign Out</button>
-      </li>
+    <nav class="navbar navbar-light bg-light mt-2 mb-2">
+        <div class="container-fluid">
+        <div class="nav-item"><h1>{{ message }}</h1></div>
+        <div class="nav-item">
+          <button v-on:click="handleLogout" class="btn btn-danger" >Sign Out</button>
+        </div>
+      </div>
     </nav>
-    <Participant />
+    <keep-alive>
+        <component @countryname="updateCountry" :is="visibleComponent" v-bind="currentProperties"></component>
+    </keep-alive>
   </div>
 </template>
 
 <script>
  import axios from 'axios';
- import Participant from './packs/components/Participant'
+ import Participant from './packs/components/Participant';
+ import CountrySource from './packs/components/CountrySource';
 
 export default {
   data: function () {
     return {
       message: "SMILE Study",
       admin: `${this.$basePrefix}admin`,
+      country: null,
     }
   },
 
   components: {
-    Participant
+    Participant,
+    CountrySource,
   },
 
   methods: {
@@ -38,6 +42,24 @@ export default {
       }).catch(error => {
         window.location.reload();
       });
+    },
+    updateCountry(value) {
+      this.country = value;
+    }
+  },
+
+  computed: {
+    visibleComponent() {
+      if(this.country == null) {
+        return 'Participant';
+      } else {
+        return 'CountrySource';
+      }
+    },
+    currentProperties() {
+      if (this.visibleComponent === 'CountrySource') {
+        return { countryName: this.country }
+      }
     }
   }
 

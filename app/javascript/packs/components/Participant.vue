@@ -22,7 +22,7 @@
 
        <tbody>
          <tr v-for="(countryData, country, index) in participantsPerCountry" :key="country">
-           <td>{{country}}</td>
+           <td class="link-primary" @click="showCountry(country)">{{country}}</td>
            <td>{{countryData['participants']}}</td>
            <td>{{countryData['surveys']}}</td>
            <td>{{countryData['SMILE Consent']}}</td>
@@ -51,6 +51,7 @@
    data: () => ({
      participantsPerCountry: {},
      loaded: false,
+     country: null,
    }),
 
    components: {
@@ -68,8 +69,13 @@
          this.participantsPerCountry = response.data;
          this.loaded = true;
        });
+     },
+     showCountry(country) {
+       this.country = country;
+       this.$emit("countryname", this.country);
      }
-   }
+   },
+
  };
 </script>
 

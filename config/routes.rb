@@ -38,4 +38,9 @@ Rails.application.routes.draw do
   end
   root 'landing#index'
   resources :participants
+  resources :survey_responses, only: [] do
+    collection do
+      get '/sources' => 'survey_responses#sources'
+    end
+  end
 end

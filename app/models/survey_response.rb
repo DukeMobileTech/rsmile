@@ -35,6 +35,15 @@ class SurveyResponse < ApplicationRecord
     write_attribute(:country, str)
   end
 
+  def self.heard_from
+    ['Not Indicated', 'Radio advertisement', 'TV advertisement',
+     'Billboard / sign / poster / pamphlet / newspaper advertisement',
+     'Social media advertisement', 'From a friend / family member / acquaintance',
+     'From a local organization', 'Other', 'Social media post / discussion',
+     'Newspaper article / magazine article / newsletter',
+     'From a local organization or peer educator']
+  end
+
   def modify_source
     unless source.blank?
       source_value = []
@@ -64,5 +73,24 @@ class SurveyResponse < ApplicationRecord
       end
       self.source = source_value.join(',')
     end
+  end
+
+  def self.survey_sources(country_name)
+    source_count = {}
+    response_sources = []
+    responses = SurveyResponse.where(country: country_name)
+    sources = responses.map { |response| response.source }
+    sources.each do |src|
+      response_sources << if src.nil?
+                            'Not Indicated'
+                          else
+                            src.split(',')
+                          end
+    end
+    rs = response_sources.flatten
+    heard_from.each do |hf|
+      source_count[hf] = rs.count { |element| element == hf }
+    end
+    source_count
   end
 end

@@ -7,14 +7,13 @@
 
 import Vue from 'vue'
 import App from '../app.vue'
-
-import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.css"
 
 let prefix = "/";
 if (process.env.NODE_ENV !== 'development') {
   prefix = "/smile/";
 }
-Vue.prototype.$basePrefix = prefix
+Vue.prototype.$basePrefix = prefix;
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = new Vue({
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }).$mount()
   document.body.appendChild(app.$el)
 })
-
 
 // The above code uses Vue without the compiler, which means you cannot
 // use Vue to target elements in your existing html templates. You would
