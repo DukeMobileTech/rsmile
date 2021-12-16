@@ -27,6 +27,9 @@ class Participant < ApplicationRecord
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
   before_save :assign_identifiers
   before_save { self.email = email&.downcase }
+  before_save { self.sgm_group = sgm_group&.downcase }
+  before_save { self.sgm_group = 'no group' if sgm_group.blank? }
+  before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
 
   def send_verification_message
     # return if verified
@@ -68,6 +71,20 @@ class Participant < ApplicationRecord
         country_stats[title] = title_surveys.size
         stats[country] = country_stats
       end
+    end
+    stats
+  end
+
+  def self.all_sgm_groups
+    ['non-binary person', 'transgender woman', 'transgender man', 'woman attracted to women',
+     'man attracted to men', 'multi-attracted woman', 'multi-attracted man', 'no group', 'ineligible']
+  end
+
+  def self.sgm_stats(kountry)
+    stats = {}
+    participants = Participant.where(country: kountry)
+    all_sgm_groups.each do |group|
+      stats[group] = participants.count { |participant| participant.sgm_group == group }
     end
     stats
   end

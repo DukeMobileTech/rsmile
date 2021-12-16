@@ -40,6 +40,7 @@ class ParticipantDashboard < Administrate::BaseDashboard
     country
     verified
     self_generated_id
+    sgm_group
     survey_responses
     updated_at
   ].freeze

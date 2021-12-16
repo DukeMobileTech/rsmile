@@ -12,39 +12,41 @@ By default, it renders:
 - Links to stylesheets and JavaScripts
 %>
 
-<!DOCTYPE html>
-<html lang="<%= I18n.locale %>">
-<head>
-  <meta charset="utf-8">
-  <meta name="ROBOTS" content="NOODP">
-  <meta name="viewport" content="initial-scale=1">
-  <title>
-    <%= content_for(:title) %> - <%= application_title %>
-  </title>
-  <%= render "stylesheet" %>
-  <%= csrf_meta_tags %>
-  <%= csp_meta_tag if defined?(csp_meta_tag) %>
-</head>
-<body>
-  <%= render "icons" %>
+  <!DOCTYPE html>
+  <html lang="<%= I18n.locale %>">
+    <head>
+      <meta charset="utf-8">
+      <meta name="ROBOTS" content="NOODP">
+      <meta name="viewport" content="initial-scale=1">
+      <title>
+        Rsmile Admin Dashboard
+      </title>
+      <%= render "stylesheet" %>
+      <%= csrf_meta_tags %>
+      <%= csp_meta_tag if defined?(csp_meta_tag) %>
+    </head>
+    <body>
+      <%= render "icons" %>
 
-  <div class="app-container">
-    <%= render "navigation" -%>
+      <div class="app-container">
+        <%= render "navigation" -%>
 
-    <main class="main-content" role="main">
-      <div>
-        <% if signed_in? %>
-          <span style="margin: 3px">Signed in as: <strong><%= current_user.email %></strong></span>
-          <%= link_to 'Sign out', sign_out_path, method: :delete, style: "float: right; margin: 3px;" %>
-        <% else %>
-          <%= link_to 'Sign in', sign_in_path, class: "right" %>
-        <% end %>
+        <main class="main-content" role="main">
+          <div>
+            <% if signed_in? %>
+              <span style="margin: 3px">Signed in as:
+                <strong><%= current_user.email %></strong>
+              </span>
+              <%= link_to 'Sign out', sign_out_path, method: :delete, style: "float: right; margin: 3px;" %>
+            <% else %>
+              <%= link_to 'Sign in', sign_in_path, class: "right" %>
+            <% end %>
+          </div>
+          <%= render "flashes" -%>
+          <%= yield %>
+        </main>
       </div>
-      <%= render "flashes" -%>
-      <%= yield %>
-    </main>
-  </div>
 
-  <%= render "javascript" %>
-</body>
-</html>
+      <%= render "javascript" %>
+    </body>
+  </html>

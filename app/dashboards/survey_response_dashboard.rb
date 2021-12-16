@@ -36,6 +36,7 @@ class SurveyResponseDashboard < Administrate::BaseDashboard
     country
     eligible
     consented
+    survey_complete
     source
     language
     sgm_group

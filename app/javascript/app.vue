@@ -17,7 +17,7 @@
 <script>
  import axios from 'axios';
  import Participant from './packs/components/Participant';
- import CountrySource from './packs/components/CountrySource';
+ import CountryData from './packs/components/CountryData';
 
 export default {
   data: function () {
@@ -30,7 +30,7 @@ export default {
 
   components: {
     Participant,
-    CountrySource,
+    CountryData,
   },
 
   methods: {
@@ -53,11 +53,11 @@ export default {
       if(this.country == null) {
         return 'Participant';
       } else {
-        return 'CountrySource';
+        return 'CountryData';
       }
     },
     currentProperties() {
-      if (this.visibleComponent === 'CountrySource') {
+      if (this.visibleComponent === 'CountryData') {
         return { countryName: this.country }
       }
     }

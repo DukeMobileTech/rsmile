@@ -7,31 +7,33 @@
        </h3>
      </div>
 
-     <table class="table card-table">
-       <thead>
-         <tr>
-           <th>Country</th>
-           <th>Participants</th>
-           <th>Surveys</th>
-           <th>SMILE Consent</th>
-           <th>SMILE Contact Info Form - Baseline</th>
-           <th>SMILE Survey - Baseline</th>
-           <th>Safety Planning</th>
-         </tr>
-       </thead>
+     <div class="table-responsive">
+       <table class="table card-table table-hover">
+         <thead>
+           <tr>
+             <th>Country</th>
+             <th>Participants</th>
+             <th>Surveys</th>
+             <th>SMILE Consent</th>
+             <th>SMILE Contact Info Form - Baseline</th>
+             <th>SMILE Survey - Baseline</th>
+             <th>Safety Planning</th>
+           </tr>
+         </thead>
 
-       <tbody>
-         <tr v-for="(countryData, country, index) in participantsPerCountry" :key="country">
-           <td class="link-primary" @click="showCountry(country)">{{country}}</td>
-           <td>{{countryData['participants']}}</td>
-           <td>{{countryData['surveys']}}</td>
-           <td>{{countryData['SMILE Consent']}}</td>
-           <td>{{countryData['SMILE Contact Info Form - Baseline']}}</td>
-           <td>{{countryData['SMILE Survey - Baseline']}}</td>
-           <td>{{countryData['Safety Planning']}}</td>
-         </tr>
-       </tbody>
-     </table>
+         <tbody>
+           <tr v-for="(countryData, country, index) in participantsPerCountry" :key="country">
+             <td class="link-primary" @click="showCountry(country)">{{country}}</td>
+             <td>{{countryData['participants']}}</td>
+             <td>{{countryData['surveys']}}</td>
+             <td>{{countryData['SMILE Consent']}}</td>
+             <td>{{countryData['SMILE Contact Info Form - Baseline']}}</td>
+             <td>{{countryData['SMILE Survey - Baseline']}}</td>
+             <td>{{countryData['Safety Planning']}}</td>
+           </tr>
+         </tbody>
+       </table>
+     </div>
 
    </div>
 

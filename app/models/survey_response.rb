@@ -19,6 +19,7 @@ class SurveyResponse < ApplicationRecord
   belongs_to :participant, optional: true
   validates :response_uuid, presence: true, uniqueness: true
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
+  before_save { self.sgm_group = sgm_group&.downcase }
   before_save :modify_source
   store_accessor :metadata, :source, :language, :sgm_group
 
