@@ -59,7 +59,7 @@ class Participant < ApplicationRecord
 
   def self.summary_stats
     stats = {}
-    surveys = SurveyResponse.all
+    surveys = SurveyResponse.all.includes([:participant])
     survey_titles = ['SMILE Contact Info Form - Baseline', 'SMILE Consent', 'SMILE Survey - Baseline',
                      'Safety Planning']
     Participant.all.group_by(&:country).each do |country, participants|
@@ -85,6 +85,16 @@ class Participant < ApplicationRecord
     participants = Participant.where(country: kountry)
     all_sgm_groups.each do |group|
       stats[group] = participants.count { |participant| participant.sgm_group == group }
+    end
+    stats
+  end
+
+  def self.date_stats(kountry)
+    stats = []
+    participants = Participant.where(country: kountry).order(:created_at)
+    grouped_parts = participants.group_by { |p| p.created_at.to_date.strftime('%m/%d/%Y') }
+    grouped_parts.each do |date, responses|
+      stats << { date => responses.size }
     end
     stats
   end

@@ -6,4 +6,8 @@ class ParticipantsController < ApplicationController
   def sgm_groups
     render json: Participant.sgm_stats(params[:country])
   end
+
+  def grouped
+    render json: Participant.date_stats(params[:country])
+  end
 end

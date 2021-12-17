@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <div :key="'sgm-group'" class="card mt-5 mb-5">
+    <div :key="'sgm-group'" class="card mt-5">
       <div class="card-header">
         <h5 class="card-title">SGM Groups</h5>
       </div>
@@ -34,6 +34,7 @@
         </div>
       </div>
     </div>
+    <ParticipantsOverTime :country-name="countryName"></ParticipantsOverTime>
   </div>
 </template>
 
@@ -41,6 +42,7 @@
 import axios from 'axios';
 import PieChart from './PieChart';
 import CountryTable from './CountryTable';
+import ParticipantsOverTime from './ParticipantsOverTime';
 
   export default {
     name: 'CountryData',
@@ -68,6 +70,7 @@ import CountryTable from './CountryTable';
     components: {
       PieChart,
       CountryTable,
+      ParticipantsOverTime,
     },
 
     activated: function () {

@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   resources :participants, only: [:index] do
     collection do
       get '/sgm_groups' => 'participants#sgm_groups'
+      get '/grouped' => 'participants#grouped'
     end
   end
   resources :survey_responses, only: [] do
