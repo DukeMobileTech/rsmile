@@ -14,7 +14,7 @@ import BarChart from './charts/BarChart'
 
 export default {
 
-  name: 'CountryChart',
+  name: 'ParticipantsPerCountry',
 
   data: function () {
     const countries = Object.keys(this.participantsPerCountry);

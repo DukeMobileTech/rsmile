@@ -37,7 +37,7 @@
 
    </div>
 
-   <CountryChart v-if="loaded" :participants-per-country="participantsPerCountry"/>
+   <ParticipantsPerCountry v-if="loaded" :participants-per-country="participantsPerCountry"/>
 </div>
 
 </template>
@@ -45,7 +45,7 @@
 <script>
  import axios from 'axios';
 
- import CountryChart from './CountryChart'
+ import ParticipantsPerCountry from './ParticipantsPerCountry'
 
  export default {
    name: 'Participant',
@@ -57,7 +57,7 @@
    }),
 
    components: {
-     CountryChart
+     ParticipantsPerCountry,
    },
 
    created: function () {

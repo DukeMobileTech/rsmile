@@ -4,6 +4,7 @@
       <button type="button" class="btn btn-outline-secondary" @click="goBack">Back</button>
     </div>
     <h5>{{countryName}}</h5>
+    <Consents :country-name="countryName"></Consents>
     <StudySource :country-name="countryName"></StudySource>
     <SgmGroups :country-name="countryName"></SgmGroups>
     <ParticipantsOverTime :country-name="countryName"></ParticipantsOverTime>
@@ -11,12 +12,10 @@
 </template>
 
 <script>
-import axios from 'axios';
-import PieChart from './charts/PieChart';
-import CountryTable from './CountryTable';
 import ParticipantsOverTime from './ParticipantsOverTime';
 import StudySource from './StudySource';
 import SgmGroups from './SgmGroups';
+import Consents from './Consents';
 
 export default {
   name: 'CountryData',
@@ -26,11 +25,10 @@ export default {
   },
 
   components: {
-    PieChart,
-    CountryTable,
     ParticipantsOverTime,
     StudySource,
     SgmGroups,
+    Consents,
   },
 
   methods: {

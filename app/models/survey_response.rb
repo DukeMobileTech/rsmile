@@ -94,4 +94,12 @@ class SurveyResponse < ApplicationRecord
     end
     source_count
   end
+
+  def self.consent_stats(country_name)
+    responses = SurveyResponse.where(country: country_name, survey_title: 'SMILE Consent')
+    {
+      'Consented': responses.count { |r| r.consented },
+      'Not Consented': responses.count { |r| !r.consented }
+    }
+  end
 end

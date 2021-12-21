@@ -1,5 +1,5 @@
 <template>
-  <div :key="'study-source'" class="card mt-5">
+  <div :key="'study-source'" class="card mt-2">
     <div class="card-header">
       <h5 class="card-title">How did you hear about this study?</h5>
     </div>

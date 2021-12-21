@@ -9,7 +9,7 @@
       </div>
     </nav>
     <keep-alive>
-        <component @countryname="updateCountry" :is="visibleComponent" v-bind="currentProperties"></component>
+      <component @countryname="updateCountry" :is="visibleComponent" v-bind="currentProperties"></component>
     </keep-alive>
   </div>
 </template>
