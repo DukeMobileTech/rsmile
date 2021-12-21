@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import BarChart from './BarChart'
+import BarChart from './charts/BarChart'
 
 export default {
 

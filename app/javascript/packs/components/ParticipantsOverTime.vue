@@ -11,7 +11,7 @@
 
 <script>
 import axios from 'axios';
-import LineChart from './LineChart';
+import LineChart from './charts/LineChart';
 
   export default {
     name: 'ParticipantsOverTime',
