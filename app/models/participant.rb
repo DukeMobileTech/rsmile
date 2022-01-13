@@ -93,8 +93,11 @@ class Participant < ApplicationRecord
     stats = []
     participants = Participant.where(country: kountry).order(:created_at)
     grouped_parts = participants.group_by { |p| p.created_at.to_date.strftime('%m/%d/%Y') }
-    grouped_parts.each do |date, responses|
-      stats << { date => responses.size }
+    dates = (participants.first.created_at.to_date..participants.last.created_at.to_date).to_a
+    dates.each do |date|
+      f_date = date.strftime('%m/%d/%Y')
+      num_parts = grouped_parts[f_date]
+      stats << { f_date => num_parts.nil? ? 0 : num_parts.size }
     end
     stats
   end

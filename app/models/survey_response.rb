@@ -79,7 +79,7 @@ class SurveyResponse < ApplicationRecord
   def self.survey_sources(country_name)
     source_count = {}
     response_sources = []
-    responses = SurveyResponse.where(country: country_name)
+    responses = SurveyResponse.where(country: country_name, survey_title: 'SMILE Survey - Baseline')
     sources = responses.map { |response| response.source }
     sources.each do |src|
       response_sources << if src.nil?
