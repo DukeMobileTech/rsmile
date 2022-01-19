@@ -26,7 +26,7 @@ class Participant < ApplicationRecord
   validates :phone_number, :country, presence: true
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
   before_save :assign_identifiers
-  before_save { self.email = email&.downcase }
+  before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'no group' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
@@ -37,7 +37,7 @@ class Participant < ApplicationRecord
   end
 
   def self.verify(verification_code, email)
-    participant = find_by(email: email)
+    participant = find_by(email: email&.downcase&.strip)
     to = if participant.preferred_contact_method == '1'
            participant.email
          else
@@ -45,16 +45,19 @@ class Participant < ApplicationRecord
          end
     client = Twilio::REST::Client.new(Rails.application.credentials.config[:TWILIO_SID],
                                       Rails.application.credentials.config[:TWILIO_AUTH])
-    verification_check = client.verify
-                               .services(Rails.application.credentials.config[:TWILIO_SERVICE])
-                               .verification_checks
-                               .create(to: to, code: verification_code)
-    status = verification_check.status
-    if status == 'approved'
-      participant.verified = true
-      participant.save
+
+    begin
+      verification_check = client.verify.services(Rails.application.credentials.config[:TWILIO_SERVICE])
+                                 .verification_checks.create(to: to, code: verification_code)
+      status = verification_check.status
+      if status == 'approved'
+        participant.verified = true
+        participant.save
+      end
+      status
+    rescue Twilio::REST::RestError => e
+      Rails.logger.error e.message
     end
-    status
   end
 
   def self.summary_stats
