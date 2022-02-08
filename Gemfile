@@ -35,7 +35,7 @@ gem 'exception_notification', '~> 4.4', '>= 4.4.3'
 gem 'rack-cors', '~> 1.1', '>= 1.1.1'
 gem 'rswag-api', '~> 2.4'
 gem 'rswag-ui', '~> 2.4'
-gem 'sidekiq', '~> 6.2', '>= 6.2.2'
+gem 'sidekiq', '~> 6.4'
 gem 'twilio-ruby', '~> 5.59.0'
 
 group :development, :test do

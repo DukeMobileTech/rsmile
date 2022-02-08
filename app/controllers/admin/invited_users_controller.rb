@@ -1,6 +1,6 @@
 module Admin
   class InvitedUsersController < Admin::ApplicationController
-    skip_before_action :require_login, only: [:new, :create]
+    skip_before_action :require_login, only: %i[new create]
 
     def new
       @user = User.new
@@ -18,15 +18,18 @@ module Admin
           # ClearanceMailer.deliver_confirmation @user
           # flash[:notice] = "You will receive an email within the next few minutes. " <<
           #                  "It contains instructions for confirming your account."
-          redirect_to admin_user_path(@user)
+          if @user.admin?
+            redirect_to admin_user_path(@user)
+          else
+            redirect_to root_path
+          end
         else
-          render :action => "new"
+          render action: 'new'
         end
       else
-        flash.now[:notice] = "Sorry, that code is not redeemable"
-        render :action => "new"
+        flash.now[:notice] = 'Sorry, that code is not redeemable'
+        render action: 'new'
       end
     end
-
   end
 end
