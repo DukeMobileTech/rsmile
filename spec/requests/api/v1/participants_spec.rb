@@ -1,9 +1,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'api/v1/participants', type: :request do
-
   path '/api/v1/participants' do
-
     get('list participants') do
       security [{ bearer: [] }]
       response(200, 'successful') do
@@ -47,11 +45,10 @@ RSpec.describe 'api/v1/participants', type: :request do
           c_survey_complete: { type: :boolean },
           c_survey_title: { type: :string }
         },
-        required: [ 'email', 'phone_number', 'country', ]
+        required: %w[email phone_number country]
       }
 
       response(200, 'successful') do
-
         after do |example|
           example.metadata[:response][:content] = {
             'application/json' => {
@@ -62,7 +59,6 @@ RSpec.describe 'api/v1/participants', type: :request do
         run_test!
       end
     end
-
   end
 
   path '/api/v1/participants/verify' do
@@ -76,7 +72,7 @@ RSpec.describe 'api/v1/participants', type: :request do
           verification_code: { type: :string },
           email: { type: :string }
         },
-        required: [ 'verification_code' ]
+        required: ['verification_code']
       }
 
       response(200, 'successful') do
@@ -116,11 +112,39 @@ RSpec.describe 'api/v1/participants', type: :request do
           quota: { type: :string },
           preferred_contact_method: { type: :string }
         },
-        required: [ 'email' ]
+        required: ['email']
       }
 
       response(200, 'successful') do
-        let(:verification_code) { '123' }
+        let(:email) { 'user@example.com' }
+
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {
+              example: JSON.parse(response.body, symbolize_names: true)
+            }
+          }
+        end
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/participants/check' do
+    post('check participant resume code') do
+      consumes 'application/json'
+      produces 'application/json'
+      security [{ bearer: [] }]
+      parameter name: :participant, in: :body, schema: {
+        type: :object,
+        properties: {
+          resume_code: { type: :string }
+        },
+        required: ['resume_code']
+      }
+
+      response(200, 'successful') do
+        let(:resume_code) { 'abcde' }
 
         after do |example|
           example.metadata[:response][:content] = {
@@ -175,7 +199,7 @@ RSpec.describe 'api/v1/participants', type: :request do
           quota: { type: :string },
           preferred_contact_method: { type: :string }
         },
-        required: [ 'id' ]
+        required: ['id']
       }
 
       response(200, 'successful') do

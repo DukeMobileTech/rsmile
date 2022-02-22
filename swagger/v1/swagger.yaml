@@ -158,6 +158,25 @@ paths:
                   type: string
               required:
               - email
+  "/api/v1/participants/check":
+    post:
+      summary: check participant resume code
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resume_code:
+                  type: string
+              required:
+              - resume_code
   "/api/v1/participants/{id}":
     parameters:
     - name: id

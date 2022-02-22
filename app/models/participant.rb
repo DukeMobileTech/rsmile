@@ -19,6 +19,7 @@
 #  updated_at               :datetime         not null
 #  preferred_contact_method :string
 #  verified                 :boolean          default(FALSE)
+#  resume_code              :string
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy
@@ -30,6 +31,7 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'no group' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
+  before_create { self.resume_code = ('A'..'Z').to_a.sample(5).join }
 
   def send_verification_message
     # return if verified
@@ -103,6 +105,18 @@ class Participant < ApplicationRecord
       stats << { f_date => num_parts.nil? ? 0 : num_parts.size }
     end
     stats
+  end
+
+  def self.check_resume_code(code)
+    return { id: nil, self_generated_id: nil, country: nil, status: 'invalid' } if code.blank?
+
+    participant = find_by(resume_code: code&.upcase&.strip)
+    if participant
+      { id: participant.id, self_generated_id: participant.self_generated_id,
+        country: participant.country, status: 'valid' }
+    else
+      { id: nil, self_generated_id: nil, country: nil, status: 'invalid' }
+    end
   end
 
   private

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_10_165433) do
+ActiveRecord::Schema.define(version: 2022_02_24_162426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -56,8 +56,10 @@ ActiveRecord::Schema.define(version: 2021_12_10_165433) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "preferred_contact_method"
     t.boolean "verified", default: false
+    t.string "resume_code"
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
+    t.index ["resume_code"], name: "index_participants_on_resume_code", unique: true
   end
 
   create_table "survey_responses", force: :cascade do |t|

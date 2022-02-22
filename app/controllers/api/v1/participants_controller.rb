@@ -82,13 +82,18 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  def check_resume_code
+    res = Participant.check_resume_code(params[:resume_code])
+    render json: res, status: :ok
+  end
+
   private
 
   def participant_params
     params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
                                           :study_id, :rds_id, :code, :referrer_code, :sgm_group,
                                           :referrer_sgm_group, :match, :quota,
-                                          :preferred_contact_method,
+                                          :preferred_contact_method, :resume_code,
                                           survey_responses_attributes: %i[survey_uuid response_uuid survey_complete survey_title
                                                                           c_survey_uuid c_response_uuid c_survey_complete c_survey_title])
   end

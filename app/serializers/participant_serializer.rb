@@ -19,9 +19,10 @@
 #  updated_at               :datetime         not null
 #  preferred_contact_method :string
 #  verified                 :boolean          default(FALSE)
+#  resume_code              :string
 #
 class ParticipantSerializer < ActiveModel::Serializer
   attributes :id, :email, :phone_number, :country, :self_generated_id, :study_id,
-    :rds_id, :code, :referrer_code, :sgm_group, :referrer_sgm_group, :match, :quota,
-    :preferred_contact_method, :verified
+             :rds_id, :code, :referrer_code, :sgm_group, :referrer_sgm_group, :match, :quota,
+             :preferred_contact_method, :verified, :resume_code
 end

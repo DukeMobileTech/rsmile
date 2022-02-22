@@ -29,6 +29,7 @@ Rails.application.routes.draw do
         collection do
           post '/verify' => 'participants#verify', as: 'verify'
           put '/amend' => 'participants#amend', as: 'amend'
+          post '/check' => 'participants#check_resume_code', as: 'check'
         end
       end
       resources :survey_responses do

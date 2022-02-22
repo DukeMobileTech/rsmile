@@ -25,7 +25,8 @@ class ParticipantDashboard < Administrate::BaseDashboard
     created_at: Field::DateTime,
     updated_at: Field::DateTime.with_options(format: '%Y-%m-%d %I:%M %p'),
     preferred_contact_method: Field::String,
-    verified: Field::Boolean
+    verified: Field::Boolean,
+    resume_code: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -64,6 +65,7 @@ class ParticipantDashboard < Administrate::BaseDashboard
     quota
     preferred_contact_method
     verified
+    resume_code
     created_at
     updated_at
   ].freeze
@@ -87,6 +89,7 @@ class ParticipantDashboard < Administrate::BaseDashboard
     quota
     preferred_contact_method
     verified
+    resume_code
   ].freeze
 
   # COLLECTION_FILTERS
