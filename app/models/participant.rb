@@ -69,7 +69,7 @@ class Participant < ApplicationRecord
                      'Safety Planning']
     Participant.all.group_by(&:country).each do |country, participants|
       country_surveys = surveys.select { |s| s.country == country }
-      stats[country] = { 'participants': participants.size, 'surveys': country_surveys.size }
+      stats[country] = { 'participants': participants.size }
       survey_titles.each do |title|
         title_surveys = country_surveys.select { |s| s.survey_title == title }
         country_stats = stats[country]
@@ -94,15 +94,12 @@ class Participant < ApplicationRecord
     stats
   end
 
-  def self.date_stats(kountry)
+  def self.weekly_statistics(kountry)
     stats = []
-    participants = Participant.where(country: kountry).order(:created_at)
-    grouped_parts = participants.group_by { |p| p.created_at.to_date.strftime('%m/%d/%Y') }
-    dates = (participants.first.created_at.to_date..participants.last.created_at.to_date).to_a
-    dates.each do |date|
-      f_date = date.strftime('%m/%d/%Y')
-      num_parts = grouped_parts[f_date]
-      stats << { f_date => num_parts.nil? ? 0 : num_parts.size }
+    participants = Participant.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%Y',
+                                                                                  week_start: :monday).count
+    participants.each do |week, count|
+      stats << { week => count }
     end
     stats
   end

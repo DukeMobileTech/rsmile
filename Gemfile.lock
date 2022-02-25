@@ -168,6 +168,8 @@ GEM
       rake
     globalid (1.0.0)
       activesupport (>= 5.0)
+    groupdate (6.0.1)
+      activesupport (>= 5.2)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     jquery-rails (4.4.0)
@@ -375,6 +377,7 @@ DEPENDENCIES
   clearance (~> 2.5)
   exception_notification (~> 4.4, >= 4.4.3)
   faker (~> 2.19)
+  groupdate (~> 6.0, >= 6.0.1)
   listen (~> 3.3)
   pg (~> 1.2, >= 1.2.3)
   puma (~> 5.0)

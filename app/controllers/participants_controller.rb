@@ -8,6 +8,6 @@ class ParticipantsController < ApplicationController
   end
 
   def grouped
-    render json: Participant.date_stats(params[:country])
+    render json: Participant.weekly_statistics(params[:country])
   end
 end
