@@ -1,8 +1,7 @@
 class ConsentMailer < ApplicationMailer
-
   def consent_form
-    attachments['consent.pdf'] = File.read("#{Rails.root}/storage/consent/#{params[:language]}.pdf")
-    mail(to: params[:email], subject: 'SMILE Study Consent Form')
+    @language = params[:language]
+    attachments['consent.pdf'] = File.read("#{Rails.root}/storage/consent/#{@language}.pdf")
+    mail(to: params[:email], subject: I18n.t('form', locale: @language))
   end
-
 end

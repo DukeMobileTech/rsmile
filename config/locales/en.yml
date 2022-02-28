@@ -30,4 +30,8 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  copy: "Please find attached a copy of the consent form you requested."
+  thanks: "Thank you."
+  sincerely: "Sincerely,"
+  team: "SMILE Study Team"
+  form: "SMILE Study Consent Form"
