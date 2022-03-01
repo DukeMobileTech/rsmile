@@ -31,7 +31,7 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'no group' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
-  before_create { self.resume_code = ('A'..'Z').to_a.sample(5).join }
+  before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
 
   def send_verification_message
     # return if verified
