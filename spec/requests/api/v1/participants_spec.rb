@@ -36,14 +36,7 @@ RSpec.describe 'api/v1/participants', type: :request do
           match: { type: :string },
           quota: { type: :string },
           preferred_contact_method: { type: :string },
-          survey_uuid: { type: :string },
-          response_uuid: { type: :string },
-          survey_complete: { type: :boolean },
-          survey_title: { type: :string },
-          c_survey_uuid: { type: :string },
-          c_response_uuid: { type: :string },
-          c_survey_complete: { type: :boolean },
-          c_survey_title: { type: :string }
+          language: { type: :string }
         },
         required: %w[email phone_number country]
       }

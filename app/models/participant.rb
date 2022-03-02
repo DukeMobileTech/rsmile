@@ -33,9 +33,12 @@ class Participant < ApplicationRecord
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
 
-  def send_verification_message
+  def send_verification_message(language)
     # return if verified
-    ParticipantVerificationJob.perform_now(id, preferred_contact_method)
+    language = language&.downcase&.strip
+    language = 'en' if language.blank?
+    language = 'en' if language == 'sw'
+    ParticipantVerificationJob.perform_now(id, preferred_contact_method, language)
   end
 
   def self.verify(verification_code, email)
@@ -115,6 +118,13 @@ class Participant < ApplicationRecord
       { id: nil, self_generated_id: nil, country: nil, status: 'invalid' }
     end
   end
+
+  # def self.existing_user(address, sgi)
+  #   sgi = nil if sgi.empty?
+  #   participant = find_by(email: address&.downcase&.strip, self_generated_id: sgi)
+  #   { id: participant&.id, self_generated_id: participant&.self_generated_id,
+  #     country: participant&.country, verified: participant&.verified }
+  # end
 
   private
 

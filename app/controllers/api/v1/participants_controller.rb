@@ -41,7 +41,7 @@ class Api::V1::ParticipantsController < Api::ApiController
       end
     end
     if @participant.save
-      @participant.send_verification_message
+      @participant.send_verification_message(params[:language])
       render json: @participant, status: :created
     else
       render json: @participant.errors, status: :unprocessable_entity
@@ -92,7 +92,7 @@ class Api::V1::ParticipantsController < Api::ApiController
   def participant_params
     params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
                                           :study_id, :rds_id, :code, :referrer_code, :sgm_group,
-                                          :referrer_sgm_group, :match, :quota,
+                                          :referrer_sgm_group, :match, :quota, :language,
                                           :preferred_contact_method, :resume_code,
                                           survey_responses_attributes: %i[survey_uuid response_uuid survey_complete survey_title
                                                                           c_survey_uuid c_response_uuid c_survey_complete c_survey_title])
