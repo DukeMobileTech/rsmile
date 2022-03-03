@@ -108,14 +108,16 @@ class Participant < ApplicationRecord
   end
 
   def self.check_resume_code(code)
-    return { id: nil, self_generated_id: nil, country: nil, status: 'invalid' } if code.blank?
+    return { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil } if code.blank?
 
     participant = find_by(resume_code: code&.upcase&.strip)
     if participant
+      baseline = participant.survey_responses.where(survey_title: 'SMILE Survey - Baseline',
+                                                    survey_complete: false).first
       { id: participant.id, self_generated_id: participant.self_generated_id,
-        country: participant.country, status: 'valid' }
+        country: participant.country, status: 'valid', response_id: baseline&.response_uuid }
     else
-      { id: nil, self_generated_id: nil, country: nil, status: 'invalid' }
+      { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil }
     end
   end
 
