@@ -26,11 +26,28 @@ class Api::V1::SurveyResponsesController < Api::ApiController
     end
   end
 
+  def safety
+    content_hash = JSON.parse params[:responses]
+    language = content_hash['language']&.downcase&.strip
+    pdf = SafetyPlan.new(content_hash)
+    file = Tempfile.new('Safety Planning')
+    pdf.save_as(file.path)
+    begin
+      SafetyMailer.with(filename: file.path, email: content_hash['email']&.downcase&.strip,
+                        language: language).safety_planning_form.deliver_now
+      render json: { email: 'sent' }, status: :ok
+    rescue Exception
+      render json: { email: 'failed' }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def survey_response_params
     params.fetch(:survey_response, {}).permit(:participant_id, :survey_uuid,
-                                              :response_uuid, :survey_complete, :survey_title, :country, :consented,
-                                              :eligible, :metadata, :language, :source, :sgm_group)
+                                              :response_uuid, :survey_complete,
+                                              :survey_title, :country, :consented,
+                                              :eligible, :metadata, :language, :source,
+                                              :sgm_group)
   end
 end

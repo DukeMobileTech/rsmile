@@ -1,9 +1,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'api/v1/survey_responses', type: :request do
-
   path '/api/v1/survey_responses' do
-
     # get('list survey_responses') do
     #   response(200, 'successful') do
     #
@@ -38,7 +36,6 @@ RSpec.describe 'api/v1/survey_responses', type: :request do
       }
 
       response(200, 'successful') do
-
         after do |example|
           example.metadata[:response][:content] = {
             'application/json' => {
@@ -51,6 +48,31 @@ RSpec.describe 'api/v1/survey_responses', type: :request do
     end
   end
 
+  path '/api/v1/survey_responses/safety' do
+    post('send safety planning form') do
+      consumes 'application/json'
+      produces 'application/json'
+      security [{ bearer: [] }]
+      parameter name: :survey_response, in: :body, schema: {
+        type: :object,
+        properties: {
+          responses: { type: :string }
+        },
+        required: ['responses']
+      }
+
+      response(200, 'successful') do
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {
+              example: JSON.parse(response.body, symbolize_names: true)
+            }
+          }
+        end
+        run_test!
+      end
+    end
+  end
 
   path '/api/v1/survey_responses/amend' do
     put('update survey_response attributes') do
@@ -70,11 +92,10 @@ RSpec.describe 'api/v1/survey_responses', type: :request do
           source: { type: :string },
           language: { type: :string }
         },
-        required: [ 'response_uuid' ]
+        required: ['response_uuid']
       }
 
       response(200, 'successful') do
-
         after do |example|
           example.metadata[:response][:content] = {
             'application/json' => {

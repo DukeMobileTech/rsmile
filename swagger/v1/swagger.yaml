@@ -260,6 +260,25 @@ paths:
                   type: string
                 language:
                   type: string
+  "/api/v1/survey_responses/safety":
+    post:
+      summary: send safety planning form
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                responses:
+                  type: string
+              required:
+              - responses
   "/api/v1/survey_responses/amend":
     put:
       summary: update survey_response attributes
