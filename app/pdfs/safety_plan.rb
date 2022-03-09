@@ -19,10 +19,20 @@ class SafetyPlan
       'Tahoma' => {
         bold: "#{Rails.root}/app/pdfs/fonts/Tahoma-Bold.ttf",
         normal: "#{Rails.root}/app/pdfs/fonts/Tahoma.ttf"
+      },
+      'Geneva' => {
+        normal: "#{Rails.root}/app/pdfs/fonts/Geneva.ttf"
+      },
+      'BeVietnamPro' => {
+        bold: "#{Rails.root}/app/pdfs/fonts/BeVietnamPro-Bold.ttf",
+        normal: "#{Rails.root}/app/pdfs/fonts/BeVietnamPro-Regular.ttf",
+        bold_italic: "#{Rails.root}/app/pdfs/fonts/BeVietnamPro-BoldItalic.ttf",
+        italic: "#{Rails.root}/app/pdfs/fonts/BeVietnamPro-MediumItalic.ttf"
       }
     )
+    font 'BeVietnamPro'
     font_size 12
-    self.fallback_fonts = ['Tahoma']
+    self.fallback_fonts = %w[Tahoma Geneva]
     default_leading 5
   end
 
@@ -54,38 +64,46 @@ class SafetyPlan
     text localize_text('access_p_1')
     move_down 10
     text localize_text('access_p_2'), inline_format: true
-    if access_list.include?('1')
+    indent(15) do
+      if access_list.include?('1')
+        text "<b>[√]</b> #{localize_text('access_1')}", inline_format: true
+      else
+        text "[ ] #{localize_text('access_1')}", inline_format: true
+      end
       indent(15) do
-        text localize_text('access_1'), inline_format: true
-        indent(15) do
-          text localize_text('access_1_1')
-          text localize_text('access_1_2')
-        end
+        text localize_text('access_1_1')
+        text localize_text('access_1_2')
       end
     end
-    if access_list.include?('2')
+    indent(15) do
+      if access_list.include?('2')
+        text "<b>[√]</b> #{localize_text('access_2')}", inline_format: true
+      else
+        text "[ ] #{localize_text('access_2')}", inline_format: true
+      end
       indent(15) do
-        text localize_text('access_2'), inline_format: true
-        indent(15) do
-          text localize_text('access_2_1')
-          text localize_text('access_2_2')
-        end
+        text localize_text('access_2_1')
+        text localize_text('access_2_2')
       end
     end
-    if access_list.include?('3')
+    indent(15) do
+      if access_list.include?('3')
+        text "<b>[√]</b> #{localize_text('access_3')}", inline_format: true
+      else
+        text "[ ] #{localize_text('access_3')}", inline_format: true
+      end
       indent(15) do
-        text localize_text('access_3'), inline_format: true
-        indent(15) do
-          text localize_text('access_3_1')
-        end
+        text localize_text('access_3_1')
       end
     end
-    if access_list.include?('4')
+    indent(15) do
+      if access_list.include?('4')
+        text "<b>[√]</b> #{localize_text('access_4')}", inline_format: true
+      else
+        text "[ ] #{localize_text('access_4')}", inline_format: true
+      end
       indent(15) do
-        text localize_text('access_4'), inline_format: true
-        indent(15) do
-          text "<u>#{@content['access_other']}</u>", inline_format: true
-        end
+        text "<u>#{@content['access_other']}</u>", inline_format: true
       end
     end
   end
@@ -100,16 +118,17 @@ class SafetyPlan
     move_down 10
     text localize_text('warning_p_2'), inline_format: true
     indent(15) do
-      warning_list.each do |i|
-        next if i == '15'
-
-        text localize_text("warning_#{i}")
+      (1..14).each do |i|
+        if warning_list.include?(i.to_s)
+          text "<b>[√]</b> #{localize_text("warning_#{i}")}", inline_format: true
+        else
+          text "[ ] #{localize_text("warning_#{i}")}"
+        end
       end
-    end
-    if warning_list.include?('15')
-      indent(15) do
-        text I18n.t('safety.warning_15', others: "<u>#{@content['warning_other']}</u>", locale: @language),
-             inline_format: true
+      if @content['warning_other'].strip.blank?
+        text "[ ] #{localize_text('warning_15')}"
+      else
+        text "<b>[√]</b> #{localize_text('warning_15')} <u>#{@content['warning_other']}</u>", inline_format: true
       end
     end
     move_down 10
@@ -119,16 +138,17 @@ class SafetyPlan
     move_down 10
     text localize_text('cope_p_2'), inline_format: true
     indent(15) do
-      coping_list.each do |i|
-        next if i == '15'
-
-        text localize_text("cope_#{i}")
+      (1..14).each do |i|
+        if coping_list.include?(i.to_s)
+          text "<b>[√]</b> #{localize_text("cope_#{i}")}", inline_format: true
+        else
+          text "[ ] #{localize_text("cope_#{i}")}"
+        end
       end
-    end
-    if coping_list.include?('15')
-      indent(15) do
-        text I18n.t('safety.cope_15', others: "<u>#{@content['coping_other']}</u>", locale: @language),
-             inline_format: true
+      if @content['coping_other'].strip.blank?
+        text "[ ] #{localize_text('cope_15')}"
+      else
+        text "<b>[√]</b> #{localize_text('cope_15')} <u>#{@content['coping_other']}</u>", inline_format: true
       end
     end
   end
@@ -146,7 +166,11 @@ class SafetyPlan
     text localize_text('distract_p_2'), inline_format: true
     indent(15) do
       distractions.each do |pp|
-        text I18n.t('safety.person_or_place', person_or_place: "<u>#{pp}</u>", locale: @language), inline_format: true
+        text localize_text('person_or_place') + "<u>#{pp}</u>", inline_format: true
+      end
+      start = distractions.size + 1
+      (start..6).each do
+        text localize_text('person_or_place')
       end
     end
     move_down 10
@@ -160,7 +184,11 @@ class SafetyPlan
     move_down 10
     indent(15) do
       support.each do |ss|
-        text I18n.t('safety.name_and_number', name_and_number: "<u>#{ss}</u>", locale: @language), inline_format: true
+        text localize_text('name_and_number') + "<u>#{ss}</u>", inline_format: true
+      end
+      start = support.size + 1
+      (start..6).each do
+        text localize_text('name_and_number')
       end
     end
   end
@@ -178,25 +206,15 @@ class SafetyPlan
     text localize_text('prof_p_2'), inline_format: true
     move_down 10
     indent(15) do
-      unless professional[0].blank?
-        text I18n.t('safety.prof_doctor', doctor: "<u>#{professional[0]}</u>", locale: @language),
-             inline_format: true
-      end
-      unless professional[1].blank?
-        text I18n.t('safety.prof_provider', provider: "<u>#{professional[1]}</u>", locale: @language),
-             inline_format: true
-      end
-      unless professional[2].blank?
-        text I18n.t('safety.prof_lifeline', lifeline: "<u>#{professional[2]}</u>", locale: @language),
-             inline_format: true
-      end
-      unless professional[3].blank?
-        text I18n.t('safety.prof_community', community: "<u>#{professional[3]}</u>", locale: @language),
-             inline_format: true
-      end
-      unless professional[4].blank?
-        text I18n.t('safety.prof_other', other: "<u>#{professional[4]}</u>", locale: @language), inline_format: true
-      end
+      text I18n.t('safety.prof_doctor', doctor: "<u>#{professional[0]}</u>", locale: @language),
+           inline_format: true
+      text I18n.t('safety.prof_provider', provider: "<u>#{professional[1]}</u>", locale: @language),
+           inline_format: true
+      text I18n.t('safety.prof_lifeline', lifeline: "<u>#{professional[2]}</u>", locale: @language),
+           inline_format: true
+      text I18n.t('safety.prof_community', community: "<u>#{professional[3]}</u>", locale: @language),
+           inline_format: true
+      text I18n.t('safety.prof_other', other: "<u>#{professional[4]}</u>", locale: @language), inline_format: true
     end
     move_down 10
     text localize_text('matters_title'), style: :bold, inline_format: true
@@ -207,15 +225,16 @@ class SafetyPlan
     move_down 10
     indent(15) do
       order = [1, 5, 6, 8, 2, 11, 4, 3, 7, 10, 9]
-      matters_list.each do |item|
-        next if (item - 1) >= matters_entry.size
-
-        index = order.find_index(item)
-        if matters_entry[index].include?('<div>')
-          text localize_text("matters_#{item}")
+      order.each do |i|
+        if matters_list.include?(i)
+          index = order.find_index(i)
+          if matters_entry[index].include?('<div>')
+            text "<b>[√]</b> #{localize_text("matters_#{i}")}", inline_format: true
+          else
+            text "<b>[√]</b> #{localize_text("matters_#{i}")} <u>#{matters_entry[index].strip}</u>", inline_format: true
+          end
         else
-          text I18n.t("safety.matters_#{item}", text: "<u>#{matters_entry[index].strip}</u>", locale: @language),
-               inline_format: true
+          text "[ ] #{localize_text("matters_#{i}")}", inline_format: true
         end
       end
     end
