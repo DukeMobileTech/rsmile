@@ -12,6 +12,7 @@ class SafetyPlan
     write_content
     number_odd_pages
     number_even_pages
+    secure_content
   end
 
   def register_fonts
@@ -44,7 +45,7 @@ class SafetyPlan
   end
 
   def page_one
-    access_list = @content['access']&.split(',').map { |i| i.strip }.sort
+    access_list = @content['access']&.split(',')&.map { |i| i.strip }&.sort
     text localize_text('title'), align: :center, color: BLUE, style: :bold, inline_format: true
     text localize_text('intro_title'), style: :bold, inline_format: true
     text localize_text('intro_p_1'), inline_format: true
@@ -65,7 +66,7 @@ class SafetyPlan
     move_down 10
     text localize_text('access_p_2'), inline_format: true
     indent(15) do
-      if access_list.include?('1')
+      if access_list&.include?('1')
         text "<b>[√]</b> #{localize_text('access_1')}", inline_format: true
       else
         text "[ ] #{localize_text('access_1')}", inline_format: true
@@ -76,7 +77,7 @@ class SafetyPlan
       end
     end
     indent(15) do
-      if access_list.include?('2')
+      if access_list&.include?('2')
         text "<b>[√]</b> #{localize_text('access_2')}", inline_format: true
       else
         text "[ ] #{localize_text('access_2')}", inline_format: true
@@ -87,7 +88,7 @@ class SafetyPlan
       end
     end
     indent(15) do
-      if access_list.include?('3')
+      if access_list&.include?('3')
         text "<b>[√]</b> #{localize_text('access_3')}", inline_format: true
       else
         text "[ ] #{localize_text('access_3')}", inline_format: true
@@ -97,7 +98,7 @@ class SafetyPlan
       end
     end
     indent(15) do
-      if access_list.include?('4')
+      if access_list&.include?('4')
         text "<b>[√]</b> #{localize_text('access_4')}", inline_format: true
       else
         text "[ ] #{localize_text('access_4')}", inline_format: true
@@ -109,8 +110,8 @@ class SafetyPlan
   end
 
   def page_two
-    warning_list = @content['warning']&.split(',').map { |i| i.strip }.sort
-    coping_list = @content['coping']&.split(',').map { |i| i.strip }.sort
+    warning_list = @content['warning']&.split(',')&.map { |i| i.strip }&.sort
+    coping_list = @content['coping']&.split(',')&.map { |i| i.strip }&.sort
     move_down 20
     text localize_text('warning_title'), style: :bold, inline_format: true
     move_down 10
@@ -119,7 +120,7 @@ class SafetyPlan
     text localize_text('warning_p_2'), inline_format: true
     indent(15) do
       (1..14).each do |i|
-        if warning_list.include?(i.to_s)
+        if warning_list&.include?(i.to_s)
           text "<b>[√]</b> #{localize_text("warning_#{i}")}", inline_format: true
         else
           text "[ ] #{localize_text("warning_#{i}")}"
@@ -139,7 +140,7 @@ class SafetyPlan
     text localize_text('cope_p_2'), inline_format: true
     indent(15) do
       (1..14).each do |i|
-        if coping_list.include?(i.to_s)
+        if coping_list&.include?(i.to_s)
           text "<b>[√]</b> #{localize_text("cope_#{i}")}", inline_format: true
         else
           text "[ ] #{localize_text("cope_#{i}")}"
@@ -155,9 +156,9 @@ class SafetyPlan
 
   def page_three
     distractions = @content['person_or_place']&.split(',')
-    distractions = distractions.select { |i| !i.include?('<div>') }.map { |i| i.strip }
+    distractions = distractions&.select { |i| !i&.include?(':') }&.map { |i| i.strip }
     support = @content['name_and_phone']&.split(',')
-    support = support.select { |i| !i.include?(':') }.map { |i| i.strip }
+    support = support&.select { |i| !i&.include?(':') }&.map { |i| i.strip }
     move_down 20
     text localize_text('distract_title'), style: :bold, inline_format: true
     move_down 10
@@ -165,10 +166,10 @@ class SafetyPlan
     move_down 10
     text localize_text('distract_p_2'), inline_format: true
     indent(15) do
-      distractions.each do |pp|
+      distractions&.each do |pp|
         text localize_text('person_or_place') + "<u>#{pp}</u>", inline_format: true
       end
-      start = distractions.size + 1
+      start = distractions.nil? ? 1 : distractions&.size + 1
       (start..6).each do
         text localize_text('person_or_place')
       end
@@ -183,10 +184,10 @@ class SafetyPlan
     text localize_text('social_p_3')
     move_down 10
     indent(15) do
-      support.each do |ss|
+      support&.each do |ss|
         text localize_text('name_and_number') + "<u>#{ss}</u>", inline_format: true
       end
-      start = support.size + 1
+      start = support.nil? ? 1 : support&.size + 1
       (start..6).each do
         text localize_text('name_and_number')
       end
@@ -195,8 +196,8 @@ class SafetyPlan
 
   def page_four
     professional = @content['professional_help']&.split(',')
-    professional = professional.map { |i| i.include?(':') ? '' : i.strip }
-    matters_list = @content['what_matters']&.split(',').map { |i| i.strip.to_i }.sort
+    professional = professional&.map { |i| i&.include?(':') ? '' : i.strip }
+    matters_list = @content['what_matters']&.split(',')&.map { |i| i.strip.to_i }&.sort
     matters_entry = @content['what_matters_entry']&.split(',')
     move_down 20
     text localize_text('prof_title'), style: :bold, inline_format: true
@@ -226,9 +227,9 @@ class SafetyPlan
     indent(15) do
       order = [1, 5, 6, 8, 2, 11, 4, 3, 7, 10, 9]
       order.each do |i|
-        if matters_list.include?(i)
+        if matters_list&.include?(i)
           index = order.find_index(i)
-          if matters_entry[index].include?('<div>')
+          if !matters_entry[index]&.include?(':')
             text "<b>[√]</b> #{localize_text("matters_#{i}")}", inline_format: true
           else
             text "<b>[√]</b> #{localize_text("matters_#{i}")} <u>#{matters_entry[index].strip}</u>", inline_format: true
@@ -270,5 +271,14 @@ class SafetyPlan
       start_count_at: 2
     }
     number_pages PAGE, even_options
+  end
+
+  def secure_content
+    password = @content['password']
+    if password.blank?
+      encrypt_document
+    else
+      encrypt_document(user_password: password, owner_password: password)
+    end
   end
 end
