@@ -20,7 +20,6 @@ class SurveyResponse < ApplicationRecord
   validates :response_uuid, presence: true, uniqueness: true
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
-  before_save :modify_source
   store_accessor :metadata, :source, :language, :sgm_group
 
   def country
@@ -36,43 +35,30 @@ class SurveyResponse < ApplicationRecord
     write_attribute(:country, str)
   end
 
-  def self.heard_from
-    ['Not Indicated', 'Radio advertisement', 'TV advertisement',
-     'Billboard / sign / poster / pamphlet / newspaper advertisement',
-     'Social media advertisement', 'From a friend / family member / acquaintance',
-     'From a local organization', 'Other', 'Social media post / discussion',
-     'Newspaper article / magazine article / newsletter',
-     'From a local organization or peer educator']
-  end
-
-  def modify_source
-    unless source.blank?
-      source_value = []
-      source.split(',').each do |value|
-        case value
-        when '1'
-          source_value << 'Radio advertisement'
-        when '2'
-          source_value << 'TV advertisement'
-        when '3'
-          source_value << 'Billboard / sign / poster / pamphlet / newspaper advertisement'
-        when '4'
-          source_value << 'Social media advertisement'
-        when '5'
-          source_value << 'From a friend / family member / acquaintance'
-        when '6'
-          source_value << 'From a local organization'
-        when '7'
-          source_value << 'Other'
-        when '8'
-          source_value << 'Social media post / discussion'
-        when '9'
-          source_value << 'Newspaper article / magazine article / newsletter'
-        when '10'
-          source_value << 'From a local organization or peer educator'
-        end
-      end
-      self.source = source_value.join(',')
+  def self.named_source(name)
+    case name
+    when '0'
+      'Not Indicated'
+    when '1'
+      'Radio advertisement'
+    when '2'
+      'TV advertisement'
+    when '3'
+      'Billboard / sign / poster / pamphlet / newspaper advertisement'
+    when '4'
+      'Social media advertisement'
+    when '5'
+      'From a friend / family member / acquaintance'
+    when '6'
+      'From a local organization'
+    when '7'
+      'Other'
+    when '8'
+      'Social media post / discussion'
+    when '9'
+      'Newspaper article / magazine article / newsletter'
+    when '10'
+      'From a local organization or peer educator'
     end
   end
 
@@ -82,15 +68,15 @@ class SurveyResponse < ApplicationRecord
     responses = SurveyResponse.where(country: country_name, survey_title: 'SMILE Survey - Baseline')
     sources = responses.map { |response| response.source }
     sources.each do |src|
-      response_sources << if src.nil?
-                            'Not Indicated'
+      response_sources << if src.blank?
+                            '0'
                           else
                             src.split(',')
                           end
     end
     rs = response_sources.flatten
-    heard_from.each do |hf|
-      source_count[hf] = rs.count { |element| element == hf }
+    (0..10).each do |hf|
+      source_count[named_source(hf.to_s)] = rs.count { |element| element.strip == hf.to_s }
     end
     source_count
   end
