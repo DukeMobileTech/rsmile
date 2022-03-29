@@ -2,9 +2,14 @@
 <div>
    <div class="card mb-5">
      <div class="card-header">
-       <h3 class="card-title">
-         Summary Statistics
-       </h3>
+       <div class="row">
+         <div class="col-sm-10">
+           <h3 class="card-title">Summary Statistics</h3>
+         </div>
+         <div class="col-sm-2">
+           <a target="_blank" href="https://duke.qualtrics.com/jfe/form/SV_eD1GmFtnKeck474" class="btn btn-outline-primary">Test Survey</a>
+         </div>
+       </div>
      </div>
 
      <div class="table-responsive">
