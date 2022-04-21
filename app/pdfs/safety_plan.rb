@@ -202,7 +202,7 @@ class SafetyPlan
     move_down 20
     text localize_text('prof_title'), style: :bold, inline_format: true
     move_down 10
-    text localize_text('prof_p_1')
+    text localize_text('prof_p_1'), inline_format: true
     move_down 10
     text localize_text('prof_p_2'), inline_format: true
     move_down 10
