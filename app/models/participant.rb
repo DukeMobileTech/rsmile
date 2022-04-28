@@ -29,7 +29,7 @@ class Participant < ApplicationRecord
   before_save :assign_identifiers
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
-  before_save { self.sgm_group = 'no group' if sgm_group.blank? }
+  before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
 
@@ -85,7 +85,7 @@ class Participant < ApplicationRecord
 
   def self.all_sgm_groups
     ['non-binary person', 'transgender woman', 'transgender man', 'woman attracted to women',
-     'man attracted to men', 'multi-attracted woman', 'multi-attracted man', 'no group', 'ineligible']
+     'man attracted to men', 'multi-attracted woman', 'multi-attracted man', 'no group', 'ineligible', 'blank']
   end
 
   def self.sgm_stats(kountry)

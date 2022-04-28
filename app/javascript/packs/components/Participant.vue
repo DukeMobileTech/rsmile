@@ -17,11 +17,11 @@
          <thead>
            <tr>
              <th>Country</th>
-             <th>Participants</th>
-             <th>SMILE Consent</th>
-             <th>SMILE Contact Info Form - Baseline</th>
-             <th>SMILE Survey - Baseline</th>
-             <th>Safety Planning</th>
+             <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of unique participants (based on email addresses) that submitted their contact details.">Participants</th>
+             <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of consent surveys that were completed by participants (ineligible + consented + not consented).">Consent</th>
+             <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of participants who submitted their contact details (email address and phone number). Includes both eligible and ineligible participants.">Contact</th>
+             <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of participants who completed at a minimum the Introduction section of the survey.">Baseline</th>
+             <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of participants who completed at a minimum the Introduction section of the survey.">Safety Planning</th>
            </tr>
          </thead>
 

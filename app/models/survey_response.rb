@@ -44,21 +44,23 @@ class SurveyResponse < ApplicationRecord
     when '2'
       'TV advertisement'
     when '3'
-      'Billboard / sign / poster / pamphlet / newspaper advertisement'
+      'Podcast'
     when '4'
-      'Social media advertisement'
+      'Billboard / sign / poster / pamphlet / newspaper advertisement'
     when '5'
-      'From a friend / family member / acquaintance'
-    when '6'
-      'From a local organization'
-    when '7'
-      'Other'
-    when '8'
-      'Social media post / discussion'
-    when '9'
       'Newspaper article / magazine article / newsletter'
+    when '6'
+      'Social media advertisement'
+    when '7'
+      'Social media post / discussion'
+    when '8'
+      'From a friend / family member / acquaintance'
+    when '9'
+      'From a local organization'
     when '10'
       'From a local organization or peer educator'
+    when '11'
+      'Other'
     end
   end
 
@@ -75,7 +77,7 @@ class SurveyResponse < ApplicationRecord
                           end
     end
     rs = response_sources.flatten
-    (0..10).each do |hf|
+    (0..11).each do |hf|
       source_count[named_source(hf.to_s)] = rs.count { |element| element.strip == hf.to_s }
     end
     source_count
