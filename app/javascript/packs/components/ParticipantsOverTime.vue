@@ -72,7 +72,7 @@ import LineChart from './charts/LineChart';
           this.chartData = {
             labels: dates,
             datasets: [{
-              label: 'Daily Participants',
+              label: 'Weekly Participants',
               fill: false,
               borderWidth: 1,
               borderColor: '#2554FF',
