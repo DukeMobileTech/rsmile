@@ -21,6 +21,18 @@ class SurveyResponse < ApplicationRecord
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
   store_accessor :metadata, :source, :language, :sgm_group
+  scope :consents, -> { where(survey_title: 'SMILE Consent') }
+  scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
+  scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
+  scope :safety_plans, -> { where(survey_title: 'Safety Planning') }
+
+  def source_label
+    names = []
+    source&.split(',')&.each do |s|
+      names << SurveyResponse.named_source(s.strip)
+    end
+    names.join(' | ')
+  end
 
   def country
     if read_attribute(:country).blank?

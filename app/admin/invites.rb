@@ -1,12 +1,38 @@
-module Admin
-  class InvitedUsersController < Admin::ApplicationController
-    skip_before_action :require_login, only: %i[new create]
+ActiveAdmin.register Invite do
+  permit_params :first_name, :last_name, :email, :password
 
-    def new
+  member_action :send_invite, method: :get do
+    redirect_to resource_path
+  end
+
+  action_item :send_invite, only: :show do
+    link_to 'Send Invite', send_invite_admin_invite_path(params[:id])
+  end
+
+  form title: 'Invite User' do |_f|
+    inputs 'Details' do
+      input :first_name
+      input :last_name
+      input :email
+    end
+    actions
+  end
+
+  controller do
+    skip_before_action :require_login, only: %i[new_invite redeem_invite]
+
+    def send_invite
+      @invite = Invite.find(params[:id])
+      @invite.invite!
+      InviteMailer.with(invite: @invite).invite_email.deliver_now
+      redirect_to(admin_invites_path, notice: "Invite sent to #{@invite.email}")
+    end
+
+    def new_invite
       @user = User.new
     end
 
-    def create
+    def redeem_invite
       @user = User.new(email: params[:user][:email], password: params[:user][:password])
       @invite_code = params[:invite_code]
       @invite = Invite.find_redeemable(@invite_code)

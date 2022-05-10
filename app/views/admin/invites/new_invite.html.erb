@@ -1,0 +1,28 @@
+<% content_for(:title) do %>
+  Invited User Sign Up
+<% end %>
+
+<header class="main-content__header" role="banner">
+  <h1 class="main-content__page-title">
+    <%= content_for(:title) %>
+  </h1>
+
+</header>
+
+<section class="main-content__body">
+  <%= form_for @user, url: admin_redeem_invite_path do |form| %>
+  <div class="field-unit field-unit--string field-unit--optional">
+    <%= form.label :email, class: "field-unit-label" %>
+    <%= form.text_field :email, type: 'email', class: "field-unit-field" %>
+  </div>
+
+  <div class="field-unit field-unit--password field-unit--optional">
+    <%= form.label :password, class: "field-unit-label" %>
+    <%= form.password_field :password, class: "field-unit-field" %>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+</section>

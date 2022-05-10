@@ -3,24 +3,15 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
   namespace :admin do
-    get '/signup/:invite_code' => 'invited_users#new', as: 'redeem_invitation'
-    post '/signup/:invite_code' => 'invited_users#create', as: 'redeem_invite'
+    get '/signup/:invite_code' => 'invites#new_invite', as: 'redeem_invitation'
+    post '/signup/:invite_code' => 'invites#redeem_invite', as: 'redeem_invite'
   end
 
   constraints Clearance::Constraints::SignedIn.new { |user| user.admin? } do
     mount Rswag::Ui::Engine => '/api-docs'
     mount Rswag::Api::Engine => '/api-docs'
     mount Sidekiq::Web, at: '/admin/sidekiq', as: 'sidekiq'
-    namespace :admin do
-      resources :api_keys
-      resources :participants
-      resources :survey_responses
-      resources :users
-      resources :invites
-
-      get '/send_invitation/:id' => 'invites#send_invitation', as: 'send_invitation'
-      root to: 'participants#index'
-    end
+    ActiveAdmin.routes(self)
   end
 
   namespace :api, defaults: { format: :json } do

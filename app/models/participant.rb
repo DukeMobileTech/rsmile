@@ -33,6 +33,22 @@ class Participant < ApplicationRecord
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
 
+  def consents
+    survey_responses.where(survey_title: 'SMILE Consent')
+  end
+
+  def contacts
+    survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline')
+  end
+
+  def baselines
+    survey_responses.where(survey_title: 'SMILE Survey - Baseline')
+  end
+
+  def safety_plans
+    survey_responses.where(survey_title: 'Safety Planning')
+  end
+
   def send_verification_message(language)
     # return if verified
     language = language&.downcase&.strip
@@ -127,6 +143,54 @@ class Participant < ApplicationRecord
   #   { id: participant&.id, self_generated_id: participant&.self_generated_id,
   #     country: participant&.country, verified: participant&.verified }
   # end
+
+  def to_s
+    "#{self_generated_id} #{email}"
+  end
+
+  def self.enrollment
+    file = Tempfile.new(Time.now.to_i.to_s)
+    Axlsx::Package.new do |p|
+      wb = p.workbook
+      countries.each do |state|
+        add_country_sheet(wb, state)
+      end
+      p.serialize(file.path)
+    end
+    file
+  end
+
+  def self.add_country_sheet(wb, kountry)
+    wb.add_worksheet(name: kountry) do |sheet|
+      tab_color = colors[countries.index(kountry)]
+      sheet.sheet_pr.tab_color = tab_color
+      sheet.add_row country_header
+      participants = Participant.where(country: kountry)
+      participants.each do |participant|
+        sheet.add_row [participant.self_generated_id, participant.id, participant.baselines.pluck(:id).join('|'),
+                       participant.contacts.pluck(:id).join('|'), participant.consents.pluck(:id).join('|'),
+                       participant.consents.last&.created_at&.strftime('%Y-%m-%d'),
+                       participant.baselines.last&.created_at&.strftime('%Y-%m-%d'),
+                       participant.sgm_group, '', '', '', participant.verified, '', '', '']
+      end
+    end
+  end
+
+  def self.colors
+    %w[9C6ACB 6DD865 85B2C9 559F93]
+  end
+
+  def self.country_header
+    ['Participant Self-Gen ID',	'Participant Database ID', 'Baseline Survey IDs',
+     'Contact Info Form ID', 'Consent ID',	'Date of Enrollment (Consent)',
+     'Baseline Survey Completion Date', 'SGM Group Assigned', 'IP Address',
+     'Duration (min)', '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome',
+     'Notes']
+  end
+
+  def self.countries
+    %w[Vietnam Kenya Brazil]
+  end
 
   private
 
