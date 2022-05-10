@@ -167,11 +167,12 @@ class Participant < ApplicationRecord
       sheet.add_row country_header
       participants = Participant.where(country: kountry)
       participants.each do |participant|
-        sheet.add_row [participant.self_generated_id, participant.id, participant.baselines.pluck(:id).join('|'),
-                       participant.contacts.pluck(:id).join('|'), participant.consents.pluck(:id).join('|'),
+        sheet.add_row [participant.self_generated_id, participant.id, participant.baselines.pluck(:id).join(' | '),
+                       participant.contacts.pluck(:id).join(' | '), participant.consents.pluck(:id).join(' | '),
                        participant.consents.last&.created_at&.strftime('%Y-%m-%d'),
                        participant.baselines.last&.created_at&.strftime('%Y-%m-%d'),
-                       participant.sgm_group, '', '', '', participant.verified, '', '', '']
+                       participant.sgm_group, participant.ip_addresses.join(' | '),
+                       participant.duration, '', participant.verified, participant.age_year_match, '', '']
       end
     end
   end
@@ -190,6 +191,26 @@ class Participant < ApplicationRecord
 
   def self.countries
     %w[Vietnam Kenya Brazil]
+  end
+
+  def ip_addresses
+    survey_responses.map { |sr| sr.ip_address }.uniq
+  end
+
+  def duration
+    d = baselines.last&.duration
+    len = nil
+    len = (d.to_i / 60.0).ceil if d
+    len
+  end
+
+  def age_year_match
+    birth_year = contacts.last&.birth_year
+    return 'No' if birth_year.nil?
+
+    cal_age = created_at.year - birth_year.to_i
+    diff = cal_age - baselines.last&.age&.to_i
+    diff.abs <= 2 ? 'Yes' : 'No'
   end
 
   private

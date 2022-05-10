@@ -48,6 +48,7 @@ class Api::V1::SurveyResponsesController < Api::ApiController
                                               :response_uuid, :survey_complete,
                                               :survey_title, :country, :consented,
                                               :eligible, :metadata, :language, :source,
-                                              :sgm_group)
+                                              :sgm_group, :ip_address, :duration,
+                                              :birth_year, :age)
   end
 end
