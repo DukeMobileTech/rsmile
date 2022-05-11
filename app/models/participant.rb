@@ -117,8 +117,19 @@ class Participant < ApplicationRecord
     stats = []
     participants = Participant.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%Y',
                                                                                   week_start: :monday).count
+    eligible = Participant.where(country: kountry).where.not(sgm_group: 'ineligible').where.not(sgm_group: 'blank').group_by_week(
+      :created_at, format: '%m/%d/%Y', week_start: :monday
+    ).count
+    total = []
     participants.each do |week, count|
-      stats << { week => count }
+      total << { week => [count] }
+    end
+    index = 0
+    eligible.each do |week, count|
+      list = total[index][week]
+      list << count
+      stats << { week => list }
+      index += 1
     end
     stats
   end

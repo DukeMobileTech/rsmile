@@ -62,13 +62,17 @@ import LineChart from './charts/LineChart';
         .then(response => {
           let grouped = response.data;
           let dates = [];
-          let counts = [];
+          let totalCounts = [];
           let total = [];
+          let eligibleCounts = [];
+          let eligible = [];
           grouped.forEach((item) => {
             dates.push(Object.keys(item)[0]);
-            counts.push(Object.values(item)[0]);
+            totalCounts.push(Object.values(item)[0][0]);
+            eligibleCounts.push(Object.values(item)[0][1]);
           });
-          counts.reduce((a, b, index) => total[index] = a + b, 0);
+          totalCounts.reduce((a, b, index) => total[index] = a + b, 0);
+          eligibleCounts.reduce((a, b, index) => eligible[index] = a + b, 0);
           this.chartData = {
             labels: dates,
             datasets: [{
@@ -77,15 +81,23 @@ import LineChart from './charts/LineChart';
               borderWidth: 1,
               borderColor: '#2554FF',
               backgroundColor: '#2554FF',
-              data: counts,
+              data: totalCounts,
             },
             {
-              label: 'Cumulative Participants',
+              label: 'Total Cumulative Participants',
               fill: false,
               borderWidth: 1,
               borderColor: '#8e4ae8',
               backgroundColor: '#8e4ae8',
               data: total,
+            },
+            {
+              label: 'Eligible Cumulative Participants',
+              fill: false,
+              borderWidth: 1,
+              borderColor: '#94C973',
+              backgroundColor: '#94C973',
+              data: eligible,
             },
           ]};
           this.loaded = true;
