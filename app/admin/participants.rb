@@ -1,5 +1,6 @@
 ActiveAdmin.register Participant do
   menu priority: 1
+  config.per_page = [25, 50, 100]
 
   collection_action :download, method: :get do
     redirect_to resource_path
