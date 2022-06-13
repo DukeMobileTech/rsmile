@@ -182,7 +182,7 @@ class Participant < ApplicationRecord
                        participant.contacts.pluck(:id).join(' | '), participant.consents.pluck(:id).join(' | '),
                        participant.consents.last&.created_at&.strftime('%Y-%m-%d'),
                        participant.baselines.last&.created_at&.strftime('%Y-%m-%d'),
-                       participant.sgm_group, participant.ip_addresses.join(' | '),
+                       participant.sgm_group, participant.ip_addresses&.join(' | '),
                        participant.duration, '', participant.verified, participant.age_year_match, '', '']
       end
     end
@@ -217,10 +217,11 @@ class Participant < ApplicationRecord
 
   def age_year_match
     birth_year = contacts.last&.birth_year
-    return 'No' if birth_year.nil?
+    age = baselines.last&.age&.to_i
+    return 'No' if birth_year.blank? || age.blank?
 
     cal_age = created_at.year - birth_year.to_i
-    diff = cal_age - baselines.last&.age&.to_i
+    diff = cal_age - age
     diff.abs <= 2 ? 'Yes' : 'No'
   end
 
