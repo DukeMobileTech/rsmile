@@ -12,6 +12,14 @@
           <PieChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></PieChart>
         </div>
       </div>
+      <div class="row">
+        <div class="card-header">
+          <h5 class="card-title">Blank Breakdown</h5>
+        </div>
+        <div>
+          <CountryTable :data-obj="blankStats" :first-header="'Survey Progress'" :second-header="'Count'" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -35,6 +43,7 @@ export default {
       },
     chartData: {},
     sgmGroups: {},
+    blankStats: {},
   }),
 
   props: {
@@ -48,6 +57,7 @@ export default {
 
   activated: function () {
     this.fetchSgmData();
+    this.fetchBlankStats();
   },
 
   methods: {
@@ -82,6 +92,13 @@ export default {
         this.loaded = true;
       });
     },
+
+    fetchBlankStats() {
+      axios.get(`${this.$basePrefix}participants/blank_stats`, { params: { country: this.countryName } })
+      .then(response => {
+        this.blankStats = response.data;
+      });
+    }
   },
 }
 </script>

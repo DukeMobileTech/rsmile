@@ -113,6 +113,21 @@ class Participant < ApplicationRecord
     stats
   end
 
+  def self.blank_stats(kountry)
+    no_baseline = []
+    baseline_started = []
+    participants = Participant.where(country: kountry).where(sgm_group: 'blank')
+    participants.each do |part|
+      if !part.contacts.empty? & part.baselines.empty?
+        no_baseline << part
+      elsif !part.baselines.empty?
+        baseline_started << part
+      end
+    end
+    { 'Contact Info completed but Baseline not started': no_baseline.size,
+      'Baseline started but SOGI not completed': baseline_started.size }
+  end
+
   def self.weekly_statistics(kountry)
     stats = []
     participants = Participant.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%Y',
@@ -205,7 +220,7 @@ class Participant < ApplicationRecord
   end
 
   def ip_addresses
-    survey_responses.map { |sr| sr.ip_address }.uniq
+    survey_responses.map { |sr| sr.ip_address&.strip }.uniq.reject { |sr| sr.blank? }
   end
 
   def duration

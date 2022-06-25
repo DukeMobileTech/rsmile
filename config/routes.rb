@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     collection do
       get '/sgm_groups' => 'participants#sgm_groups'
       get '/grouped' => 'participants#grouped'
+      get '/blank_stats' => 'participants#blank_stats'
     end
   end
   resources :survey_responses, only: [] do

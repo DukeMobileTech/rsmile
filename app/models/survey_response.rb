@@ -90,6 +90,9 @@ class SurveyResponse < ApplicationRecord
     end
     rs = response_sources.flatten
     (0..11).each do |hf|
+      next if hf == 9 && country_name == 'Vietnam'
+      next if hf == 10 && country_name != 'Vietnam'
+
       source_count[named_source(hf.to_s)] = rs.count { |element| element.strip == hf.to_s }
     end
     source_count
