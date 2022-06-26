@@ -57,6 +57,14 @@ class Participant < ApplicationRecord
     ParticipantVerificationJob.perform_now(id, preferred_contact_method, language)
   end
 
+  def contact_method
+    if preferred_contact_method == '1'
+      'Email'
+    elsif preferred_contact_method == '2'
+      'Phone'
+    end
+  end
+
   def self.verify(verification_code, email)
     participant = find_by(email: email&.downcase&.strip)
     to = if participant.preferred_contact_method == '1'

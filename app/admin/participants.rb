@@ -26,13 +26,25 @@ ActiveAdmin.register Participant do
     column :self_generated_id
     column :sgm_group
     column :verified
-    column :preferred_contact_method
-    column :survey_responses do |participant|
-      unless participant.survey_responses.empty?
-        table_for participant.survey_responses do
-          column do |response|
-            link_to response.survey_title, admin_survey_response_path(response.id)
-          end
+    column 'Contact Method', &:contact_method
+    column 'Consent' do |participant|
+      ul do
+        participant.consents.each do |consent|
+          li { link_to consent.id.to_s, admin_survey_response_path(consent.id) }
+        end
+      end
+    end
+    column 'Contact Info' do |participant|
+      ul do
+        participant.contacts.each do |contact|
+          li { link_to contact.id.to_s, admin_survey_response_path(contact.id) }
+        end
+      end
+    end
+    column 'Baseline' do |participant|
+      ul do
+        participant.baselines.each do |baseline|
+          li { link_to baseline.id, admin_survey_response_path(baseline.id) }
         end
       end
     end
