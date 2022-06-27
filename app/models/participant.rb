@@ -20,6 +20,7 @@
 #  preferred_contact_method :string
 #  verified                 :boolean          default(FALSE)
 #  resume_code              :string
+#  verification_code        :string
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy
@@ -65,27 +66,36 @@ class Participant < ApplicationRecord
     end
   end
 
-  def self.verify(verification_code, email)
+  def self.verify(v_code, email)
     participant = find_by(email: email&.downcase&.strip)
-    to = if participant.preferred_contact_method == '1'
-           participant.email
-         else
-           participant.phone_number
-         end
-    client = Twilio::REST::Client.new(Rails.application.credentials.config[:TWILIO_SID],
-                                      Rails.application.credentials.config[:TWILIO_AUTH])
+    participant.verification_code = v_code
+    participant.save
 
-    begin
-      verification_check = client.verify.services(Rails.application.credentials.config[:TWILIO_SERVICE])
-                                 .verification_checks.create(to: to, code: verification_code)
-      status = verification_check.status
-      if status == 'approved'
-        participant.verified = true
-        participant.save
+    if %w[B K V].include? v_code[0]
+      participant.verified = true
+      participant.save
+      'approved'
+    else
+      to = if participant.preferred_contact_method == '1'
+             participant.email
+           else
+             participant.phone_number
+           end
+      client = Twilio::REST::Client.new(Rails.application.credentials.config[:TWILIO_SID],
+                                        Rails.application.credentials.config[:TWILIO_AUTH])
+
+      begin
+        verification_check = client.verify.services(Rails.application.credentials.config[:TWILIO_SERVICE])
+                                   .verification_checks.create(to: to, code: v_code)
+        status = verification_check.status
+        if status == 'approved'
+          participant.verified = true
+          participant.save
+        end
+        status
+      rescue Twilio::REST::RestError => e
+        Rails.logger.error e.message
       end
-      status
-    rescue Twilio::REST::RestError => e
-      Rails.logger.error e.message
     end
   end
 

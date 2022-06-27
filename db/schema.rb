@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_09_200100) do
+ActiveRecord::Schema.define(version: 2022_06_27_135558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 2022_05_09_200100) do
     t.string "preferred_contact_method"
     t.boolean "verified", default: false
     t.string "resume_code"
+    t.string "verification_code"
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
     t.index ["resume_code"], name: "index_participants_on_resume_code", unique: true

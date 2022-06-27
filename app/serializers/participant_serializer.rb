@@ -20,6 +20,7 @@
 #  preferred_contact_method :string
 #  verified                 :boolean          default(FALSE)
 #  resume_code              :string
+#  verification_code        :string
 #
 class ParticipantSerializer < ActiveModel::Serializer
   attributes :id, :email, :phone_number, :country, :self_generated_id, :study_id,

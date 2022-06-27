@@ -26,6 +26,7 @@ ActiveAdmin.register Participant do
     column :self_generated_id
     column :sgm_group
     column :verified
+    column :verification_code
     column 'Contact Method', &:contact_method
     column 'Consent' do |participant|
       ul do
