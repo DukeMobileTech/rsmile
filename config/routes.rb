@@ -21,6 +21,7 @@ Rails.application.routes.draw do
           post '/verify' => 'participants#verify', as: 'verify'
           put '/amend' => 'participants#amend', as: 'amend'
           post '/check' => 'participants#check_resume_code', as: 'check'
+          put '/update_and_resend' => 'participants#update_and_resend', as: 'update_and_resend'
         end
       end
       resources :survey_responses do

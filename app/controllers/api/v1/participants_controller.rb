@@ -82,6 +82,24 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  def update_and_resend
+    @participant = Participant.find(params[:id])
+    if params[:contact].include? '@'
+      @participant.email = params['new_contact']&.downcase&.strip
+    elsif params[:contact].include? '+'
+      @participant.phone_number = params['new_contact']&.strip
+    end
+
+    render json: { error: 'not found' }, status: :not_found if @participant.nil?
+
+    if @participant.save
+      @participant.send_verification_message(params[:language])
+      render json: @participant, status: :ok
+    else
+      render json: @participant.errors, status: :unprocessable_entity
+    end
+  end
+
   def check_resume_code
     res = Participant.check_resume_code(params[:resume_code])
     render json: res, status: :ok
@@ -92,7 +110,7 @@ class Api::V1::ParticipantsController < Api::ApiController
   def participant_params
     params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
                                           :study_id, :rds_id, :code, :referrer_code, :sgm_group,
-                                          :referrer_sgm_group, :match, :quota, :language,
+                                          :referrer_sgm_group, :match, :quota, :language, :contact, :new_contact,
                                           :preferred_contact_method, :resume_code, :verification_code,
                                           survey_responses_attributes: %i[survey_uuid response_uuid survey_complete survey_title
                                                                           c_survey_uuid c_response_uuid c_survey_complete c_survey_title])

@@ -144,6 +144,34 @@ paths:
                   type: string
               required:
               - email
+  "/api/v1/participants/update_and_resend":
+    put:
+      summary: update participant attributes
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                contact:
+                  type: string
+                new_contact:
+                  type: string
+                language:
+                  type: string
+              required:
+              - id
+              - contact
+              - new_contact
+              - language
   "/api/v1/participants/check":
     post:
       summary: check participant resume code

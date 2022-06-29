@@ -67,6 +67,8 @@ class Participant < ApplicationRecord
   end
 
   def self.verify(v_code, email)
+    return if v_code.blank?
+
     participant = find_by(email: email&.downcase&.strip)
     participant.verification_code = v_code
     participant.save

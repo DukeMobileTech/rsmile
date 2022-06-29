@@ -123,6 +123,35 @@ RSpec.describe 'api/v1/participants', type: :request do
     end
   end
 
+  path '/api/v1/participants/update_and_resend' do
+    put('update participant attributes') do
+      consumes 'application/json'
+      produces 'application/json'
+      security [{ bearer: [] }]
+      parameter name: :participant, in: :body, schema: {
+        type: :object,
+        properties: {
+          id: { type: :integer },
+          contact: { type: :string },
+          new_contact: { type: :string },
+          language: { type: :string }
+        },
+        required: %w[id contact new_contact language]
+      }
+
+      response(200, 'successful') do
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {
+              example: JSON.parse(response.body, symbolize_names: true)
+            }
+          }
+        end
+        run_test!
+      end
+    end
+  end
+
   path '/api/v1/participants/check' do
     post('check participant resume code') do
       consumes 'application/json'
