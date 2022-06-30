@@ -66,22 +66,21 @@ class Participant < ApplicationRecord
     end
   end
 
-  def self.verify(v_code, email)
+  def verify(v_code)
     return if v_code.blank?
 
-    participant = find_by(email: email&.downcase&.strip)
-    participant.verification_code = v_code
-    participant.save
+    self.verification_code = v_code
+    save
 
     if %w[B K V].include? v_code[0]
-      participant.verified = true
-      participant.save
+      self.verified = true
+      save
       'approved'
     else
-      to = if participant.preferred_contact_method == '1'
-             participant.email
+      to = if preferred_contact_method == '1'
+             email
            else
-             participant.phone_number
+             phone_number
            end
       client = Twilio::REST::Client.new(Rails.application.credentials.config[:TWILIO_SID],
                                         Rails.application.credentials.config[:TWILIO_AUTH])
@@ -91,8 +90,8 @@ class Participant < ApplicationRecord
                                    .verification_checks.create(to: to, code: v_code)
         status = verification_check.status
         if status == 'approved'
-          participant.verified = true
-          participant.save
+          self.verified = true
+          save
         end
         status
       rescue Twilio::REST::RestError => e

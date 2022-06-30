@@ -97,10 +97,11 @@ paths:
               properties:
                 verification_code:
                   type: string
-                email:
-                  type: string
+                id:
+                  type: integer
               required:
               - verification_code
+              - id
   "/api/v1/participants/amend":
     put:
       summary: update participant attributes

@@ -63,14 +63,12 @@ RSpec.describe 'api/v1/participants', type: :request do
         type: :object,
         properties: {
           verification_code: { type: :string },
-          email: { type: :string }
+          id: { type: :integer }
         },
-        required: ['verification_code']
+        required: %w[verification_code id]
       }
 
       response(200, 'successful') do
-        let(:verification_code) { '123' }
-
         after do |example|
           example.metadata[:response][:content] = {
             'application/json' => {

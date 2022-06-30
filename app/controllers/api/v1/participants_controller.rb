@@ -58,7 +58,10 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
 
   def verify
-    status = Participant.verify(params[:verification_code], sanitized_email)
+    participant = Participant.find(params[:id])
+    render json: { error: 'not found' }, status: :not_found if participant.nil?
+
+    status = participant.verify(params[:verification_code])
     if status == 'approved'
       render json: { token: 'approved' }, status: :ok
     else
@@ -85,9 +88,9 @@ class Api::V1::ParticipantsController < Api::ApiController
   def update_and_resend
     @participant = Participant.find(params[:id])
     if params[:contact].include? '@'
-      @participant.email = params['new_contact']&.downcase&.strip
+      @participant.email = params['contact']&.downcase&.strip
     elsif params[:contact].include? '+'
-      @participant.phone_number = params['new_contact']&.strip
+      @participant.phone_number = params['contact']&.strip
     end
 
     render json: { error: 'not found' }, status: :not_found if @participant.nil?
@@ -110,7 +113,7 @@ class Api::V1::ParticipantsController < Api::ApiController
   def participant_params
     params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
                                           :study_id, :rds_id, :code, :referrer_code, :sgm_group,
-                                          :referrer_sgm_group, :match, :quota, :language, :contact, :new_contact,
+                                          :referrer_sgm_group, :match, :quota, :language, :contact,
                                           :preferred_contact_method, :resume_code, :verification_code,
                                           survey_responses_attributes: %i[survey_uuid response_uuid survey_complete survey_title
                                                                           c_survey_uuid c_response_uuid c_survey_complete c_survey_title])
