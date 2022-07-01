@@ -131,10 +131,9 @@ RSpec.describe 'api/v1/participants', type: :request do
         properties: {
           id: { type: :integer },
           contact: { type: :string },
-          new_contact: { type: :string },
           language: { type: :string }
         },
-        required: %w[id contact new_contact language]
+        required: %w[id contact language]
       }
 
       response(200, 'successful') do

@@ -89,8 +89,10 @@ class Api::V1::ParticipantsController < Api::ApiController
     @participant = Participant.find(params[:id])
     if params[:contact].include? '@'
       @participant.email = params['contact']&.downcase&.strip
+      @participant.preferred_contact_method = '1'
     elsif params[:contact].include? '+'
       @participant.phone_number = params['contact']&.strip
+      @participant.preferred_contact_method = '2'
     end
 
     render json: { error: 'not found' }, status: :not_found if @participant.nil?

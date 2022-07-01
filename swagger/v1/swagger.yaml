@@ -164,14 +164,11 @@ paths:
                   type: integer
                 contact:
                   type: string
-                new_contact:
-                  type: string
                 language:
                   type: string
               required:
               - id
               - contact
-              - new_contact
               - language
   "/api/v1/participants/check":
     post:
