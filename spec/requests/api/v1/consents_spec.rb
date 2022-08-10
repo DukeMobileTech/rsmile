@@ -1,7 +1,6 @@
 require 'swagger_helper'
 
 RSpec.describe 'api/v1/consents', type: :request do
-
   path '/api/v1/consents' do
     post('send consent form') do
       consumes 'application/json'
@@ -11,9 +10,10 @@ RSpec.describe 'api/v1/consents', type: :request do
         type: :object,
         properties: {
           language: { type: :string },
-          email: { type: :string }
+          email: { type: :string },
+          country: { type: :string }
         },
-        required: [ 'language', 'email' ]
+        required: %w[language email country]
       }
 
       response(200, 'successful') do
@@ -28,5 +28,4 @@ RSpec.describe 'api/v1/consents', type: :request do
       end
     end
   end
-
 end

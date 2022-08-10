@@ -23,9 +23,12 @@ paths:
                   type: string
                 email:
                   type: string
+                country:
+                  type: string
               required:
               - language
               - email
+              - country
   "/api/v1/participants":
     get:
       summary: list participants
