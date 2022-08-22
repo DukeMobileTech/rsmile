@@ -105,4 +105,16 @@ class SurveyResponse < ApplicationRecord
       'Not Consented': responses.count { |r| !r.consented }
     }
   end
+
+  def self.baseline_stats(country_name)
+    responses = SurveyResponse.where(country: country_name, survey_title: 'SMILE Survey - Baseline')
+    completed = responses.where(survey_complete: true).pluck(:participant_id).uniq
+    eligible_completed = responses.where(survey_complete: true, eligible: true).pluck(:participant_id).uniq
+    partials = responses.where(survey_complete: false)
+    {
+      'Completed': completed.size,
+      'Eligible Completed': eligible_completed.size,
+      'Partials': partials.size
+    }
+  end
 end

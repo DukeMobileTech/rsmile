@@ -17,8 +17,8 @@
          <thead>
            <tr>
              <th>Country</th>
-             <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of unique participants (based on email addresses) that submitted their contact details.">Participants</th>
              <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of consent surveys that were completed by participants (ineligible + consented + not consented).">Consent</th>
+             <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of unique participants (based on email addresses) that submitted their contact details.">Participants</th>
              <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of participants who submitted their contact details (email address and phone number). Includes both eligible and ineligible participants.">Contact</th>
              <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of participants who completed at a minimum the Introduction section of the survey.">Baseline</th>
              <th onmouseover='this.style.textDecoration="underline"' onmouseout='this.style.textDecoration="none"' class="text-info" title="Represents the total number of participants who completed at a minimum the Introduction section of the survey.">Safety Planning</th>
@@ -28,8 +28,8 @@
          <tbody>
            <tr v-for="(countryData, country, index) in participantsPerCountry" :key="country">
              <td class="link-primary" @click="showCountry(country)">{{country}}</td>
-             <td>{{countryData['participants']}}</td>
              <td>{{countryData['SMILE Consent']}}</td>
+             <td>{{countryData['participants']}}</td>
              <td>{{countryData['SMILE Contact Info Form - Baseline']}}</td>
              <td>{{countryData['SMILE Survey - Baseline']}}</td>
              <td>{{countryData['Safety Planning']}}</td>

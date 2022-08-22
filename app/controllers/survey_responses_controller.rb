@@ -6,4 +6,8 @@ class SurveyResponsesController < ApplicationController
   def consents
     render json: SurveyResponse.consent_stats(params[:country])
   end
+
+  def baselines
+    render json: SurveyResponse.baseline_stats(params[:country])
+  end
 end

@@ -7,6 +7,7 @@
     <Consents :country-name="countryName"></Consents>
     <StudySource :country-name="countryName"></StudySource>
     <SgmGroups :country-name="countryName"></SgmGroups>
+    <Baselines :country-name="countryName"></Baselines>
     <ParticipantsOverTime :country-name="countryName"></ParticipantsOverTime>
   </div>
 </template>
@@ -16,6 +17,7 @@ import ParticipantsOverTime from './ParticipantsOverTime';
 import StudySource from './StudySource';
 import SgmGroups from './SgmGroups';
 import Consents from './Consents';
+import Baselines from './Baselines';
 
 export default {
   name: 'CountryData',
@@ -29,6 +31,7 @@ export default {
     StudySource,
     SgmGroups,
     Consents,
+    Baselines,
   },
 
   methods: {

@@ -110,8 +110,19 @@ class Participant < ApplicationRecord
       stats[country] = { 'participants': participants.size }
       survey_titles.each do |title|
         title_surveys = country_surveys.select { |s| s.survey_title == title }
+        if title == 'SMILE Survey - Baseline'
+          # For baseline only count eligible and completed surveys
+          title_surveys = country_surveys.select { |s| s.survey_title == title && s.eligible && s.survey_complete }
+        end
+        nils = title_surveys.select { |ts| ts.participant_id.nil? } # Surveys not attached to participants
+        part_ids = title_surveys.pluck(:participant_id).uniq # Remove duplicates
+        survey_count = if nils.size > 0
+                         (part_ids.size - 1) + nils.size # Count surveys without participants as unique
+                       else
+                         part_ids.size
+                       end
         country_stats = stats[country]
-        country_stats[title] = title_surveys.size
+        country_stats[title] = survey_count
         stats[country] = country_stats
       end
     end

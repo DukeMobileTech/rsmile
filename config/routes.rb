@@ -46,6 +46,7 @@ Rails.application.routes.draw do
     collection do
       get '/sources' => 'survey_responses#sources'
       get '/consents' => 'survey_responses#consents'
+      get '/baselines' => 'survey_responses#baselines'
     end
   end
 end
