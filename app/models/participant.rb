@@ -24,15 +24,15 @@
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy
-  validates :email, presence: true, uniqueness: true
-  validates :phone_number, :country, presence: true
-  accepts_nested_attributes_for :survey_responses, allow_destroy: true
+  # validates :email, presence: true, uniqueness: true
+  # validates :phone_number, :country, presence: true
+  # accepts_nested_attributes_for :survey_responses, allow_destroy: true
   before_save :assign_identifiers
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
-  before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
+  # before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
 
   def consents
     survey_responses.where(survey_title: 'SMILE Consent')
@@ -168,19 +168,19 @@ class Participant < ApplicationRecord
     stats
   end
 
-  def self.check_resume_code(code)
-    return { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil } if code.blank?
-
-    participant = find_by(resume_code: code&.upcase&.strip)
-    if participant
-      baseline = participant.survey_responses.where(survey_title: 'SMILE Survey - Baseline',
-                                                    survey_complete: false).first
-      { id: participant.id, self_generated_id: participant.self_generated_id,
-        country: participant.country, status: 'valid', response_id: baseline&.response_uuid }
-    else
-      { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil }
-    end
-  end
+  # def self.check_resume_code(code)
+  #   return { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil } if code.blank?
+  #
+  #   participant = find_by(resume_code: code&.upcase&.strip)
+  #   if participant
+  #     baseline = participant.survey_responses.where(survey_title: 'SMILE Survey - Baseline',
+  #                                                   survey_complete: false).first
+  #     { id: participant.id, self_generated_id: participant.self_generated_id,
+  #       country: participant.country, status: 'valid', response_id: baseline&.response_uuid }
+  #   else
+  #     { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil }
+  #   end
+  # end
 
   # def self.existing_user(address, sgi)
   #   sgi = nil if sgi.empty?
@@ -262,7 +262,9 @@ class Participant < ApplicationRecord
   private
 
   def assign_identifiers
-    self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if code.blank?
-    self.study_id = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if study_id.blank?
+    # self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if code.blank?
+    # self.study_id = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if study_id.blank?
+    self.code = Random.rand(10_000...99_999) if code.blank?
+    self.study_id = Random.rand(10_000...99_999) if study_id.blank?
   end
 end

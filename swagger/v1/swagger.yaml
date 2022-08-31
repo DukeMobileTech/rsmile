@@ -80,9 +80,7 @@ paths:
                 language:
                   type: string
               required:
-              - email
-              - phone_number
-              - country
+              - code
   "/api/v1/participants/verify":
     post:
       summary: verify participant
@@ -279,16 +277,12 @@ paths:
                   type: boolean
                 survey_title:
                   type: string
-                country:
-                  type: string
                 eligible:
                   type: boolean
                 consented:
                   type: boolean
-                source:
-                  type: string
-                language:
-                  type: string
+                participant_id:
+                  type: integer
   "/api/v1/survey_responses/safety":
     post:
       summary: send safety planning form

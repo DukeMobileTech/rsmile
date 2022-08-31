@@ -38,7 +38,8 @@ RSpec.describe 'api/v1/participants', type: :request do
           preferred_contact_method: { type: :string },
           language: { type: :string }
         },
-        required: %w[email phone_number country]
+        # required: %w[email phone_number country]
+        required: %w[code]
       }
 
       response(200, 'successful') do

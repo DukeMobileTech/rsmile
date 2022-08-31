@@ -27,11 +27,12 @@ RSpec.describe 'api/v1/survey_responses', type: :request do
           response_uuid: { type: :string },
           survey_complete: { type: :boolean },
           survey_title: { type: :string },
-          country: { type: :string },
           eligible: { type: :boolean },
           consented: { type: :boolean },
-          source: { type: :string },
-          language: { type: :string }
+          participant_id: { type: :integer }
+          # country: { type: :string },
+          # source: { type: :string },
+          # language: { type: :string }
         }
       }
 
