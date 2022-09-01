@@ -59,8 +59,6 @@ paths:
                   type: string
                 self_generated_id:
                   type: string
-                study_id:
-                  type: string
                 rds_id:
                   type: string
                 code:
@@ -77,7 +75,7 @@ paths:
                   type: string
                 preferred_contact_method:
                   type: string
-                language:
+                name:
                   type: string
               required:
               - code
@@ -126,7 +124,7 @@ paths:
                   type: string
                 self_generated_id:
                   type: string
-                study_id:
+                name:
                   type: string
                 rds_id:
                   type: string
@@ -227,7 +225,7 @@ paths:
                   type: string
                 self_generated_id:
                   type: string
-                study_id:
+                name:
                   type: string
                 rds_id:
                   type: string

@@ -7,7 +7,6 @@
 #  phone_number             :string
 #  country                  :string
 #  self_generated_id        :string
-#  study_id                 :string
 #  rds_id                   :string
 #  code                     :string
 #  referrer_code            :string
@@ -19,11 +18,11 @@
 #  updated_at               :datetime         not null
 #  preferred_contact_method :string
 #  verified                 :boolean          default(FALSE)
-#  resume_code              :string
 #  verification_code        :string
+#  name                     :string
 #
 class ParticipantSerializer < ActiveModel::Serializer
-  attributes :id, :email, :phone_number, :country, :self_generated_id, :study_id,
+  attributes :id, :email, :phone_number, :country, :self_generated_id,
              :rds_id, :code, :referrer_code, :sgm_group, :referrer_sgm_group, :match, :quota,
-             :preferred_contact_method, :verified, :resume_code
+             :preferred_contact_method, :verified, :name
 end

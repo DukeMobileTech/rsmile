@@ -27,7 +27,6 @@ RSpec.describe 'api/v1/participants', type: :request do
           phone_number: { type: :string },
           country: { type: :string },
           self_generated_id: { type: :string },
-          study_id: { type: :string },
           rds_id: { type: :string },
           code: { type: :string },
           referrer_code: { type: :string },
@@ -36,9 +35,8 @@ RSpec.describe 'api/v1/participants', type: :request do
           match: { type: :string },
           quota: { type: :string },
           preferred_contact_method: { type: :string },
-          language: { type: :string }
+          name: { type: :string }
         },
-        # required: %w[email phone_number country]
         required: %w[code]
       }
 
@@ -94,7 +92,7 @@ RSpec.describe 'api/v1/participants', type: :request do
           phone_number: { type: :string },
           country: { type: :string },
           self_generated_id: { type: :string },
-          study_id: { type: :string },
+          name: { type: :string },
           rds_id: { type: :string },
           code: { type: :string },
           referrer_code: { type: :string },
@@ -209,7 +207,7 @@ RSpec.describe 'api/v1/participants', type: :request do
           phone_number: { type: :string },
           country: { type: :string },
           self_generated_id: { type: :string },
-          study_id: { type: :string },
+          name: { type: :string },
           rds_id: { type: :string },
           code: { type: :string },
           referrer_code: { type: :string },

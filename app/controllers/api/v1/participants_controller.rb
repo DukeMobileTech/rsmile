@@ -10,38 +10,8 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
 
   def create
-    @participant = Participant.where(email: sanitized_email).first_or_initialize(participant_params)
-    @participant.assign_attributes(participant_params)
-    # unless params[:survey_uuid].blank? && params[:response_uuid].blank?
-    #   response = SurveyResponse.find_by(response_uuid: params[:response_uuid])
-    #   if response
-    #     response.update(survey_complete: params[:survey_complete],
-    #                     survey_title: params[:survey_title])
-    #   else
-    #     @participant.survey_responses.build(
-    #       survey_uuid: params[:survey_uuid],
-    #       response_uuid: params[:response_uuid],
-    #       survey_complete: params[:survey_complete],
-    #       survey_title: params[:survey_title]
-    #     )
-    #   end
-    # end
-    # unless params[:c_survey_uuid].blank? && params[:c_response_uuid].blank?
-    #   response = SurveyResponse.find_by(response_uuid: params[:c_response_uuid])
-    #   if response
-    #     response.update(survey_complete: params[:c_survey_complete],
-    #                     survey_title: params[:c_survey_title])
-    #   else
-    #     @participant.survey_responses.build(
-    #       survey_uuid: params[:c_survey_uuid],
-    #       response_uuid: params[:c_response_uuid],
-    #       survey_complete: params[:c_survey_complete],
-    #       survey_title: params[:c_survey_title]
-    #     )
-    #   end
-    # end
+    @participant = Participant.new(participant_params)
     if @participant.save
-      # @participant.send_verification_message(params[:language])
       render json: @participant, status: :created
     else
       render json: @participant.errors, status: :unprocessable_entity
@@ -105,20 +75,13 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
-  def check_resume_code
-    res = Participant.check_resume_code(params[:resume_code])
-    render json: res, status: :ok
-  end
-
   private
 
   def participant_params
     params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
-                                          :study_id, :rds_id, :code, :referrer_code, :sgm_group,
-                                          :referrer_sgm_group, :match, :quota, :language, :contact,
-                                          :preferred_contact_method, :resume_code, :verification_code,
-                                          survey_responses_attributes: %i[survey_uuid response_uuid survey_complete survey_title
-                                                                          c_survey_uuid c_response_uuid c_survey_complete c_survey_title])
+                                          :rds_id, :code, :referrer_code, :sgm_group,
+                                          :referrer_sgm_group, :match, :quota, :name,
+                                          :preferred_contact_method, :verification_code)
   end
 
   def sanitized_email
