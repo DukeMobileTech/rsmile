@@ -22,33 +22,21 @@ ActiveAdmin.register Participant do
     column :id
     column :email
     column :phone_number
-    column :country
-    column :self_generated_id
+    column :name
+    column :code
+    column :referrer_code
     column :sgm_group
-    column :verified
-    column :verification_code
-    column 'Contact Method', &:contact_method
-    column 'Consent' do |participant|
+    column :referrer_sgm_group
+    column 'RDS ID', :rds_id
+    column 'Surveys' do |participant|
       ul do
-        participant.consents.each do |consent|
-          li { link_to consent.id.to_s, admin_survey_response_path(consent.id) }
+        participant.survey_responses.each do |survey|
+          li { link_to survey.id, admin_survey_response_path(survey.id) }
         end
       end
     end
-    column 'Contact Info' do |participant|
-      ul do
-        participant.contacts.each do |contact|
-          li { link_to contact.id.to_s, admin_survey_response_path(contact.id) }
-        end
-      end
-    end
-    column 'Baseline' do |participant|
-      ul do
-        participant.baselines.each do |baseline|
-          li { link_to baseline.id, admin_survey_response_path(baseline.id) }
-        end
-      end
-    end
+    column :match
+    column :quota
     column :created_at
     column :updated_at
     actions
