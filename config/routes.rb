@@ -47,4 +47,5 @@ Rails.application.routes.draw do
       get '/consents' => 'survey_responses#consents'
     end
   end
+  get '/glossary' => 'static_pages#glossary'
 end

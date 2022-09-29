@@ -6,20 +6,40 @@
 // All it does is render <div>Hello Vue</div> at the bottom of the page.
 
 import Vue from 'vue'
+import VueRouter from 'vue-router'
 import App from '../app.vue'
+import Glossary from './components/Glossary'
+import Home from './components/Home'
 import "bootstrap/dist/css/bootstrap.css"
 
 let prefix = "/";
 if (process.env.NODE_ENV !== 'development') {
   // prefix = "/test_smile/";
   // prefix = "/real_smile/";
-  prefix = "/test_pilot/";
+  prefix = "/test_pilot/"
 }
-Vue.prototype.$basePrefix = prefix;
+Vue.prototype.$basePrefix = prefix
+
+Vue.use(VueRouter)
+
+const routes = [{
+    path: '/',
+    component: Home,
+  },
+  {
+    path: '/glossary',
+    component: Glossary,
+  }
+]
+
+const router = new VueRouter({
+  routes
+})
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = new Vue({
-    render: h => h(App)
+    render: h => h(App),
+    router
   }).$mount()
   document.body.appendChild(app.$el)
 })
