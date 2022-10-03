@@ -33,7 +33,7 @@ Rails.application.routes.draw do
     end
   end
 
-  root 'landing#index'
+  root 'admin/dashboard#index'
   resources :participants, only: [:index] do
     collection do
       get '/sgm_groups' => 'participants#sgm_groups'

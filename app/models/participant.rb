@@ -46,6 +46,10 @@ class Participant < ApplicationRecord
     survey_responses.where(survey_title: 'Safety Planning')
   end
 
+  def recruiter
+    Participant.where(code: referrer_code)&.first unless referrer_code.blank?
+  end
+
   def send_verification_message(language)
     # return if verified
     language = language&.downcase&.strip
