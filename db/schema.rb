@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_01_143701) do
+ActiveRecord::Schema.define(version: 2022_10_28_123617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2022_09_01_143701) do
     t.datetime "redeemed_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "admin", default: false
     t.index ["id", "email"], name: "index_invites_on_id_and_email", unique: true
     t.index ["id", "invite_code"], name: "index_invites_on_id_and_invite_code", unique: true
   end

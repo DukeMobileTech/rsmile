@@ -11,6 +11,7 @@
 #  redeemed_at :datetime
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  admin       :boolean          default(FALSE)
 #
 class Invite < ApplicationRecord
   scope :unsent_invitations, -> { where({ redeemed_at: nil, invite_code: nil }) }

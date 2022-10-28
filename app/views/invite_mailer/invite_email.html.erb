@@ -1,6 +1,7 @@
-Dear <b><%= @invite.first_name %></b>,
+Dear
+<b><%= @invite.first_name %></b>,
 
-<p>Please use the link below to create your account for the SMILE Dashboard.</p>
+<p>Please use the link below to create your account for the SMILE SGM Pilot Dashboard.</p>
 
 <p><%= admin_redeem_invitation_url({invite_code: @invite.invite_code}) %></p>
 
