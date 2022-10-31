@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_28_123617) do
+ActiveRecord::Schema.define(version: 2022_10_31_185535) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -72,8 +72,24 @@ ActiveRecord::Schema.define(version: 2022_10_28_123617) do
     t.boolean "verified", default: false
     t.string "verification_code"
     t.string "name"
+    t.boolean "seed", default: false
+    t.boolean "remind", default: true
+    t.boolean "enter_raffle", default: true
+    t.boolean "raffle_quota_met", default: false
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email"
+  end
+
+  create_table "raffles", force: :cascade do |t|
+    t.integer "participant_id"
+    t.boolean "completion_entry", default: false
+    t.boolean "recruitment_entry", default: true
+    t.string "recruitee_code"
+    t.string "response_uuid"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["participant_id", "recruitee_code"], name: "index_raffles_on_participant_id_and_recruitee_code", unique: true
+    t.index ["participant_id", "response_uuid"], name: "index_raffles_on_participant_id_and_response_uuid", unique: true
   end
 
   create_table "survey_responses", force: :cascade do |t|
@@ -89,6 +105,7 @@ ActiveRecord::Schema.define(version: 2022_10_28_123617) do
     t.boolean "consented", default: true
     t.hstore "metadata"
     t.index ["metadata"], name: "index_survey_responses_on_metadata", using: :gist
+    t.index ["participant_id"], name: "index_survey_responses_on_participant_id"
     t.index ["response_uuid"], name: "index_survey_responses_on_response_uuid", unique: true
   end
 

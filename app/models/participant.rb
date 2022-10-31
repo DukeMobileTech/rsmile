@@ -20,9 +20,14 @@
 #  verified                 :boolean          default(FALSE)
 #  verification_code        :string
 #  name                     :string
+#  seed                     :boolean          default(FALSE)
+#  remind                   :boolean          default(TRUE)
+#  enter_raffle             :boolean          default(TRUE)
+#  raffle_quota_met         :boolean          default(FALSE)
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy
+  has_many :raffles, dependent: :destroy
 
   before_save { self.code = Random.rand(10_000...99_999) if code.blank? }
   before_save { self.email = email&.downcase&.strip }
@@ -30,20 +35,24 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
 
-  def consents
-    survey_responses.where(survey_title: 'SMILE Consent')
-  end
+  # def consents
+  #   survey_responses.where(survey_title: 'SMILE Consent')
+  # end
+  #
+  # def contacts
+  #   survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline')
+  # end
+  #
+  # def baselines
+  #   survey_responses.where(survey_title: 'SMILE Survey - Baseline')
+  # end
+  #
+  # def safety_plans
+  #   survey_responses.where(survey_title: 'Safety Planning')
+  # end
 
-  def contacts
-    survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline')
-  end
-
-  def baselines
-    survey_responses.where(survey_title: 'SMILE Survey - Baseline')
-  end
-
-  def safety_plans
-    survey_responses.where(survey_title: 'Safety Planning')
+  def pilots
+    survey_responses.where(survey_title: 'SGM Pilot')
   end
 
   def recruiter

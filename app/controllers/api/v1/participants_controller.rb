@@ -40,11 +40,8 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
 
   def amend
-    if !sanitized_email.blank?
-      @participant = Participant.find_by(email: sanitized_email)
-    elsif !params[:id].blank?
-      @participant = Participant.find(params[:id])
-    end
+    @participant = Participant.find_by(email: sanitized_email) unless sanitized_email.blank?
+    @participant = Participant.find(params[:id]) if !@participant && !params[:id].blank?
 
     render json: { error: 'not found' }, status: :not_found if @participant.nil?
 
@@ -81,7 +78,8 @@ class Api::V1::ParticipantsController < Api::ApiController
     params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
                                           :rds_id, :code, :referrer_code, :sgm_group,
                                           :referrer_sgm_group, :match, :quota, :name,
-                                          :preferred_contact_method, :verification_code)
+                                          :preferred_contact_method, :verification_code,
+                                          :seed, :enter_raffle, :remind)
   end
 
   def sanitized_email

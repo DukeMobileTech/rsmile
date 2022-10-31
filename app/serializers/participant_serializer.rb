@@ -20,6 +20,10 @@
 #  verified                 :boolean          default(FALSE)
 #  verification_code        :string
 #  name                     :string
+#  seed                     :boolean          default(FALSE)
+#  remind                   :boolean          default(TRUE)
+#  enter_raffle             :boolean          default(TRUE)
+#  raffle_quota_met         :boolean          default(FALSE)
 #
 class ParticipantSerializer < ActiveModel::Serializer
   attributes :id, :email, :phone_number, :country, :self_generated_id,

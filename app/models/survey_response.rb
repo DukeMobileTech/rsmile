@@ -20,11 +20,16 @@ class SurveyResponse < ApplicationRecord
   validates :response_uuid, presence: true, uniqueness: true
   # before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
+  after_update :enter_raffle
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration, :birth_year, :age
   # scope :consents, -> { where(survey_title: 'SMILE Consent') }
   # scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   # scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
   # scope :safety_plans, -> { where(survey_title: 'Safety Planning') }
+
+  def recruitment_survey?
+    survey_title&.strip == 'SGM Pilot Recruitment & Lottery Info'
+  end
 
   def source_label
     names = []
@@ -104,5 +109,30 @@ class SurveyResponse < ApplicationRecord
       'Consented': responses.count { |r| r.consented },
       'Not Consented': responses.count { |r| !r.consented }
     }
+  end
+
+  private
+
+  def enter_raffle
+    return unless recruitment_survey?
+
+    if participant&.enter_raffle && survey_complete
+      own = participant.raffles.where(completion_entry: true)
+      pilot = participant.pilots.last
+      if own.empty?
+        participant.raffles.create(completion_entry: true, recruitment_entry: false,
+                                   response_uuid: pilot&.response_uuid)
+      end
+      if participant.recruiter && !participant.raffle_quota_met
+        Raffle.create(participant_id: participant.recruiter.id, completion_entry: false, recruitment_entry: true,
+                      recruitee_code: participant.code, response_uuid: pilot&.response_uuid)
+        quota = Raffle.where(participant_id: participant.recruiter.id).count
+        if quota >= 6
+          p = participant.recruiter
+          p.raffle_quota_met = true
+          p.save
+        end
+      end
+    end
   end
 end
