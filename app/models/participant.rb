@@ -35,22 +35,6 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
 
-  # def consents
-  #   survey_responses.where(survey_title: 'SMILE Consent')
-  # end
-  #
-  # def contacts
-  #   survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline')
-  # end
-  #
-  # def baselines
-  #   survey_responses.where(survey_title: 'SMILE Survey - Baseline')
-  # end
-  #
-  # def safety_plans
-  #   survey_responses.where(survey_title: 'Safety Planning')
-  # end
-
   def pilots
     survey_responses.where(survey_title: 'SGM Pilot')
   end
@@ -130,6 +114,10 @@ class Participant < ApplicationRecord
   def self.all_sgm_groups
     ['non-binary person', 'transgender woman', 'transgender man', 'woman attracted to women',
      'man attracted to men', 'multi-attracted woman', 'multi-attracted man', 'no group', 'ineligible', 'blank']
+  end
+
+  def self.pilot_sgm_groups
+    ['transgender woman', 'transgender man', 'woman attracted to women', 'ineligible', 'blank']
   end
 
   def self.sgm_stats(kountry)

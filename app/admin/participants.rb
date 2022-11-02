@@ -1,6 +1,13 @@
 ActiveAdmin.register Participant do
   menu priority: 1
   config.per_page = [25, 50, 100]
+  filter :seed
+  filter :code
+  filter :referrer_code
+  filter :sgm_group, as: :select, collection: proc { Participant.pilot_sgm_groups }
+  filter :referrer_sgm_group, as: :select, collection: proc { Participant.pilot_sgm_groups }
+  filter :raffle_quota_met
+  filter :enter_raffle
 
   collection_action :download, method: :get do
     redirect_to resource_path
@@ -18,25 +25,26 @@ ActiveAdmin.register Participant do
   end
 
   index do
-    selectable_column
     column :id
-    column :email
-    column :phone_number
     column :name
+    column :seed
     column :code
     column :referrer_code
     column :sgm_group
     column :referrer_sgm_group
-    column 'RDS ID', :rds_id
+    column :match
     column 'Surveys' do |participant|
       ul do
         participant.survey_responses.each do |survey|
-          li { link_to survey.id, admin_survey_response_path(survey.id) }
+          li { link_to "#{survey.id}: #{survey.survey_title}", admin_survey_response_path(survey.id) }
         end
       end
     end
-    column :match
-    column :quota
+    column :enter_raffle
+    column 'Raffle Quota' do |participant|
+      link_to participant.raffles.size, admin_participant_raffles_path(participant.id)
+    end
+    column :raffle_quota_met
     column :created_at
     column :updated_at
     actions

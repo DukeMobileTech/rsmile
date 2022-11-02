@@ -18,17 +18,18 @@
 class SurveyResponse < ApplicationRecord
   belongs_to :participant, optional: true
   validates :response_uuid, presence: true, uniqueness: true
-  # before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
-  after_update :enter_raffle
+  after_save :enter_raffle
+  after_save :update_raffle_quota
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration, :birth_year, :age
-  # scope :consents, -> { where(survey_title: 'SMILE Consent') }
-  # scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
-  # scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
-  # scope :safety_plans, -> { where(survey_title: 'Safety Planning') }
+  has_many :raffles, foreign_key: :response_uuid, primary_key: :response_uuid, dependent: :destroy
 
   def recruitment_survey?
     survey_title&.strip == 'SGM Pilot Recruitment & Lottery Info'
+  end
+
+  def pilot_survey?
+    survey_title&.strip == 'SGM Pilot'
   end
 
   def source_label
@@ -94,7 +95,7 @@ class SurveyResponse < ApplicationRecord
                           end
     end
     rs = response_sources.flatten
-    (0..11).each do |hf|
+    12.times do |hf|
       next if hf == 9 && country_name == 'Vietnam'
       next if hf == 10 && country_name != 'Vietnam'
 
@@ -115,24 +116,38 @@ class SurveyResponse < ApplicationRecord
 
   def enter_raffle
     return unless recruitment_survey?
+    return unless participant&.enter_raffle
 
-    if participant&.enter_raffle && survey_complete
-      own = participant.raffles.where(completion_entry: true)
-      pilot = participant.pilots.last
-      if own.empty?
-        participant.raffles.create(completion_entry: true, recruitment_entry: false,
-                                   response_uuid: pilot&.response_uuid)
-      end
-      if participant.recruiter && !participant.raffle_quota_met
-        Raffle.create(participant_id: participant.recruiter.id, completion_entry: false, recruitment_entry: true,
-                      recruitee_code: participant.code, response_uuid: pilot&.response_uuid)
-        quota = Raffle.where(participant_id: participant.recruiter.id).count
-        if quota >= 6
-          p = participant.recruiter
-          p.raffle_quota_met = true
-          p.save
-        end
-      end
-    end
+    own = participant.raffles.where(completion_entry: true)
+    return unless own.empty?
+
+    pilot = participant.pilots.last
+    return if pilot.nil?
+    return unless pilot.survey_complete
+
+    participant.raffles.create(completion_entry: true, recruitment_entry: false,
+                               response_uuid: pilot&.response_uuid)
+  end
+
+  def update_raffle_quota
+    return unless pilot_survey?
+    return unless survey_complete
+
+    recruiter = participant.recruiter
+    return if recruiter.nil?
+    return unless recruiter.enter_raffle
+    return if recruiter.raffle_quota_met
+
+    raffle_entry = recruiter.raffles.where(completion_entry: false, recruitment_entry: true,
+                                           recruitee_code: participant.code)
+    return unless raffle_entry.empty?
+
+    Raffle.create(participant_id: recruiter.id, completion_entry: false, recruitment_entry: true,
+                  recruitee_code: participant.code, response_uuid: response_uuid)
+    quota = recruiter.raffles.count
+    return unless quota >= 6
+
+    recruiter.raffle_quota_met = true
+    recruiter.save
   end
 end
