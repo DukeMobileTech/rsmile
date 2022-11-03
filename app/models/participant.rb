@@ -34,6 +34,8 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
+  after_save :check_referrer_sgm_group
+  after_save :check_match
 
   def pilots
     survey_responses.where(survey_title: 'SGM Pilot')
@@ -117,7 +119,11 @@ class Participant < ApplicationRecord
   end
 
   def self.pilot_sgm_groups
-    ['transgender woman', 'transgender man', 'woman attracted to women', 'ineligible', 'blank']
+    ['transgender woman', 'transgender man', 'woman attracted to women', 'neligible', 'blank']
+  end
+
+  def self.eligible_sgm_groups
+    ['transgender woman', 'transgender man', 'woman attracted to women']
   end
 
   def self.sgm_stats(kountry)
@@ -233,5 +239,27 @@ class Participant < ApplicationRecord
     cal_age = created_at.year - birth_year.to_i
     diff = cal_age - age
     diff.abs <= 2 ? 'Yes' : 'No'
+  end
+
+  private
+
+  def check_referrer_sgm_group
+    return unless recruiter
+    return if recruiter.sgm_group == referrer_sgm_group
+
+    self.referrer_sgm_group = recruiter.sgm_group
+    save
+  end
+
+  def check_match
+    return unless recruiter
+    return unless Participant.eligible_sgm_groups.include?(recruiter.sgm_group)
+    return unless Participant.eligible_sgm_groups.include?(sgm_group)
+    return unless Participant.eligible_sgm_groups.include?(referrer_sgm_group)
+    return if match && sgm_group == referrer_sgm_group
+    return if !match && sgm_group != referrer_sgm_group
+
+    self.match = sgm_group == referrer_sgm_group
+    save
   end
 end
