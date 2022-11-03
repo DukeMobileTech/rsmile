@@ -12,6 +12,6 @@
 #  updated_at        :datetime         not null
 #
 class Raffle < ApplicationRecord
-  belongs_to :participant
+  belongs_to :participant, counter_cache: true
   belongs_to :survey_response, foreign_key: :response_uuid, primary_key: :response_uuid
 end

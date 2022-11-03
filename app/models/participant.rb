@@ -13,7 +13,7 @@
 #  sgm_group                :string
 #  referrer_sgm_group       :string
 #  match                    :boolean
-#  quota                    :integer
+#  raffles_count            :integer
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  preferred_contact_method :string
@@ -36,6 +36,7 @@ class Participant < ApplicationRecord
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   after_save :check_referrer_sgm_group
   after_save :check_match
+  after_save :secondary_seeds
 
   def pilots
     survey_responses.where(survey_title: 'SGM Pilot')
@@ -43,6 +44,10 @@ class Participant < ApplicationRecord
 
   def recruiter
     Participant.where(code: referrer_code)&.first unless referrer_code.blank?
+  end
+
+  def recruits
+    Participant.where(referrer_code: code)
   end
 
   def send_verification_message(language)
@@ -260,6 +265,17 @@ class Participant < ApplicationRecord
     return if !match && sgm_group != referrer_sgm_group
 
     self.match = sgm_group == referrer_sgm_group
+    save
+  end
+
+  def secondary_seeds
+    return if seed
+    return if referrer_code.blank?
+    return if recruiter.nil?
+    return if match
+    return unless Participant.eligible_sgm_groups.include?(sgm_group)
+
+    self.seed = true
     save
   end
 end

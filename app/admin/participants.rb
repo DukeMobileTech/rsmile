@@ -41,12 +41,18 @@ ActiveAdmin.register Participant do
       end
     end
     column :enter_raffle
-    column 'Raffle Quota' do |participant|
+    column 'Raffles' do |participant|
       link_to participant.raffles.size, admin_participant_raffles_path(participant.id)
     end
     column :raffle_quota_met
+    column 'Recruits' do |participant|
+      ul do
+        participant.recruits.each do |recruit|
+          li { link_to recruit.code, admin_participant_path(recruit.id) }
+        end
+      end
+    end
     column :created_at
-    column :updated_at
     actions
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_31_185535) do
+ActiveRecord::Schema.define(version: 2022_11_03_165457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 2022_10_31_185535) do
     t.string "sgm_group"
     t.string "referrer_sgm_group"
     t.boolean "match"
-    t.integer "quota"
+    t.integer "raffles_count"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "preferred_contact_method"

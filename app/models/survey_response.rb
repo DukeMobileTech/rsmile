@@ -17,12 +17,12 @@
 #
 class SurveyResponse < ApplicationRecord
   belongs_to :participant, optional: true
+  has_many :raffles, foreign_key: :response_uuid, primary_key: :response_uuid, dependent: :destroy
+  store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration, :birth_year, :age
   validates :response_uuid, presence: true, uniqueness: true
   before_save { self.sgm_group = sgm_group&.downcase }
   after_save :enter_raffle
   after_save :update_raffle_quota
-  store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration, :birth_year, :age
-  has_many :raffles, foreign_key: :response_uuid, primary_key: :response_uuid, dependent: :destroy
 
   def recruitment_survey?
     survey_title&.strip == 'SGM Pilot Recruitment & Lottery Info'
@@ -132,6 +132,8 @@ class SurveyResponse < ApplicationRecord
   def update_raffle_quota
     return unless pilot_survey?
     return unless survey_complete
+    return if participant.nil?
+    return unless participant.match
 
     recruiter = participant.recruiter
     return if recruiter.nil?
