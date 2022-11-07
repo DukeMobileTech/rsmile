@@ -48,4 +48,5 @@ Rails.application.routes.draw do
     end
   end
   get '/glossary' => 'static_pages#glossary'
+  get '/consent' => 'static_pages#consent'
 end
