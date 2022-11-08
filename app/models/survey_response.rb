@@ -23,6 +23,7 @@ class SurveyResponse < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   after_save :enter_raffle
   after_save :update_raffle_quota
+  after_save :schedule_reminder
 
   def recruitment_survey?
     survey_title&.strip == 'SGM Pilot Recruitment & Lottery Info'
@@ -151,5 +152,16 @@ class SurveyResponse < ApplicationRecord
 
     recruiter.raffle_quota_met = true
     recruiter.save
+  end
+
+  def schedule_reminder
+    return unless recruitment_survey?
+    return unless participant&.enter_raffle
+    return if participant.raffle_quota_met
+    return if participant.reminder_quota_met
+
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 15.minutes)
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 30.minutes)
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 1.hour)
   end
 end

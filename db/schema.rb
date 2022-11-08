@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_03_165457) do
+ActiveRecord::Schema.define(version: 2022_11_08_141053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -38,6 +38,14 @@ ActiveRecord::Schema.define(version: 2022_11_03_165457) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["bearer_id", "bearer_type"], name: "index_api_keys_on_bearer_id_and_bearer_type"
     t.index ["token_digest"], name: "index_api_keys_on_token_digest", unique: true
+  end
+
+  create_table "email_logs", force: :cascade do |t|
+    t.string "recipient"
+    t.string "subject"
+    t.text "message"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "invites", force: :cascade do |t|
@@ -90,6 +98,13 @@ ActiveRecord::Schema.define(version: 2022_11_03_165457) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["participant_id", "recruitee_code"], name: "index_raffles_on_participant_id_and_recruitee_code", unique: true
     t.index ["participant_id", "response_uuid"], name: "index_raffles_on_participant_id_and_response_uuid", unique: true
+  end
+
+  create_table "reminders", force: :cascade do |t|
+    t.integer "participant_id"
+    t.integer "category"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "survey_responses", force: :cascade do |t|

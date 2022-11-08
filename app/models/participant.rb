@@ -28,6 +28,7 @@
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy
   has_many :raffles, dependent: :destroy
+  has_many :reminders, dependent: :destroy
 
   before_save { self.code = Random.rand(10_000...99_999) if code.blank? }
   before_save { self.email = email&.downcase&.strip }
@@ -37,6 +38,15 @@ class Participant < ApplicationRecord
   after_save :check_referrer_sgm_group
   after_save :check_match
   after_save :secondary_seeds
+
+  def first_name
+    'Participant' if name.blank?
+    name.strip.split(' ').first
+  end
+
+  def reminder_quota_met
+    reminders.size >= 3
+  end
 
   def pilots
     survey_responses.where(survey_title: 'SGM Pilot')

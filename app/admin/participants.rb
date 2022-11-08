@@ -52,6 +52,9 @@ ActiveAdmin.register Participant do
         end
       end
     end
+    column 'Reminders' do |participant|
+      link_to participant.reminders.size, admin_participant_reminders_path(participant.id)
+    end
     column :created_at
     actions
   end
