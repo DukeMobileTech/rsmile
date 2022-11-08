@@ -26,7 +26,6 @@
 #  raffle_quota_met         :boolean          default(FALSE)
 #
 class ParticipantSerializer < ActiveModel::Serializer
-  attributes :id, :email, :phone_number, :country, :self_generated_id, :rds_id,
-             :code, :referrer_code, :sgm_group, :referrer_sgm_group, :match,
-             :quota, :preferred_contact_method, :verified, :name
+  attributes :id, :email, :phone_number, :code, :referrer_code, :sgm_group, :name,
+             :referrer_sgm_group, :match, :seed, :remind, :enter_raffle, :raffle_quota_met
 end
