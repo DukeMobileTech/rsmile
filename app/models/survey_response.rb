@@ -162,14 +162,26 @@ class SurveyResponse < ApplicationRecord
     return if participant.raffle_quota_met
     return if participant.reminder_quota_met
 
-    if participant.preferred_contact_method == '2' && !participant.phone_number.blank?
-      RecruitmentReminderJob.set(wait: 15.minutes).perform_later(participant_id)
-      RecruitmentReminderJob.set(wait: 30.minutes).perform_later(participant_id)
-      RecruitmentReminderJob.set(wait: 1.hour).perform_later(participant_id)
-    else
-      ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 15.minutes)
-      ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 30.minutes)
-      ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 1.hour)
+    if participant.preferred_contact_method == '1' && !participant.email.blank?
+      schedule_email
+    elsif participant.preferred_contact_method == '2' && !participant.phone_number.blank?
+      schedule_sms
+    elsif !participant.email.blank?
+      schedule_email
+    elsif !participant.phone_number.blank?
+      schedule_sms
     end
+  end
+
+  def schedule_email
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 15.minutes)
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 30.minutes)
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 1.hour)
+  end
+
+  def schedule_sms
+    RecruitmentReminderJob.set(wait: 15.minutes).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: 30.minutes).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: 1.hour).perform_later(participant_id)
   end
 end

@@ -40,7 +40,8 @@ class Participant < ApplicationRecord
   after_save :secondary_seeds
 
   def first_name
-    'Participant' if name.blank?
+    return 'Participant' if name.blank?
+
     name.strip.split(' ').first
   end
 

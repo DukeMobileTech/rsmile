@@ -10,9 +10,11 @@ class RecruitmentReminderJob < ApplicationJob
     to = participant.phone_number
     to.prepend('+1') if to[0] != '+'
     from = Rails.application.credentials.config[:TWILIO_NUMBER]
-    body = "Hi #{participant.name}! This is a reminder from the SMILE SGM Pilot Study at Duke " +
+    body = "Hi #{participant.first_name}! This is a reminder from the SMILE SGM Pilot Study at Duke " +
            'that you still have an opportunity to recruit other LGBTQ+ participants who identify as ' +
-           "#{participant.sgm_group} to also take the survey. Please share with them the following invitation link: " +
+           "#{participant.sgm_group} to also take the survey. For each of the first five people you recruit " +
+           'who successfully completes the survey, you will receive 1 extra raffle entry for one of four $250 cash prizes. ' +
+           'Please share with them the following invitation link: ' +
            "#{Rails.application.credentials.config[:invitation_url]}?referrer_code=#{participant.code}"
     account_sid = Rails.application.credentials.config[:TWILIO_SID]
     auth_token = Rails.application.credentials.config[:TWILIO_AUTH]
