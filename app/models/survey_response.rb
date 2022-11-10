@@ -158,12 +158,18 @@ class SurveyResponse < ApplicationRecord
     return unless recruitment_survey?
     return if participant.nil?
     return unless participant.enter_raffle
-    return if participant.email.blank?
+    return if participant.email.blank? && participant.phone_number.blank?
     return if participant.raffle_quota_met
     return if participant.reminder_quota_met
 
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 15.minutes)
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 30.minutes)
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 1.hour)
+    if participant.preferred_contact_method == '2' && !participant.phone_number.blank?
+      RecruitmentReminderJob.set(wait: 15.minutes).perform_later(participant_id)
+      RecruitmentReminderJob.set(wait: 30.minutes).perform_later(participant_id)
+      RecruitmentReminderJob.set(wait: 1.hour).perform_later(participant_id)
+    else
+      ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 15.minutes)
+      ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 30.minutes)
+      ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 1.hour)
+    end
   end
 end
