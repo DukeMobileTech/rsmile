@@ -1,4 +1,7 @@
 class ReminderMailer < ApplicationMailer
+  default from: email_address_with_name(Rails.application.credentials.config[:from_email],
+                                        Rails.application.credentials.config[:from_name])
+
   after_action :set_reminder_count
 
   def reminder_email
