@@ -45,6 +45,16 @@ class Participant < ApplicationRecord
     name.strip.split(' ').first
   end
 
+  def sgm_group_label
+    if sgm_group == 'transgender woman' || sgm_group == 'transgender man'
+      'transgender people'
+    elsif sgm_group == 'woman attracted to women'
+      'women attracted to women'
+    else
+      sgm_group
+    end
+  end
+
   def reminder_quota_met
     reminders.size >= 3
   end
