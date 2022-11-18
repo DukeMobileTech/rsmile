@@ -72,6 +72,15 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  def check
+    @participant = Participant.find_by(code: params[:code])
+    if params[:code].blank? || @participant.nil? || @participant.raffle_quota_met
+      render json: { continue: false }, status: :ok
+    else
+      render json: { continue: true }, status: :ok
+    end
+  end
+
   private
 
   def participant_params

@@ -30,7 +30,7 @@ class Participant < ApplicationRecord
   has_many :raffles, dependent: :destroy
   has_many :reminders, dependent: :destroy
 
-  before_save { self.code = Random.rand(10_000...99_999) if code.blank? }
+  before_save { self.code = Random.rand(10_000_000...99_999_999) if code.blank? }
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
@@ -257,6 +257,14 @@ class Participant < ApplicationRecord
     diff.abs <= 2 ? 'Yes' : 'No'
   end
 
+  def sgm_match
+    if sgm_group == referrer_sgm_group || sgm_group[0] == referrer_sgm_group[0]
+      true
+    else
+      false
+    end
+  end
+
   private
 
   def check_referrer_sgm_group
@@ -272,10 +280,10 @@ class Participant < ApplicationRecord
     return unless Participant.eligible_sgm_groups.include?(recruiter.sgm_group)
     return unless Participant.eligible_sgm_groups.include?(sgm_group)
     return unless Participant.eligible_sgm_groups.include?(referrer_sgm_group)
-    return if match && sgm_group == referrer_sgm_group
-    return if !match && sgm_group != referrer_sgm_group
+    return if match && sgm_match
+    return if !match && !sgm_match
 
-    self.match = sgm_group == referrer_sgm_group
+    self.match = sgm_match
     save
   end
 

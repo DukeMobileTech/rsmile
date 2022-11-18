@@ -80,6 +80,32 @@ RSpec.describe 'api/v1/participants', type: :request do
     end
   end
 
+  path '/api/v1/participants/check' do
+    post('check participant by code') do
+      consumes 'application/json'
+      produces 'application/json'
+      security [{ bearer: [] }]
+      parameter name: :participant, in: :body, schema: {
+        type: :object,
+        properties: {
+          code: { type: :string }
+        },
+        required: %w[code]
+      }
+
+      response(200, 'successful') do
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {
+              example: JSON.parse(response.body, symbolize_names: true)
+            }
+          }
+        end
+        run_test!
+      end
+    end
+  end
+
   path '/api/v1/participants/amend' do
     put('update participant attributes') do
       consumes 'application/json'
@@ -136,34 +162,6 @@ RSpec.describe 'api/v1/participants', type: :request do
       }
 
       response(200, 'successful') do
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
-          }
-        end
-        run_test!
-      end
-    end
-  end
-
-  path '/api/v1/participants/check' do
-    post('check participant resume code') do
-      consumes 'application/json'
-      produces 'application/json'
-      security [{ bearer: [] }]
-      parameter name: :participant, in: :body, schema: {
-        type: :object,
-        properties: {
-          resume_code: { type: :string }
-        },
-        required: ['resume_code']
-      }
-
-      response(200, 'successful') do
-        let(:resume_code) { 'abcde' }
-
         after do |example|
           example.metadata[:response][:content] = {
             'application/json' => {
