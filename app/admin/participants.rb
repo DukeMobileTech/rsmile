@@ -56,6 +56,7 @@ ActiveAdmin.register Participant do
       link_to participant.reminders.size, admin_participant_reminders_path(participant.id)
     end
     column 'Contact', &:contact_method
+    column 'Possible Duplicates', &:duplicates
     column :created_at
     actions
   end

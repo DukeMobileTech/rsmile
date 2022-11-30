@@ -1,0 +1,15 @@
+require: rubocop-rails
+
+AllCops:
+  NewCops: enable
+
+Rails/WhereNot:
+  Enabled: true
+Rails/WhereNotWithMultipleConditions:
+  Enabled: true
+Layout/LineLength:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false

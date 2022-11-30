@@ -42,7 +42,13 @@ class Participant < ApplicationRecord
   def first_name
     return 'Participant' if name.blank?
 
-    name.strip.split(' ').first
+    name.strip.split.first
+  end
+
+  def display_name
+    return name if name.present?
+
+    id
   end
 
   def sgm_group_label
@@ -64,11 +70,17 @@ class Participant < ApplicationRecord
   end
 
   def recruiter
-    Participant.where(code: referrer_code)&.first unless referrer_code.blank?
+    Participant.where(code: referrer_code)&.first if referrer_code.present?
   end
 
   def recruits
     Participant.where(referrer_code: code)
+  end
+
+  def duplicates
+    Participant.where(email: email)
+               .or(Participant.where(phone_number: phone_number))
+               .where.not(id: id)
   end
 
   def send_verification_message(language)

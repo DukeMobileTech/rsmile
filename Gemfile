@@ -68,6 +68,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.6', '>= 1.6.1', require: false
   gem 'capistrano-rvm', '~> 0.1.2'
   gem 'rubocop', '~> 1.38', require: false
+  gem 'rubocop-rails', require: false
 end
 
 group :test do
