@@ -25,17 +25,15 @@ RSpec.describe 'api/v1/participants', type: :request do
         properties: {
           email: { type: :string },
           phone_number: { type: :string },
-          country: { type: :string },
-          self_generated_id: { type: :string },
-          rds_id: { type: :string },
           code: { type: :string },
           referrer_code: { type: :string },
           sgm_group: { type: :string },
           referrer_sgm_group: { type: :string },
           match: { type: :string },
-          quota: { type: :string },
           preferred_contact_method: { type: :string },
-          name: { type: :string }
+          name: { type: :string },
+          seed: { type: :boolean },
+          seed_id: { type: :string }
         },
         required: %w[code]
       }
@@ -116,17 +114,15 @@ RSpec.describe 'api/v1/participants', type: :request do
         properties: {
           email: { type: :string },
           phone_number: { type: :string },
-          country: { type: :string },
-          self_generated_id: { type: :string },
-          name: { type: :string },
-          rds_id: { type: :string },
           code: { type: :string },
           referrer_code: { type: :string },
           sgm_group: { type: :string },
           referrer_sgm_group: { type: :string },
           match: { type: :string },
-          quota: { type: :string },
-          preferred_contact_method: { type: :string }
+          preferred_contact_method: { type: :string },
+          name: { type: :string },
+          seed: { type: :boolean },
+          seed_id: { type: :string }
         },
         required: ['email']
       }
@@ -203,17 +199,15 @@ RSpec.describe 'api/v1/participants', type: :request do
         properties: {
           email: { type: :string },
           phone_number: { type: :string },
-          country: { type: :string },
-          self_generated_id: { type: :string },
           name: { type: :string },
-          rds_id: { type: :string },
           code: { type: :string },
           referrer_code: { type: :string },
           sgm_group: { type: :string },
           referrer_sgm_group: { type: :string },
           match: { type: :string },
-          quota: { type: :string },
-          preferred_contact_method: { type: :string }
+          preferred_contact_method: { type: :string },
+          seed: { type: :boolean },
+          seed_id: { type: :string }
         },
         required: ['id']
       }

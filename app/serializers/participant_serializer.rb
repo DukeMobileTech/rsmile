@@ -24,8 +24,10 @@
 #  remind                   :boolean          default(TRUE)
 #  enter_raffle             :boolean          default(TRUE)
 #  raffle_quota_met         :boolean          default(FALSE)
+#  seed_id                  :string
 #
 class ParticipantSerializer < ActiveModel::Serializer
   attributes :id, :email, :phone_number, :code, :referrer_code, :sgm_group, :name,
-             :referrer_sgm_group, :match, :seed, :remind, :enter_raffle, :raffle_quota_met
+             :referrer_sgm_group, :match, :seed, :remind, :enter_raffle, :raffle_quota_met,
+             :seed_id
 end

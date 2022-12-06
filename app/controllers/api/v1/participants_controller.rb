@@ -88,7 +88,7 @@ class Api::V1::ParticipantsController < Api::ApiController
                                           :rds_id, :code, :referrer_code, :sgm_group,
                                           :referrer_sgm_group, :match, :quota, :name,
                                           :preferred_contact_method, :verification_code,
-                                          :seed, :enter_raffle, :remind)
+                                          :seed, :enter_raffle, :remind, :seed_id)
   end
 
   def sanitized_email

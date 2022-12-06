@@ -28,6 +28,7 @@ ActiveAdmin.register Participant do
     column :id
     column :name
     column :seed
+    column 'Seed Id', :seed_id
     column :code
     column :referrer_code
     column :sgm_group

@@ -24,6 +24,7 @@
 #  remind                   :boolean          default(TRUE)
 #  enter_raffle             :boolean          default(TRUE)
 #  raffle_quota_met         :boolean          default(FALSE)
+#  seed_id                  :string
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy
@@ -78,9 +79,17 @@ class Participant < ApplicationRecord
   end
 
   def duplicates
-    Participant.where(email: email)
-               .or(Participant.where(phone_number: phone_number))
-               .where.not(id: id)
+    return [] if email.blank? && phone_number.blank?
+
+    if email.present? && phone_number.present?
+      Participant.where(email: email)
+                 .or(Participant.where(phone_number: phone_number))
+                 .where.not(id: id)
+    elsif email.present?
+      Participant.where(email: email).where.not(id: id)
+    elsif phone_number.present?
+      Participant.where(phone_number: phone_number).where.not(id: id)
+    end
   end
 
   def send_verification_message(language)
@@ -157,7 +166,7 @@ class Participant < ApplicationRecord
   end
 
   def self.pilot_sgm_groups
-    ['transgender woman', 'transgender man', 'woman attracted to women', 'neligible', 'blank']
+    ['transgender woman', 'transgender man', 'woman attracted to women', 'ineligible', 'blank']
   end
 
   def self.eligible_sgm_groups

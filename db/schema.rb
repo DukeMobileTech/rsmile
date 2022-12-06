@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_08_141053) do
+ActiveRecord::Schema.define(version: 2022_12_06_151543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 2022_11_08_141053) do
     t.boolean "remind", default: true
     t.boolean "enter_raffle", default: true
     t.boolean "raffle_quota_met", default: false
+    t.string "seed_id"
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email"
   end

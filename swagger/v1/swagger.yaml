@@ -55,12 +55,6 @@ paths:
                   type: string
                 phone_number:
                   type: string
-                country:
-                  type: string
-                self_generated_id:
-                  type: string
-                rds_id:
-                  type: string
                 code:
                   type: string
                 referrer_code:
@@ -71,11 +65,13 @@ paths:
                   type: string
                 match:
                   type: string
-                quota:
-                  type: string
                 preferred_contact_method:
                   type: string
                 name:
+                  type: string
+                seed:
+                  type: boolean
+                seed_id:
                   type: string
               required:
               - code
@@ -139,14 +135,6 @@ paths:
                   type: string
                 phone_number:
                   type: string
-                country:
-                  type: string
-                self_generated_id:
-                  type: string
-                name:
-                  type: string
-                rds_id:
-                  type: string
                 code:
                   type: string
                 referrer_code:
@@ -157,9 +145,13 @@ paths:
                   type: string
                 match:
                   type: string
-                quota:
-                  type: string
                 preferred_contact_method:
+                  type: string
+                name:
+                  type: string
+                seed:
+                  type: boolean
+                seed_id:
                   type: string
               required:
               - email
@@ -221,13 +213,7 @@ paths:
                   type: string
                 phone_number:
                   type: string
-                country:
-                  type: string
-                self_generated_id:
-                  type: string
                 name:
-                  type: string
-                rds_id:
                   type: string
                 code:
                   type: string
@@ -239,9 +225,11 @@ paths:
                   type: string
                 match:
                   type: string
-                quota:
-                  type: string
                 preferred_contact_method:
+                  type: string
+                seed:
+                  type: boolean
+                seed_id:
                   type: string
               required:
               - id
