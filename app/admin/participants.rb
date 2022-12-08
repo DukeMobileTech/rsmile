@@ -20,7 +20,7 @@ ActiveAdmin.register Participant do
   controller do
     def download
       send_file Participant.enrollment, type: 'text/xlsx',
-                                        filename: "Enrollment-Logbook-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+                                        filename: "Enrollment-Logbook-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
     end
   end
 

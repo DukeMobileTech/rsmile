@@ -70,6 +70,14 @@ class Participant < ApplicationRecord
     survey_responses.where(survey_title: 'SGM Pilot')
   end
 
+  def consents
+    survey_responses.where(survey_title: 'SGM Pilot Consent')
+  end
+
+  def recruitments
+    survey_responses.where(survey_title: 'SGM Pilot Recruitment & Lottery Info')
+  end
+
   def recruiter
     Participant.where(code: referrer_code)&.first if referrer_code.present?
   end
@@ -79,7 +87,7 @@ class Participant < ApplicationRecord
   end
 
   def duplicates
-    return [] if email.blank? && phone_number.blank?
+    return if email.blank? && phone_number.blank?
 
     if email.present? && phone_number.present?
       Participant.where(email: email)
@@ -149,7 +157,7 @@ class Participant < ApplicationRecord
                      'Safety Planning']
     Participant.all.group_by(&:country).each do |country, participants|
       country_surveys = surveys.select { |s| s.country == country }
-      stats[country] = { 'participants': participants.size }
+      stats[country] = { participants: participants.size }
       survey_titles.each do |title|
         title_surveys = country_surveys.select { |s| s.survey_title == title }
         country_stats = stats[country]
@@ -226,12 +234,69 @@ class Participant < ApplicationRecord
     file = Tempfile.new(Time.now.to_i.to_s)
     Axlsx::Package.new do |p|
       wb = p.workbook
-      countries.each do |state|
-        add_country_sheet(wb, state)
-      end
+      add_sheet(wb)
       p.serialize(file.path)
     end
     file
+  end
+
+  def self.add_sheet(workbook)
+    workbook.add_worksheet(name: 'Participants') do |worksheet|
+      worksheet.sheet_pr.tab_color = '9C6ACB'
+      worksheet.add_row header
+      participants = Participant.all.order(:id)
+      participants.each do |participant|
+        worksheet.add_row participant.data_array
+      end
+    end
+  end
+
+  def self.header
+    ['Database ID', 'Name', 'Email', 'Phone Number', 'Contact Method', 'SGM Group',
+     'Referrer SGM Group', 'Match', 'Seed', 'Seed ID', 'Code', 'Referrer Code',
+     'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5',
+     'Enter Raffle', 'Raffle Tickets', 'Raffle Quota Met',
+     'Consent IDs', 'Pilot IDs', 'Recruitment IDs', 'Possible Duplicates']
+  end
+
+  def data_array
+    [id, name, email, phone_number, preferred_contact_method, sgm_group,
+     referrer_sgm_group, db_value(match), db_value(seed), seed_id, code,
+     referrer_code, level_one.join(', '), level_two.join(', '),
+     level_three.join(', '), level_four.join(', '), level_five.join(', '),
+     db_value(enter_raffle), raffles_count, db_value(raffle_quota_met),
+     consents.pluck(:response_uuid).join(', '),
+     pilots.pluck(:response_uuid).join(', '),
+     recruitments.pluck(:response_uuid).join(', '),
+     duplicates&.pluck(:id)&.join(', ')]
+  end
+
+  def db_value(col)
+    col ? 1 : 0
+  end
+
+  def level_one
+    recruits.pluck(:code)
+  end
+
+  def level_two
+    recruits = Participant.where(referrer_code: level_one)
+    recruits.pluck(:code)
+  end
+
+  def level_three
+    recruits = Participant.where(referrer_code: level_two)
+    recruits.pluck(:code)
+  end
+
+  def level_four
+    recruits = Participant.where(referrer_code: level_three)
+    recruits.pluck(:code)
+  end
+
+  def level_five
+    recruits = Participant.where(referrer_code: level_four)
+    recruits.pluck(:code)
   end
 
   def self.add_country_sheet(wb, kountry)
