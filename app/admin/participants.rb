@@ -1,6 +1,7 @@
 ActiveAdmin.register Participant do
   menu priority: 1
   config.per_page = [25, 50, 100]
+  config.clear_action_items! # Removes the link to 'New' action
   filter :seed
   filter :code
   filter :referrer_code
@@ -58,6 +59,7 @@ ActiveAdmin.register Participant do
     end
     column 'Contact', &:contact_method
     column 'Possible Duplicates', &:duplicates
+    column 'State', :country
     column :created_at
     actions
   end

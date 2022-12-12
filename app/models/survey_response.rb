@@ -25,6 +25,22 @@ class SurveyResponse < ApplicationRecord
   after_save :update_raffle_quota
   after_save :schedule_reminder
 
+  if Rails.env.production?
+    REMINDERS = {
+      one: 1.week,
+      two: 2.weeks,
+      three: 3.weeks
+    }
+  end
+
+  if Rails.env.development? || Rails.env.test?
+    REMINDERS = {
+      one: 1.minute,
+      two: 2.minutes,
+      three: 3.minutes
+    }
+  end
+
   def recruitment_survey?
     survey_title&.strip == 'SGM Pilot Recruitment & Lottery Info'
   end
@@ -42,11 +58,7 @@ class SurveyResponse < ApplicationRecord
   end
 
   def country
-    if read_attribute(:country).blank?
-      participant&.country
-    else
-      read_attribute(:country)
-    end
+    (read_attribute(:country).presence || participant&.country)
   end
 
   def country=(str)
@@ -108,7 +120,7 @@ class SurveyResponse < ApplicationRecord
   def self.consent_stats(country_name)
     responses = SurveyResponse.where(country: country_name, survey_title: 'SMILE Consent')
     {
-      'Consented': responses.count { |r| r.consented },
+      Consented: responses.count { |r| r.consented },
       'Not Consented': responses.count { |r| !r.consented }
     }
   end
@@ -162,26 +174,26 @@ class SurveyResponse < ApplicationRecord
     return if participant.raffle_quota_met
     return if participant.reminder_quota_met
 
-    if participant.preferred_contact_method == '1' && !participant.email.blank?
+    if participant.preferred_contact_method == '1' && participant.email.present?
       schedule_email
-    elsif participant.preferred_contact_method == '2' && !participant.phone_number.blank?
+    elsif participant.preferred_contact_method == '2' && participant.phone_number.present?
       schedule_sms
-    elsif !participant.email.blank?
+    elsif participant.email.present?
       schedule_email
-    elsif !participant.phone_number.blank?
+    elsif participant.phone_number.present?
       schedule_sms
     end
   end
 
   def schedule_email
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 15.minutes)
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 30.minutes)
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: 1.hour)
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:two])
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:three])
   end
 
   def schedule_sms
-    RecruitmentReminderJob.set(wait: 15.minutes).perform_later(participant_id)
-    RecruitmentReminderJob.set(wait: 30.minutes).perform_later(participant_id)
-    RecruitmentReminderJob.set(wait: 1.hour).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:one]).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:two]).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:three]).perform_later(participant_id)
   end
 end

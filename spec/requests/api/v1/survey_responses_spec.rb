@@ -29,8 +29,8 @@ RSpec.describe 'api/v1/survey_responses', type: :request do
           survey_title: { type: :string },
           eligible: { type: :boolean },
           consented: { type: :boolean },
-          participant_id: { type: :integer }
-          # country: { type: :string },
+          participant_id: { type: :integer },
+          country: { type: :string }
           # source: { type: :string },
           # language: { type: :string }
         }

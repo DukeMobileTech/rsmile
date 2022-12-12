@@ -32,6 +32,7 @@ RSpec.describe 'api/v1/participants', type: :request do
           match: { type: :string },
           preferred_contact_method: { type: :string },
           name: { type: :string },
+          country: { type: :string },
           seed: { type: :boolean },
           seed_id: { type: :string }
         },
@@ -121,6 +122,7 @@ RSpec.describe 'api/v1/participants', type: :request do
           match: { type: :string },
           preferred_contact_method: { type: :string },
           name: { type: :string },
+          country: { type: :string },
           seed: { type: :boolean },
           seed_id: { type: :string }
         },
@@ -207,7 +209,8 @@ RSpec.describe 'api/v1/participants', type: :request do
           match: { type: :string },
           preferred_contact_method: { type: :string },
           seed: { type: :boolean },
-          seed_id: { type: :string }
+          seed_id: { type: :string },
+          country: { type: :string }
         },
         required: ['id']
       }

@@ -92,11 +92,11 @@ class Participant < ApplicationRecord
     if email.present? && phone_number.present?
       Participant.where(email: email)
                  .or(Participant.where(phone_number: phone_number))
-                 .where.not(id: id)
+                 .where.not(id: id).order(:id)
     elsif email.present?
-      Participant.where(email: email).where.not(id: id)
+      Participant.where(email: email).where.not(id: id).order(:id)
     elsif phone_number.present?
-      Participant.where(phone_number: phone_number).where.not(id: id)
+      Participant.where(phone_number: phone_number).where.not(id: id).order(:id)
     end
   end
 

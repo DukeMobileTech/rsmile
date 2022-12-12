@@ -26,9 +26,12 @@ Dear
 
 <p>Sincerely,</p>
 
-<p><%= Rails.application.credentials.config[:from_name_alt] %>
-  (<%= Rails.application.credentials.config[:from_email_alt] %>) and
-  <%= Rails.application.credentials.config[:from_name] %>
-  (<%= Rails.application.credentials.config[:from_email] %>)</p>
+<p><%= Rails.application.credentials.config[:from_name] %>
+  and <%= Rails.application.credentials.config[:from_name_alt] %>
+</p>
+
+<p><%= Rails.application.credentials.config[:from_email] %> | 
+<%= Rails.application.credentials.config[:from_phone] %>
+</P>
 
 <p>On behalf of the SMILE SGM Pilot Team at Duke</p>

@@ -69,6 +69,8 @@ paths:
                   type: string
                 name:
                   type: string
+                country:
+                  type: string
                 seed:
                   type: boolean
                 seed_id:
@@ -148,6 +150,8 @@ paths:
                 preferred_contact_method:
                   type: string
                 name:
+                  type: string
+                country:
                   type: string
                 seed:
                   type: boolean
@@ -231,6 +235,8 @@ paths:
                   type: boolean
                 seed_id:
                   type: string
+                country:
+                  type: string
               required:
               - id
     delete:
@@ -269,6 +275,8 @@ paths:
                   type: boolean
                 participant_id:
                   type: integer
+                country:
+                  type: string
   "/api/v1/survey_responses/safety":
     post:
       summary: send safety planning form
