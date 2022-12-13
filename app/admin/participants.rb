@@ -30,8 +30,12 @@ ActiveAdmin.register Participant do
     column :name
     column :seed
     column 'Seed Id', :seed_id
-    column :code
-    column :referrer_code
+    column :code do |participant|
+      link_to participant.code, admin_participant_path(participant.id)
+    end
+    column :referrer_code do |participant|
+      link_to participant.referrer_code, admin_participant_path(participant.recruiter.id) if participant.recruiter
+    end
     column :sgm_group
     column :referrer_sgm_group
     column :match
