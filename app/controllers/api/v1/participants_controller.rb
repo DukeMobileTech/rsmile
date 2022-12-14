@@ -70,15 +70,12 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
 
   def amend
-    if !sanitized_email.blank?
-      @participant = Participant.find_by(email: sanitized_email)
-    elsif !params[:id].blank?
-      @participant = Participant.find(params[:id])
-    end
+    @participant = Participant.find(params[:id]) unless params[:id].blank?
+    @participant = Participant.find_by(email: sanitized_email) if @participant.nil? && !sanitized_email.blank?
 
-    render json: { error: 'not found' }, status: :not_found if @participant.nil?
-
-    if @participant.update(participant_params)
+    if @participant.nil?
+      render json: { error: 'not found' }, status: :not_found
+    elsif @participant.update(participant_params)
       render json: @participant, status: :ok
     else
       render json: @participant.errors, status: :unprocessable_entity
