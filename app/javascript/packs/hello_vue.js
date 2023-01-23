@@ -11,8 +11,8 @@ import "bootstrap/dist/css/bootstrap.css"
 
 let prefix = "/";
 if (process.env.NODE_ENV !== 'development') {
-  // prefix = "/test_smile/";
-  prefix = "/real_smile/";
+  prefix = "/test_smile/";
+  // prefix = "/real_smile/";
 }
 Vue.prototype.$basePrefix = prefix;
 
