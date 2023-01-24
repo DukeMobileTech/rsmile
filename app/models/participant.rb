@@ -53,7 +53,7 @@ class Participant < ApplicationRecord
   end
 
   def sgm_group_label
-    if sgm_group == 'transgender woman' || sgm_group == 'transgender man'
+    if sgm_group == 'transgender woman' || sgm_group == 'transgender man' || sgm_group == 'transgender non-binary'
       'transgender people'
     elsif sgm_group == 'woman attracted to women'
       'women attracted to women'
@@ -174,11 +174,11 @@ class Participant < ApplicationRecord
   end
 
   def self.pilot_sgm_groups
-    ['transgender woman', 'transgender man', 'woman attracted to women', 'ineligible', 'blank']
+    ['transgender woman', 'transgender man', 'transgender non-binary', 'woman attracted to women', 'ineligible', 'blank']
   end
 
   def self.eligible_sgm_groups
-    ['transgender woman', 'transgender man', 'woman attracted to women']
+    ['transgender woman', 'transgender man', 'transgender non-binary', 'woman attracted to women']
   end
 
   def self.sgm_stats(kountry)

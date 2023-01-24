@@ -30,7 +30,7 @@ class SurveyResponse < ApplicationRecord
       one: 1.week,
       two: 2.weeks,
       three: 3.weeks
-    }
+    }.freeze
   end
 
   if Rails.env.development? || Rails.env.test?
@@ -38,7 +38,7 @@ class SurveyResponse < ApplicationRecord
       one: 1.minute,
       two: 2.minutes,
       three: 3.minutes
-    }
+    }.freeze
   end
 
   def recruitment_survey?
@@ -186,12 +186,14 @@ class SurveyResponse < ApplicationRecord
   end
 
   def schedule_email
+    ReminderMailer.with(participant: participant).reminder_email.deliver_now
     ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:one])
     ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:two])
     ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:three])
   end
 
   def schedule_sms
+    RecruitmentReminderJob.perform_now(participant_id)
     RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:one]).perform_later(participant_id)
     RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:two]).perform_later(participant_id)
     RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:three]).perform_later(participant_id)
