@@ -167,7 +167,7 @@ class SurveyResponse < ApplicationRecord
   def schedule_reminder
     return unless recruitment_survey?
     return if participant.nil?
-    return unless participant.enter_raffle
+    return unless participant.remind
     return if participant.email.blank? && participant.phone_number.blank?
     return if participant.raffle_quota_met
     return if participant.reminder_quota_met
