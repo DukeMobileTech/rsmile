@@ -66,6 +66,12 @@ class Participant < ApplicationRecord
     reminders.size >= 3
   end
 
+  def seed_id_used?
+    consents.pluck(:survey_complete).include?(true) &&
+      pilots.pluck(:survey_complete).include?(true) &&
+      recruitments.pluck(:survey_complete).include?(true)
+  end
+
   def pilots
     survey_responses.where(survey_title: 'SGM Pilot')
   end

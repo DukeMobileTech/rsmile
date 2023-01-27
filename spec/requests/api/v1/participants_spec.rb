@@ -105,6 +105,32 @@ RSpec.describe 'api/v1/participants', type: :request do
     end
   end
 
+  path '/api/v1/participants/check_seed' do
+    post('check participant by seed id') do
+      consumes 'application/json'
+      produces 'application/json'
+      security [{ bearer: [] }]
+      parameter name: :participant, in: :body, schema: {
+        type: :object,
+        properties: {
+          seed_id: { type: :string }
+        },
+        required: %w[seed_id]
+      }
+
+      response(200, 'successful') do
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {
+              example: JSON.parse(response.body, symbolize_names: true)
+            }
+          }
+        end
+        run_test!
+      end
+    end
+  end
+
   path '/api/v1/participants/amend' do
     put('update participant attributes') do
       consumes 'application/json'

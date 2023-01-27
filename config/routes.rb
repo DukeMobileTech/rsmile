@@ -20,6 +20,7 @@ Rails.application.routes.draw do
         collection do
           post '/verify' => 'participants#verify', as: 'verify'
           post '/check' => 'participants#check', as: 'check'
+          post '/check_seed' => 'participants#check_seed', as: 'check_seed'
           put '/amend' => 'participants#amend', as: 'amend'
           put '/update_and_resend' => 'participants#update_and_resend', as: 'update_and_resend'
         end

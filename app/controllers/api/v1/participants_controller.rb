@@ -81,6 +81,15 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  def check_seed
+    @participant = Participant.find_by(seed_id: params[:seed_id])
+    if @participant.nil? || !@participant.seed_id_used?
+      render json: { eligible: true }, status: :ok
+    else
+      render json: { eligible: false }, status: :ok
+    end
+  end
+
   private
 
   def participant_params

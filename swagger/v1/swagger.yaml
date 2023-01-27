@@ -118,6 +118,25 @@ paths:
                   type: string
               required:
               - code
+  "/api/v1/participants/check_seed":
+    post:
+      summary: check participant by seed id
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seed_id:
+                  type: string
+              required:
+              - seed_id
   "/api/v1/participants/amend":
     put:
       summary: update participant attributes

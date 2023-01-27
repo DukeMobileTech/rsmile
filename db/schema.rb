@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_06_151543) do
+ActiveRecord::Schema.define(version: 2023_01_27_172354) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 2022_12_06_151543) do
     t.string "seed_id"
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email"
+    t.index ["seed_id"], name: "index_participants_on_seed_id"
   end
 
   create_table "raffles", force: :cascade do |t|
