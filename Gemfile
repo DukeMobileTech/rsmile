@@ -4,11 +4,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '3.0.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
-gem 'rails', '~> 6.1', '>= 6.1.6.1'
+gem 'rails', '~> 6.1', '>= 6.1.7.2'
 # Use PostgreSQL as the database for Active Record
-gem 'pg', '~> 1.2', '>= 1.2.3'
+gem 'pg', '~> 1.4', '>= 1.4.5'
 # Use Puma as the app server
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 5.6', '>= 5.6.5'
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -26,29 +26,29 @@ gem 'bcrypt', '~> 3.1.16'
 # gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.4.4', require: false
+gem 'bootsnap', '~> 1.16', require: false
 
 gem 'activeadmin', '~> 2.13'
 gem 'active_model_serializers', '~> 0.10.12'
-gem 'caxlsx', '~> 3.2'
-gem 'clearance', '~> 2.5'
+gem 'caxlsx', '~> 3.3'
+gem 'clearance', '~> 2.6', '>= 2.6.1'
 gem 'exception_notification', '~> 4.4', '>= 4.4.3'
-gem 'groupdate', '~> 6.0', '>= 6.0.1'
+gem 'groupdate', '~> 6.2'
 gem 'prawn', '~> 2.4'
 gem 'rack-cors', '~> 1.1', '>= 1.1.1'
-gem 'rswag-api', '~> 2.4'
-gem 'rswag-ui', '~> 2.4'
-gem 'sidekiq', '~> 6.4'
+gem 'rswag-api', '~> 2.8'
+gem 'rswag-ui', '~> 2.8'
+gem 'sidekiq', '~> 6.5', '>= 6.5.8'
 gem 'twilio-ruby', '~> 5.59.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'annotate', '~> 3.1', '>= 3.1.1'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'faker', '~> 2.19'
+  gem 'faker', '~> 2.23'
   gem 'rexml', '~> 3.2', '>= 3.2.5'
   gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
-  gem 'rswag-specs', '~> 2.4'
+  gem 'rswag-specs', '~> 2.8'
 end
 
 group :development do
@@ -56,10 +56,10 @@ group :development do
   gem 'web-console', '>= 4.1.0'
   # Display performance information such as SQL time and flame graphs for each request in your browser.
   # Can be configured to work on production as well see: https://github.com/MiniProfiler/rack-mini-profiler/blob/master/README.md
-  gem 'listen', '~> 3.3'
+  gem 'listen', '~> 3.8'
   gem 'rack-mini-profiler', '~> 2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
+  gem 'spring', '~> 4.1', '>= 4.1.1'
   # Capistrano deployment
   gem 'bullet', '~> 6.1', '>= 6.1.5'
   gem 'capistrano', '~> 3.16', require: false
@@ -67,13 +67,13 @@ group :development do
   gem 'capistrano-passenger', '~> 0.2.1'
   gem 'capistrano-rails', '~> 1.6', '>= 1.6.1', require: false
   gem 'capistrano-rvm', '~> 0.1.2'
-  gem 'rubocop', '~> 1.38', require: false
+  gem 'rubocop', '~> 1.44', '>= 1.44.1', require: false
   gem 'rubocop-rails', require: false
 end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 3.36'
+  gem 'capybara', '~> 3.38'
   gem 'selenium-webdriver'
   # Easy installation and use of web drivers to run system tests with browsers
   gem 'webdrivers'
