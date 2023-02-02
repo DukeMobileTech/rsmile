@@ -66,14 +66,15 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.smtp_settings = {
-    authentication: :plain,
-    address: Rails.application.credentials.config[:SMTP_ADDRESS],
-    port: Rails.application.credentials.config[:SMTP_PORT],
-    domain: Rails.application.credentials.config[:SMTP_DOMAIN],
-    user_name: Rails.application.credentials.config[:SMTP_USERNAME],
-    password: Rails.application.credentials.config[:SMTP_PASSWORD]
-  }
+  # Using Mailgun
+  # config.action_mailer.smtp_settings = {
+  #   authentication: :plain,
+  #   address: Rails.application.credentials.config[:SMTP_ADDRESS],
+  #   port: Rails.application.credentials.config[:SMTP_PORT],
+  #   domain: Rails.application.credentials.config[:SMTP_DOMAIN],
+  #   user_name: Rails.application.credentials.config[:SMTP_USERNAME],
+  #   password: Rails.application.credentials.config[:SMTP_PASSWORD]
+  # }
   config.action_mailer.default_url_options = { host: "#{Rails.application.credentials.config[:SMTP_HOSTNAME]}" }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
