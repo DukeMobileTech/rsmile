@@ -8,6 +8,7 @@ class SafetyPlan
     super()
     @content = content
     @language = content['language']&.downcase&.strip
+    @language = 'pt-BR' if @language == 'pt-br'
     register_fonts
     write_content
     number_odd_pages
