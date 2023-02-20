@@ -20,7 +20,7 @@ class SurveyResponse < ApplicationRecord
   validates :response_uuid, presence: true, uniqueness: true
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
-  store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration, :birth_year, :age
+  store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration, :birth_year, :age, :progress
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
@@ -116,5 +116,27 @@ class SurveyResponse < ApplicationRecord
       'Eligible Completed': eligible_completed.size,
       'Partials': partials.size
     }
+  end
+
+  def qualtrics_metadata
+    url = URI("https://#{Rails.application.credentials.config[:QUALTRICS_BASE_URL]}/surveys/#{survey_uuid}/responses/#{response_uuid}")
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    request = Net::HTTP::Get.new(url)
+    request['Content-Type'] = 'application/json'
+    request['X-API-TOKEN'] = Rails.application.credentials.config[:QUALTRICS_TOKEN]
+    response = http.request(request)
+    return if response.code != 200
+
+    json_body = JSON.parse(response.read_body)
+    save_metadata(json_body['result']['values'])
+  end
+
+  def save_metadata(values)
+    self.progress = values['progress']
+    self.duration = values['duration']
+    self.ip_address = values['ipAddress']
+    save
   end
 end
