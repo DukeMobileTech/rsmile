@@ -127,15 +127,15 @@ class SurveyResponse < ApplicationRecord
     request['Content-Type'] = 'application/json'
     request['X-API-TOKEN'] = Rails.application.credentials.config[:QUALTRICS_TOKEN]
     response = http.request(request)
-    return if response.code != 200
+    return if response.code != '200'
 
-    json_body = JSON.parse(response.read_body)
+    json_body = JSON.parse(response.body.force_encoding('ISO-8859-1').encode('UTF-8'))
     save_metadata(json_body['result']['values'])
   end
 
   def save_metadata(values)
-    self.progress = values['progress']
-    self.duration = values['duration']
+    self.progress = values['progress'].to_s
+    self.duration = values['duration'].to_s
     self.ip_address = values['ipAddress']
     save
   end

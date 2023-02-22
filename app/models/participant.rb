@@ -228,7 +228,7 @@ class Participant < ApplicationRecord
                        participant.consents.last&.created_at&.strftime('%Y-%m-%d'),
                        participant.baselines.last&.created_at&.strftime('%Y-%m-%d'),
                        participant.sgm_group, participant.ip_addresses&.join(' | '),
-                       participant.duration, '', participant.verified, participant.age_year_match, '', '']
+                       participant.duration, participant.completion, participant.verified, participant.age_year_match, '', '']
       end
     end
   end
@@ -258,6 +258,10 @@ class Participant < ApplicationRecord
     len = nil
     len = (d.to_i / 60.0).ceil if d
     len
+  end
+
+  def completion
+    baselines.last&.progress
   end
 
   def age_year_match
