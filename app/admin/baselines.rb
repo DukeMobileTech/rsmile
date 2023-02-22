@@ -17,7 +17,7 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
     column :eligible
     column :sgm_group
     column :source, &:source_label
-    column :language
+    column :metadata
     column :created_at
     actions
   end
