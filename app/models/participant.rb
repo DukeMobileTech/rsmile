@@ -274,6 +274,51 @@ class Participant < ApplicationRecord
     diff.abs <= 2 ? 'Yes' : 'No'
   end
 
+  def self.participant_level
+    file = Tempfile.new(Time.zone.now.to_i.to_s)
+    Axlsx::Package.new do |p|
+      wb = p.workbook
+      add_participant_sheet(wb)
+      p.serialize(file.path)
+    end
+    file
+  end
+
+  def self.add_participant_sheet(wb)
+    wb.add_worksheet(name: 'Participant Level Data') do |sheet|
+      sheet.sheet_pr.tab_color = colors[0]
+      sheet.add_row participant_header
+      Participant.find_each do |participant|
+        sheet.add_row [participant.race, participant.ethnicity, participant.gender,
+                       participant.age, participant.age_unit]
+      end
+    end
+  end
+
+  def self.participant_header
+    ['Race',	'Ethnicity', 'Gender', 'Age', 'Age Unit']
+  end
+
+  def race
+    baselines.map(&:race).compact_blank.uniq.join('|')
+  end
+
+  def ethnicity
+    baselines.map(&:ethnicity).compact_blank.uniq.join('|')
+  end
+
+  def gender
+    baselines.map(&:gender).compact_blank.uniq.join('|')
+  end
+
+  def age
+    baselines.map(&:age).compact_blank.uniq.join('|')
+  end
+
+  def age_unit
+    'Years'
+  end
+
   private
 
   def assign_identifiers

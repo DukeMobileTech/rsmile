@@ -20,7 +20,8 @@ class SurveyResponse < ApplicationRecord
   validates :response_uuid, presence: true, uniqueness: true
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
-  store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration, :birth_year, :age, :progress
+  store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
+                 :birth_year, :age, :progress, :race, :ethnicity, :gender
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
@@ -130,13 +131,61 @@ class SurveyResponse < ApplicationRecord
     return if response.code != '200'
 
     json_body = JSON.parse(response.body.force_encoding('ISO-8859-1').encode('UTF-8'))
-    save_metadata(json_body['result']['values'])
+    save_metadata(json_body['result']['values'], json_body['result']['labels'])
   end
 
-  def save_metadata(values)
+  def save_metadata(values, labels)
     self.progress = values['progress'].to_s
     self.duration = values['duration'].to_s
     self.ip_address = values['ipAddress']
+    qid471 = labels['QID471']
+    self.age = qid471 if age.blank? && qid471.present?
+    parse_gender(labels)
+    kountry = self[:country]
+    kountry = values['Country'] if kountry.blank?
+    self.country = kountry
+    parse_race_ethnicity(kountry, values)
     save
+  end
+
+  def parse_gender(labels)
+    qid21 = labels['QID21']
+    qid21 = qid21.split('(').first.strip if qid21.present? && qid21.include?('(')
+    qid21 = labels['QID20']&.join('|') if qid21.blank?
+    qid21 = 'Man' if qid21&.downcase&.include?('transgender man')
+    qid21 = 'Woman' if qid21&.downcase&.include?('transgender woman')
+    qid21 = 'Unknown' if qid21&.downcase&.include?('non-binary person')
+    self.gender = qid21
+  end
+
+  def parse_race_ethnicity(kountry, values)
+    case kountry
+    when 'Kenya'
+      self.race = 'Black'
+      self.ethnicity = 'Not Hispanic or Latino'
+    when 'Vietnam'
+      self.race = 'Asian'
+      self.ethnicity = 'Not Hispanic or Latino'
+    when 'Brazil'
+      self.race = brazil_race(values['QID45'])
+      self.ethnicity = 'Hispanic or Latino'
+    end
+  end
+
+  def brazil_race(value)
+    case value
+    when 'Branco'
+      'White'
+    when 'Pardo'
+      'More than one race'
+    when 'Preto'
+      'Black'
+    when 'Amarelo'
+      'Asian'
+    when 'Indigenous'
+      'American Indian'
+    else
+      'Unknown'
+    end
   end
 end

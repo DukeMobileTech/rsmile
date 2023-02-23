@@ -1,19 +1,33 @@
 ActiveAdmin.register Participant do
   menu priority: 1
   config.per_page = [25, 50, 100]
+  actions :all, except: %i[new]
 
-  collection_action :download, method: :get do
+  collection_action :enrollment, method: :get do
     redirect_to resource_path
   end
 
-  action_item :download, only: :index do
-    link_to 'Enrollment Logbook', download_admin_participants_path
+  collection_action :participant_level, method: :get do
+    redirect_to resource_path
+  end
+
+  action_item :enrollment, only: :index do
+    link_to 'Enrollment Logbook', enrollment_admin_participants_path
+  end
+
+  action_item :participant_level, only: :index do
+    link_to 'Participant Level Data', participant_level_admin_participants_path
   end
 
   controller do
-    def download
+    def enrollment
       send_file Participant.enrollment, type: 'text/xlsx',
-                                        filename: "Enrollment-Logbook-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+                                        filename: "Enrollment-Logbook-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+    end
+
+    def participant_level
+      send_file Participant.participant_level, type: 'text/xlsx',
+                                               filename: "Participant-Level-Data-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
     end
   end
 
