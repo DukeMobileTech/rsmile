@@ -222,6 +222,7 @@ class Participant < ApplicationRecord
       sheet.sheet_pr.tab_color = tab_color
       sheet.add_row country_header
       participants = Participant.where(country: kountry)
+                                .where.not(sgm_group: %w[blank ineligible])
       participants.each do |participant|
         sheet.add_row [participant.self_generated_id, participant.id, participant.baselines.pluck(:id).join(' | '),
                        participant.contacts.pluck(:id).join(' | '), participant.consents.pluck(:id).join(' | '),
@@ -284,11 +285,12 @@ class Participant < ApplicationRecord
     file
   end
 
-  def self.add_participant_sheet(wb)
-    wb.add_worksheet(name: 'Participant Level Data') do |sheet|
+  def self.add_participant_sheet(workbook)
+    workbook.add_worksheet(name: 'Participant Level Data') do |sheet|
       sheet.sheet_pr.tab_color = colors[0]
       sheet.add_row participant_header
-      Participant.find_each do |participant|
+      participants = Participant.where.not(sgm_group: %w[blank ineligible])
+      participants.each do |participant|
         sheet.add_row [participant.race, participant.ethnicity, participant.gender,
                        participant.age, participant.age_unit]
       end
