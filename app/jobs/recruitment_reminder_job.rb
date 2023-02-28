@@ -1,5 +1,5 @@
 class RecruitmentReminderJob < ApplicationJob
-  queue_as :default
+  queue_as :sgm_pilot
 
   def perform(participant_id)
     participant = Participant.find_by(id: participant_id)
