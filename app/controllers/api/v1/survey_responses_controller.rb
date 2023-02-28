@@ -10,16 +10,16 @@ class Api::V1::SurveyResponsesController < Api::ApiController
   end
 
   def amend
-    if !params[:response_uuid].blank?
+    if params[:response_uuid].present?
       @survey_response = SurveyResponse.find_by(response_uuid: params[:response_uuid])
       @survey_response ||= SurveyResponse.create(survey_response_params)
-    elsif !params[:id].blank?
+    elsif params[:id].present?
       @survey_response = SurveyResponse.find(params[:id])
     end
 
-    render json: { error: 'not found' }, status: :not_found if @survey_response.nil?
-
-    if @survey_response.update(survey_response_params)
+    if @survey_response.nil?
+      render json: { error: 'not found' }, status: :not_found
+    elsif @survey_response.update(survey_response_params)
       render json: @survey_response, status: :ok
     else
       render json: @survey_response.errors, status: :unprocessable_entity
