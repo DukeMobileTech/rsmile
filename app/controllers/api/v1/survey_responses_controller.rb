@@ -49,6 +49,7 @@ class Api::V1::SurveyResponsesController < Api::ApiController
                                               :survey_title, :country, :consented,
                                               :eligible, :metadata, :language, :source,
                                               :sgm_group, :ip_address, :duration,
-                                              :birth_year, :age)
+                                              :birth_year, :age, :gender_identity,
+                                              :sexual_orientation, :intersex)
   end
 end

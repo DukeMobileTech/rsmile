@@ -21,7 +21,8 @@ class SurveyResponse < ApplicationRecord
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
-                 :birth_year, :age, :progress, :race, :ethnicity, :gender
+                 :birth_year, :age, :progress, :race, :ethnicity, :gender,
+                 :gender_identity, :sexual_orientation, :intersex
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
@@ -74,6 +75,52 @@ class SurveyResponse < ApplicationRecord
       'From a local organization or peer educator'
     when '11'
       'Other'
+    end
+  end
+
+  def gender_identity_label
+    case gender_identity
+    when '1','10'
+      'Woman'
+    when '2','11'
+      'Man'
+    when '3'
+      'Agender'
+    when '4','12'
+      'Non-binary Person'
+    when '5','13'
+      'Transgender Woman'
+    when '6','14'
+      'Transgender Man'
+    when '8'
+      'Questioning Person'
+    when '9'
+      'Another Gender'
+    else
+      gender_identity
+    end
+  end
+
+  def sexual_orientation_label
+    case sexual_orientation
+    when '1','9','16'
+      'Lesbian / Gay'
+    when '3','10','17'
+      'Bisexual / Pansexual'
+    when '4','11'
+      'Queer'
+    when '5','12'
+      'Questioning'
+    when '6','13','18'
+      'Asexual'
+    when '7','14','19'
+      'Heterosexual / Straight'
+    when '8','15'
+      'Another Sexual Orientation'
+    when '20'
+      'Decline to answer'
+    else
+      sexual_orientation
     end
   end
 
@@ -145,6 +192,10 @@ class SurveyResponse < ApplicationRecord
     kountry = values['Country'] if kountry.blank?
     self.country = kountry
     parse_race_ethnicity(kountry, values)
+    qid19 = labels['QID19']
+    self.intersex = qid19 if qid19.present?
+    self.gender_identity = values['Gender_Identity']
+    self.sexual_orientation = values['Sexual_Orientation']
     save
   end
 
