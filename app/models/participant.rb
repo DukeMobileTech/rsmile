@@ -228,8 +228,10 @@ class Participant < ApplicationRecord
                        participant.contacts.pluck(:id).join(' | '), participant.consents.pluck(:id).join(' | '),
                        participant.consents.last&.created_at&.strftime('%Y-%m-%d'),
                        participant.baselines.last&.created_at&.strftime('%Y-%m-%d'),
-                       participant.sgm_group, participant.ip_addresses&.join(' | '),
-                       participant.duration, participant.completion, participant.verified, participant.age_year_match, '', '']
+                       participant.sgm_group, participant.gender_identity,
+                       participant.sexual_orientation, participant.intersex,
+                       participant.ip_addresses&.join(' | '), participant.duration,
+                       participant.completion, participant.verified, participant.age_year_match, '', '']
       end
     end
   end
@@ -241,9 +243,9 @@ class Participant < ApplicationRecord
   def self.country_header
     ['Participant Self-Gen ID',	'Participant Database ID', 'Baseline Survey IDs',
      'Contact Info Form ID', 'Consent ID',	'Date of Enrollment (Consent)',
-     'Baseline Survey Completion Date', 'SGM Group Assigned', 'IP Address',
-     'Duration (min)', '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome',
-     'Notes']
+     'Baseline Survey Completion Date', 'SGM Group Assigned', 'Gender Identity',
+     'Sexual Orientation', 'Intersex', 'IP Address', 'Duration (min)',
+     '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome', 'Notes']
   end
 
   def self.countries
@@ -315,6 +317,18 @@ class Participant < ApplicationRecord
 
   def age
     baselines.map(&:age).compact_blank.uniq.join('|')
+  end
+
+  def gender_identity
+    baselines.map(&:gender_identity_label).compact_blank.uniq.join('|')
+  end
+
+  def sexual_orientation
+    baselines.map(&:sexual_orientation_label).compact_blank.uniq.join('|')
+  end
+
+  def intersex
+    baselines.map(&:intersex).compact_blank.uniq.join('|')
   end
 
   def age_unit
