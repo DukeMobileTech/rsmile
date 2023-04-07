@@ -50,6 +50,6 @@ class Api::V1::SurveyResponsesController < Api::ApiController
                                               :eligible, :metadata, :language, :source,
                                               :sgm_group, :ip_address, :duration,
                                               :birth_year, :age, :gender_identity,
-                                              :sexual_orientation, :intersex)
+                                              :sexual_orientation, :intersex, :sexual_attraction)
   end
 end

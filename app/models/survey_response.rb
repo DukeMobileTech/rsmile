@@ -22,7 +22,7 @@ class SurveyResponse < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
-                 :gender_identity, :sexual_orientation, :intersex
+                 :gender_identity, :sexual_orientation, :intersex, :sexual_attraction
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
@@ -75,6 +75,20 @@ class SurveyResponse < ApplicationRecord
       'From a local organization or peer educator'
     when '11'
       'Other'
+    when '12'
+      'From VTC Team CBO'
+    when '13'
+      'From FTM Vietnam Organization'
+    when '14'
+      'From CSAGA'
+    when '15'
+      'From BE+ Clun in University of Social Sciences and Humanities (HCMUSSH)'
+    when '16'
+      'From Event Club in Van Lang University'
+    when '17'
+      'From a Club in Can Tho University'
+    when '18'
+      'From RMIT University Vietnam'
     end
   end
 
@@ -121,6 +135,35 @@ class SurveyResponse < ApplicationRecord
       'Decline to answer'
     else
       sexual_orientation
+    end
+  end
+
+  def sexual_attraction_label
+    sexual_attraction&.split(',')&.map { |v| sexual_attraction_value(v) }&.join(', ')
+  end
+
+  def sexual_attraction_value(value)
+    case value
+    when '1'
+      'Women'
+    when '2'
+      'Transgender Women'
+    when '3'
+      'Men'
+    when '4'
+      'Transgender Men'
+    when '5'
+      'Non-binary Individuals assigned Female at Birth'
+    when '6'
+      'Non-binary Individuals assigned Male at Birth'
+    when '7'
+      'Another Gender'
+    when '8'
+      'Not Attracted to any Gender'
+    when '88'
+      "Don't Know"
+    else
+      value
     end
   end
 
@@ -196,6 +239,7 @@ class SurveyResponse < ApplicationRecord
     self.intersex = qid19 if qid19.present?
     self.gender_identity = values['Gender_Identity']
     self.sexual_orientation = values['Sexual_Orientation']
+    self.sexual_attraction = values['QID35']&.join(',') if values['QID35'].present?
     save
   end
 

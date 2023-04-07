@@ -4,6 +4,9 @@
         <div class="container-fluid">
         <div class="nav-item"><h1>{{ message }}</h1></div>
         <div class="nav-item">
+          <button v-on:click="linkToAdmin" class="btn btn-link" >Admin</button>
+        </div>
+        <div class="nav-item">
           <button v-on:click="handleLogout" class="btn btn-danger" >Sign Out</button>
         </div>
       </div>
@@ -45,6 +48,9 @@ export default {
     },
     updateCountry(value) {
       this.country = value;
+    },
+    linkToAdmin() {
+      window.location.href = '/admin';
     }
   },
 
