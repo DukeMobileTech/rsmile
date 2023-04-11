@@ -18,15 +18,24 @@
 class SurveyResponse < ApplicationRecord
   belongs_to :participant, optional: true
   validates :response_uuid, presence: true, uniqueness: true
+
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
+  after_create { SurveyMetadataJob.set(wait: 15.days).perform_later(id) if baseline_survey? }
+
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
-                 :gender_identity, :sexual_orientation, :intersex, :sexual_attraction
+                 :gender_identity, :sexual_orientation, :intersex,
+                 :sexual_attraction, :attraction_sgm_group
+  
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
   scope :safety_plans, -> { where(survey_title: 'Safety Planning') }
+
+  def baseline_survey?
+    survey_title&.strip == 'SMILE Survey - Baseline'
+  end
 
   def source_label
     names = []
@@ -92,6 +101,42 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
+  def set_attraction_sgm_group
+    if sexual_attraction.blank?
+      self.attraction_sgm_group = 'blank'
+      return
+    end
+    attractions = sexual_attraction.split(',')
+    case gender_identity
+    when '1','10'
+      if attractions.any? { |a| %w[1 9 16].include?(a) }
+        self.attraction_sgm_group = 'woman attracted to women'
+      elsif attractions.any? { |a| %w[3 10 17].include?(a) }
+        self.attraction_sgm_group = 'multi-attracted woman'
+      elsif attractions.any? { |a| %w[6 13 18 20].include?(a) }
+        self.attraction_sgm_group = 'no group'
+      elsif attractions.any? { |a| %w[7 14 19].include?(a) }
+        self.attraction_sgm_group = 'ineligible'
+      end
+    when '2','11'
+      if attractions.any? { |a| %w[1 9 16].include?(a) }
+        self.attraction_sgm_group = 'man attracted to men'
+      elsif attractions.any? { |a| %w[3 10 17].include?(a) }
+        self.attraction_sgm_group = 'multi-attracted man'
+      elsif attractions.any? { |a| %w[6 13 18 20].include?(a) }
+        self.attraction_sgm_group = 'no group'
+      elsif attractions.any? { |a| %w[7 14 19].include?(a) }
+        self.attraction_sgm_group = 'ineligible'
+      end
+    when '4','12'
+      self.attraction_sgm_group = 'non-binary person'
+    when '5','13'
+      self.attraction_sgm_group = 'transgender woman'
+    when '6','14'
+      self.attraction_sgm_group = 'transgender man'
+    end
+  end
+
   def gender_identity_label
     case gender_identity
     when '1','10'
@@ -147,21 +192,21 @@ class SurveyResponse < ApplicationRecord
     when '1'
       'Women'
     when '2'
-      'Transgender Women'
+      'Transgender women'
     when '3'
       'Men'
     when '4'
-      'Transgender Men'
+      'Transgender men'
     when '5'
-      'Non-binary Individuals assigned Female at Birth'
+      'Non-binary individuals assigned female sex at birth'
     when '6'
-      'Non-binary Individuals assigned Male at Birth'
+      'Non-binary individuals assigned male sex at birth'
     when '7'
-      'Another Gender'
+      'Another gender'
     when '8'
-      'Not Attracted to any Gender'
+      'Not attracted to any gender'
     when '88'
-      "Don't Know"
+      "Don't know"
     else
       value
     end
@@ -221,10 +266,12 @@ class SurveyResponse < ApplicationRecord
     return if response.code != '200'
 
     json_body = JSON.parse(response.body.force_encoding('ISO-8859-1').encode('UTF-8'))
-    save_metadata(json_body['result']['values'], json_body['result']['labels'])
+    set_metadata(json_body['result']['values'], json_body['result']['labels'])
+    set_attraction_sgm_group
+    save
   end
 
-  def save_metadata(values, labels)
+  def set_metadata(values, labels)
     self.progress = values['progress'].to_s
     self.duration = values['duration'].to_s
     self.ip_address = values['ipAddress']
@@ -237,10 +284,12 @@ class SurveyResponse < ApplicationRecord
     parse_race_ethnicity(kountry, values)
     qid19 = labels['QID19']
     self.intersex = qid19 if qid19.present?
+    if self[:sgm_group].blank?
+      self.sgm_group = values['SGM_Group'].present? ? values['SGM_Group']&.downcase : 'blank'
+    end
     self.gender_identity = values['Gender_Identity']
     self.sexual_orientation = values['Sexual_Orientation']
     self.sexual_attraction = values['QID35']&.join(',') if values['QID35'].present?
-    save
   end
 
   def parse_gender(labels)

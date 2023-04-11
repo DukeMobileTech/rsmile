@@ -18,8 +18,9 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
     column :intersex
     column :gender_identity, &:gender_identity_label
     column :sexual_attraction, &:sexual_attraction_label
+    column 'Attraction SGM Group', &:attraction_sgm_group
     column :sexual_orientation, &:sexual_orientation_label
-    column :sgm_group
+    column 'Orientation SGM Group', &:sgm_group
     column :source, &:source_label
     column :metadata
     column :created_at
