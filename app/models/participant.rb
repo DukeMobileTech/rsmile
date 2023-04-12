@@ -228,8 +228,9 @@ class Participant < ApplicationRecord
                        participant.contacts.pluck(:id).join(' | '), participant.consents.pluck(:id).join(' | '),
                        participant.consents.last&.created_at&.strftime('%Y-%m-%d'),
                        participant.baselines.last&.created_at&.strftime('%Y-%m-%d'),
-                       participant.sgm_group, participant.gender_identity,
-                       participant.sexual_orientation, participant.intersex,
+                       participant.gender_identity, participant.sexual_orientation,
+                       participant.intersex, participant.sexual_attraction,
+                       participant.attraction_eligibility, participant.sgm_group, participant.mismatch,
                        participant.ip_addresses&.join(' | '), participant.duration,
                        participant.completion, participant.verified, participant.age_year_match, '', '']
       end
@@ -243,8 +244,9 @@ class Participant < ApplicationRecord
   def self.country_header
     ['Participant Self-Gen ID',	'Participant Database ID', 'Baseline Survey IDs',
      'Contact Info Form ID', 'Consent ID',	'Date of Enrollment (Consent)',
-     'Baseline Survey Completion Date', 'SGM Group Assigned', 'Gender Identity',
-     'Sexual Orientation', 'Intersex', 'IP Address', 'Duration (min)',
+     'Baseline Survey Completion Date', 'Gender Identity',
+     'Sexual Orientation', 'Intersex', 'Sexual Attraction', 'Attraction Eligibility',
+     'SGM Group', 'Mismatch', 'IP Address', 'Duration (min)',
      '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome', 'Notes']
   end
 
@@ -329,6 +331,19 @@ class Participant < ApplicationRecord
 
   def intersex
     baselines.map(&:intersex).compact_blank.uniq.join('|')
+  end
+
+  def sexual_attraction
+    baselines.map(&:sexual_attraction_label).compact_blank.uniq.join('|')
+  end
+
+  def attraction_eligibility
+    baselines.map(&:attraction_sgm_group).compact_blank.uniq.join('|')
+  end
+
+  def mismatch
+    mm = baselines.map(&:sgm_group_mismatch?)
+    mm.map { |m| m ? 'Yes' : 'No' }.compact.uniq.join('|')
   end
 
   def age_unit

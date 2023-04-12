@@ -27,7 +27,7 @@ class SurveyResponse < ApplicationRecord
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
                  :gender_identity, :sexual_orientation, :intersex,
                  :sexual_attraction, :attraction_sgm_group
-  
+
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
