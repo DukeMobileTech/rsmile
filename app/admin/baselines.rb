@@ -1,26 +1,25 @@
 ActiveAdmin.register SurveyResponse, as: 'Baseline' do
   menu label: 'Baseline Surveys'
   menu priority: 4
-  config.per_page = [25, 50, 100]
+  config.per_page = [50, 100, 250]
   permit_params :response_uuid, :participant_id, :country, :survey_complete, :eligible, :sgm_group, :source, :language
   preserve_default_filters!
   filter :participant, collection: -> { Participant.where(id: SurveyResponse.baselines.pluck(:participant_id).uniq) }
   remove_filter :survey_uuid
   remove_filter :survey_title
 
-  index do
+  index row_class: ->(elem) { 'mismatch' if elem.sgm_group_mismatch? } do
     column :id
     column :response_uuid
     column :participant
     column :country
     column :survey_complete
-    column :eligible
     column :intersex
     column :gender_identity, &:gender_identity_label
     column :sexual_attraction, &:sexual_attraction_label
-    column 'Attraction SGM Group', &:attraction_sgm_group
+    column 'Attraction Eligibility', &:attraction_sgm_group
     column :sexual_orientation, &:sexual_orientation_label
-    column 'Orientation SGM Group', &:sgm_group
+    column :sgm_group
     column :source, &:source_label
     column :metadata
     column :created_at

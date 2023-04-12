@@ -101,39 +101,23 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
-  def set_attraction_sgm_group
-    if sexual_attraction.blank?
-      self.attraction_sgm_group = 'blank'
-      return
-    end
-    attractions = sexual_attraction.split(',')
+  def sgm_group_mismatch?
+    (attraction_sgm_group == 'eligible' &&
+      ['no group', 'ineligible', 'blank'].include?(sgm_group)) ||
+      (attraction_sgm_group == 'ineligible' &&
+      ['no group', 'ineligible', 'blank'].exclude?(sgm_group))
+  end
+
+  def set_attraction_eligibility
+    self.attraction_sgm_group = 'ineligible'
+    attractions = sexual_attraction&.split(',')
     case gender_identity
     when '1','10'
-      if attractions.any? { |a| %w[1 9 16].include?(a) }
-        self.attraction_sgm_group = 'woman attracted to women'
-      elsif attractions.any? { |a| %w[3 10 17].include?(a) }
-        self.attraction_sgm_group = 'multi-attracted woman'
-      elsif attractions.any? { |a| %w[6 13 18 20].include?(a) }
-        self.attraction_sgm_group = 'no group'
-      elsif attractions.any? { |a| %w[7 14 19].include?(a) }
-        self.attraction_sgm_group = 'ineligible'
-      end
+      self.attraction_sgm_group = 'eligible' if attractions&.any? { |a| %w[1 2 4 5 6 7 8].include?(a) }
     when '2','11'
-      if attractions.any? { |a| %w[1 9 16].include?(a) }
-        self.attraction_sgm_group = 'man attracted to men'
-      elsif attractions.any? { |a| %w[3 10 17].include?(a) }
-        self.attraction_sgm_group = 'multi-attracted man'
-      elsif attractions.any? { |a| %w[6 13 18 20].include?(a) }
-        self.attraction_sgm_group = 'no group'
-      elsif attractions.any? { |a| %w[7 14 19].include?(a) }
-        self.attraction_sgm_group = 'ineligible'
-      end
-    when '4','12'
-      self.attraction_sgm_group = 'non-binary person'
-    when '5','13'
-      self.attraction_sgm_group = 'transgender woman'
-    when '6','14'
-      self.attraction_sgm_group = 'transgender man'
+      self.attraction_sgm_group = 'eligible' if attractions&.any? { |a| %w[2 3 4 5 6 7 8].include?(a) }
+    when '4','12','5','13','6','14'
+      self.attraction_sgm_group = 'eligible'
     end
   end
 
@@ -267,7 +251,7 @@ class SurveyResponse < ApplicationRecord
 
     json_body = JSON.parse(response.body.force_encoding('ISO-8859-1').encode('UTF-8'))
     set_metadata(json_body['result']['values'], json_body['result']['labels'])
-    set_attraction_sgm_group
+    set_attraction_eligibility
     save
   end
 
