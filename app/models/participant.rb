@@ -222,7 +222,8 @@ class Participant < ApplicationRecord
       sheet.sheet_pr.tab_color = tab_color
       sheet.add_row country_header
       participants = Participant.where(country: kountry)
-                                .where.not(sgm_group: %w[blank ineligible])
+                                # TODO: Add back later
+                                # .where.not(sgm_group: %w[blank ineligible])
       participants.each do |participant|
         sheet.add_row [participant.self_generated_id, participant.id, participant.baselines.pluck(:id).join(' | '),
                        participant.contacts.pluck(:id).join(' | '), participant.consents.pluck(:id).join(' | '),
