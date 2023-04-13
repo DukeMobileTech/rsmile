@@ -26,7 +26,7 @@ class SurveyResponse < ApplicationRecord
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
                  :gender_identity, :sexual_orientation, :intersex,
-                 :sexual_attraction, :attraction_sgm_group
+                 :sexual_attraction, :attraction_eligibility, :attraction_sgm_group
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
@@ -101,16 +101,71 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
+  def set_attraction_sgm_group
+    if attraction_eligible?
+      self.attraction_sgm_group = 'blank' if sexual_attraction.blank?
+      attractions = sexual_attraction&.split(',')
+      if attractions&.size == 1
+        attr_val = attractions.first.strip
+        case gender_identity
+        when '1','10'
+          self.attraction_sgm_group = female_attraction_grouping(attr_val)
+        when '2','11'
+          self.attraction_sgm_group = male_attraction_grouping(attr_val)
+        end
+      end
+    else
+      self.attraction_sgm_group = nil
+    end
+    save
+  end
+
+  def female_attraction_grouping(value)
+    case value
+    when '1'
+      'woman attracted to women'
+    when '2','4','5','6'
+      'multi-attracted woman'
+    when '3'
+      'ineligible'
+    when '8'
+      'asexual'
+    when '7','88'
+      'no group'
+    end
+  end
+
+  def male_attraction_grouping(value)
+    case value
+    when '1'
+      'ineligible'
+    when '2','4','5','6'
+      'multi-attracted man'
+    when '3'
+      'man attracted to men'
+    when '8'
+      'asexual'
+    when '7','88'
+      'no group'
+    end
+  end
+
+  def attraction_eligible?
+    attraction_eligibility == 'eligible' &&
+      ['no group', 'ineligible', 'blank'].include?(sgm_group)
+  end
+
+  def attraction_ineligible?
+    attraction_eligibility == 'ineligible' &&
+      ['no group', 'ineligible', 'blank'].exclude?(sgm_group)
+  end
+
   def sgm_group_mismatch?
-    (attraction_sgm_group == 'eligible' &&
-      ['no group', 'ineligible', 'blank'].include?(sgm_group)) ||
-      (attraction_sgm_group == 'ineligible' &&
-      ['no group', 'ineligible', 'blank'].exclude?(sgm_group))
+    attraction_eligible? || attraction_ineligible?
   end
 
   def mismatch_class
-    if attraction_sgm_group == 'eligible' &&
-       ['no group', 'ineligible', 'blank'].include?(sgm_group)
+    if attraction_eligible?
       'mismatch'
     else
       'mismatch-reverse'
@@ -118,15 +173,15 @@ class SurveyResponse < ApplicationRecord
   end
 
   def set_attraction_eligibility
-    self.attraction_sgm_group = 'ineligible'
+    self.attraction_eligibility = 'ineligible'
     attractions = sexual_attraction&.split(',')
     case gender_identity
     when '1','10'
-      self.attraction_sgm_group = 'eligible' if attractions&.any? { |a| %w[1 2 4 5 6 7 8].include?(a) }
+      self.attraction_eligibility = 'eligible' if attractions&.any? { |a| %w[1 2 4 5 6 7 8].include?(a) }
     when '2','11'
-      self.attraction_sgm_group = 'eligible' if attractions&.any? { |a| %w[2 3 4 5 6 7 8].include?(a) }
+      self.attraction_eligibility = 'eligible' if attractions&.any? { |a| %w[2 3 4 5 6 7 8].include?(a) }
     when '4','12','5','13','6','14'
-      self.attraction_sgm_group = 'eligible'
+      self.attraction_eligibility = 'eligible'
     end
   end
 
@@ -262,6 +317,7 @@ class SurveyResponse < ApplicationRecord
     set_metadata(json_body['result']['values'], json_body['result']['labels'])
     set_attraction_eligibility
     save
+    set_attraction_sgm_group
   end
 
   def set_metadata(values, labels)

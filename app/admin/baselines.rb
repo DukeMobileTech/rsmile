@@ -10,16 +10,17 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
 
   index row_class: ->(elem) { elem.mismatch_class if elem.sgm_group_mismatch? } do
     column :id
-    column :response_uuid
-    column :participant
+    column 'Response', :response_uuid
+    column :participant, sortable: 'participant_id'
     column :country
-    column :survey_complete
+    column 'Complete', :survey_complete
     column :intersex, sortable: "metadata->'intersex'"
-    column :gender_identity, sortable: "metadata->'gender'", &:gender_identity_label
-    column :sexual_attraction, sortable: "metadata->'sexual_attraction'", &:sexual_attraction_label
-    column 'Attraction Eligibility', :attraction_sgm_group, sortable: "metadata->'attraction_sgm_group'"
-    column :sexual_orientation, sortable: "metadata->'sexual_orientation'", &:sexual_orientation_label
+    column 'Identity', :gender_identity, sortable: "metadata->'gender'", &:gender_identity_label
+    column 'Attraction', :sexual_attraction, sortable: "metadata->'sexual_attraction'", &:sexual_attraction_label
+    column 'Attraction Eligibility', :attraction_eligibility, sortable: "metadata->'attraction_eligibility'"
+    column 'Orientation', :sexual_orientation, sortable: "metadata->'sexual_orientation'", &:sexual_orientation_label
     column :sgm_group, sortable: "metadata->'sgm_group'"
+    column :attraction_sgm_group, sortable: "metadata->'attraction_sgm_group'"
     column :source, &:source_label
     column :metadata
     column :created_at
