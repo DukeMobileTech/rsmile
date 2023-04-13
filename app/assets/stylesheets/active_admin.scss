@@ -50,4 +50,9 @@ tr.odd, tr.even {
           background-color:lightpink;
       }
   }
+  &.mismatch-reverse {
+    td.col {
+        background-color:lightgreen;
+    }
+}
 }

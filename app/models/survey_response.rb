@@ -108,6 +108,15 @@ class SurveyResponse < ApplicationRecord
       ['no group', 'ineligible', 'blank'].exclude?(sgm_group))
   end
 
+  def mismatch_class
+    if attraction_sgm_group == 'eligible' &&
+       ['no group', 'ineligible', 'blank'].include?(sgm_group)
+      'mismatch'
+    else
+      'mismatch-reverse'
+    end
+  end
+
   def set_attraction_eligibility
     self.attraction_sgm_group = 'ineligible'
     attractions = sexual_attraction&.split(',')
