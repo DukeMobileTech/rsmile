@@ -58,6 +58,18 @@ class SurveyResponse < ApplicationRecord
     write_attribute(:country, str)
   end
 
+  def email
+    participant&.email
+  end
+
+  def phone_number
+    participant&.phone_number
+  end
+
+  def self_generated_id
+    participant&.self_generated_id
+  end
+
   def self.named_source(name)
     case name
     when '0'
@@ -156,9 +168,17 @@ class SurveyResponse < ApplicationRecord
   def attraction_grouping_2(attractions)
     case gender_identity
     when '1','10'
-      self.attraction_sgm_group = 'multi-attracted woman' if attractions.any? { |a| %w[1 2].include?(a.strip) } && attractions.any? { |a| %w[3 4 5 6 7].include?(a.strip) }
+      if attractions.size == 2 && attractions.include?('3') && attractions.include?('4')
+        self.attraction_sgm_group = 'ineligible'
+      elsif attractions.any? { |a| %w[1 2].include?(a.strip) } && attractions.any? { |a| %w[3 4 5 6 7].include?(a.strip) }
+        self.attraction_sgm_group = 'multi-attracted woman'
+      end
     when '2','11'
-      self.attraction_sgm_group = 'multi-attracted man' if attractions.any? { |a| %w[3 4].include?(a.strip) } && attractions.any? { |a| %w[1 2 5 6 7].include?(a.strip) }
+      if attractions.size == 2 && attractions.include?('1') && attractions.include?('2')
+        self.attraction_sgm_group = 'ineligible'
+      elsif attractions.any? { |a| %w[3 4].include?(a.strip) } && attractions.any? { |a| %w[1 2 5 6 7].include?(a.strip) }
+        self.attraction_sgm_group = 'multi-attracted man'
+      end
     end
   end
 
