@@ -103,9 +103,10 @@ class SurveyResponse < ApplicationRecord
 
   def set_attraction_sgm_group
     if attraction_eligible?
-      self.attraction_sgm_group = 'blank' if sexual_attraction.blank?
       attractions = sexual_attraction&.split(',')
-      if attractions&.size == 1
+      if attractions.blank?
+        self.attraction_sgm_group = 'blank'
+      elsif attractions.size == 1
         attr_val = attractions.first.strip
         case gender_identity
         when '1','10'
@@ -113,6 +114,8 @@ class SurveyResponse < ApplicationRecord
         when '2','11'
           self.attraction_sgm_group = male_attraction_grouping(attr_val)
         end
+      elsif attractions.size > 1
+        attraction_grouping_2(attractions)
       end
     else
       self.attraction_sgm_group = nil
@@ -147,6 +150,15 @@ class SurveyResponse < ApplicationRecord
       'asexual'
     when '7','88'
       'no group'
+    end
+  end
+
+  def attraction_grouping_2(attractions)
+    case gender_identity
+    when '1','10'
+      self.attraction_sgm_group = 'multi-attracted woman' if attractions.any? { |a| %w[1 2].include?(a.strip) } && attractions.any? { |a| %w[3 4 5 6 7].include?(a.strip) }
+    when '2','11'
+      self.attraction_sgm_group = 'multi-attracted man' if attractions.any? { |a| %w[3 4].include?(a.strip) } && attractions.any? { |a| %w[1 2 5 6 7].include?(a.strip) }
     end
   end
 
@@ -338,7 +350,7 @@ class SurveyResponse < ApplicationRecord
     end
     self.gender_identity = values['Gender_Identity']
     self.sexual_orientation = values['Sexual_Orientation']
-    self.sexual_attraction = values['QID35']&.join(',') if values['QID35'].present?
+    self.sexual_attraction = values['QID35']&.sort&.join(',') if values['QID35'].present?
   end
 
   def parse_gender(labels)
