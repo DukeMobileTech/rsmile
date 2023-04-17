@@ -29,9 +29,9 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
 
   csv do
     column :survey_uuid
-    column :participant, &:email
-    column :participant, &:phone_number
-    column :participant, &:self_generated_id
+    column :email, &:email
+    column :phone, &:phone_number
+    column :self_gen_id, &:self_generated_id
     column :country
     column :language
     column :id
@@ -48,6 +48,9 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
     column :attraction_sgm_group
     column :source, &:source_label
     column :ip_address
+    column :class, &:network_class
+    column :network, &:ip_network
+    column :host, &:ip_host
     column :created_at
   end
 

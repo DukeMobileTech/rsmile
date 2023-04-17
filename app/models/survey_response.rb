@@ -413,4 +413,40 @@ class SurveyResponse < ApplicationRecord
       'Unknown'
     end
   end
+
+  def network_class
+    octet = ip_address&.split('.')&.first&.to_i
+    case octet
+    when 1..127
+      'A'
+    when 128..191
+      'B'
+    when 192..223
+      'C'
+    end
+  end
+
+  def ip_network
+    octets = ip_address&.split('.')
+    case network_class
+    when 'A'
+      octets&.first
+    when 'B'
+      octets&.first(2)&.join('.')
+    when 'C'
+      octets&.first(3)&.join('.')
+    end
+  end
+
+  def ip_host
+    octets = ip_address&.split('.')
+    case network_class
+    when 'A'
+      octets&.last(3)&.join('.')
+    when 'B'
+      octets&.last(2)&.join('.')
+    when 'C'
+      octets&.last
+    end
+  end
 end
