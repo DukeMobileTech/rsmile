@@ -305,9 +305,17 @@ class SurveyResponse < ApplicationRecord
                           end
     end
     rs = response_sources.flatten
-    (0..11).each do |hf|
+    (0..18).each do |hf|
+      next if hf == 3 && country_name != 'Brazil'
       next if hf == 9 && country_name == 'Vietnam'
       next if hf == 10 && country_name != 'Vietnam'
+      next if hf == 12 && country_name != 'Vietnam'
+      next if hf == 13 && country_name != 'Vietnam'
+      next if hf == 14 && country_name != 'Vietnam'
+      next if hf == 15 && country_name != 'Vietnam'
+      next if hf == 16 && country_name != 'Vietnam'
+      next if hf == 17 && country_name != 'Vietnam'
+      next if hf == 18 && country_name != 'Vietnam'
 
       source_count[named_source(hf.to_s)] = rs.count { |element| element.strip == hf.to_s }
     end
