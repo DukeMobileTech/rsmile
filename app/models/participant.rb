@@ -21,6 +21,7 @@
 #  verified                 :boolean          default(FALSE)
 #  resume_code              :string
 #  verification_code        :string
+#  include                  :boolean          default(TRUE)
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy
@@ -100,14 +101,29 @@ class Participant < ApplicationRecord
     end
   end
 
+  # Include participants who have the following characteristics:
+  # i) have include = true
+  # ii) the sgm_group is not 'blank', not 'ineligible', and not 'no group'
+  # iii) have completed the baseline survey
+  def self.eligible_participants
+    Participant.includes(:survey_responses)
+               .where(include: true)
+               .where.not(sgm_group: ['blank', 'ineligible', 'no group'])
+               .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+               .where(survey_responses: { survey_complete: true })
+  end
+
+  def self.survey_titles
+    ['SMILE Contact Info Form - Baseline', 'SMILE Consent', 'SMILE Survey - Baseline',
+     'Safety Planning']
+  end
+
   def self.summary_stats
     stats = {}
     surveys = SurveyResponse.all.includes([:participant])
-    survey_titles = ['SMILE Contact Info Form - Baseline', 'SMILE Consent', 'SMILE Survey - Baseline',
-                     'Safety Planning']
-    Participant.all.group_by(&:country).each do |country, participants|
+    eligible_participants.group_by(&:country).each do |country, participants|
       country_surveys = surveys.select { |s| s.country == country }
-      stats[country] = { 'participants': participants.size }
+      stats[country] = { participants: participants.size }
       survey_titles.each do |title|
         title_surveys = country_surveys.select { |s| s.survey_title == title }
         if title == 'SMILE Survey - Baseline'
@@ -136,7 +152,7 @@ class Participant < ApplicationRecord
 
   def self.sgm_stats(kountry)
     stats = {}
-    participants = Participant.where(country: kountry)
+    participants = eligible_participants.where(country: kountry)
     all_sgm_groups.each do |group|
       stats[group] = participants.count { |participant| participant.sgm_group == group }
     end
@@ -146,7 +162,9 @@ class Participant < ApplicationRecord
   def self.blank_stats(kountry)
     no_baseline = []
     baseline_started = []
-    participants = Participant.where(country: kountry).where(sgm_group: 'blank')
+    participants = Participant.where(include: true)
+                              .where(country: kountry)
+                              .where(sgm_group: 'blank')
     participants.each do |part|
       if !part.contacts.empty? & part.baselines.empty?
         no_baseline << part
@@ -160,17 +178,11 @@ class Participant < ApplicationRecord
 
   def self.weekly_statistics(kountry)
     stats = []
-    participants = Participant.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%Y',
-                                                                                  week_start: :monday).count
-    eligible = Participant.where(country: kountry).where.not(sgm_group: 'ineligible').where.not(sgm_group: 'blank').group_by_week(
-      :created_at, format: '%m/%d/%Y', week_start: :monday
-    ).count
+    participants = eligible_participants.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%Y', week_start: :monday).count
     total = []
+    index = 0
     participants.each do |week, count|
       total << { week => [count] }
-    end
-    index = 0
-    eligible.each do |week, count|
       list = total[index][week]
       list << count
       stats << { week => list }
@@ -192,13 +204,6 @@ class Participant < ApplicationRecord
       { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil }
     end
   end
-
-  # def self.existing_user(address, sgi)
-  #   sgi = nil if sgi.empty?
-  #   participant = find_by(email: address&.downcase&.strip, self_generated_id: sgi)
-  #   { id: participant&.id, self_generated_id: participant&.self_generated_id,
-  #     country: participant&.country, verified: participant&.verified }
-  # end
 
   def to_s
     "#{self_generated_id} #{email}"

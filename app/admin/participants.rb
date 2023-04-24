@@ -1,7 +1,8 @@
 ActiveAdmin.register Participant do
   menu priority: 1
-  config.per_page = [25, 50, 100]
+  config.per_page = [25, 50, 100, 250, 500, 1000, 2500, 5000, 10_000]
   actions :all, except: %i[new]
+  permit_params :include
 
   collection_action :enrollment, method: :get do
     redirect_to resource_path
@@ -38,6 +39,7 @@ ActiveAdmin.register Participant do
     column :phone_number
     column :country
     column :self_generated_id
+    column :include
     column :sgm_group
     column :verified
     column :verification_code
@@ -66,5 +68,12 @@ ActiveAdmin.register Participant do
     column :created_at
     column :updated_at
     actions
+  end
+
+  form do |f|
+    f.inputs 'Details' do
+      f.input :include
+    end
+    f.actions
   end
 end

@@ -14,6 +14,7 @@
 #  eligible        :boolean          default(TRUE)
 #  consented       :boolean          default(TRUE)
 #  metadata        :hstore
+#  duplicate       :boolean          default(FALSE)
 #
 class SurveyResponseSerializer < ActiveModel::Serializer
   attributes :id, :participant_id, :survey_uuid, :response_uuid, :survey_complete, :survey_title, :country, :consented, :eligible
