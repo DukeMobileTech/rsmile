@@ -4,7 +4,6 @@
       <button type="button" class="btn btn-outline-secondary" @click="goBack">Back</button>
     </div>
     <h5>{{countryName}}</h5>
-    <Consents :country-name="countryName"></Consents>
     <StudySource :country-name="countryName"></StudySource>
     <SgmGroups :country-name="countryName"></SgmGroups>
     <Baselines :country-name="countryName"></Baselines>
@@ -16,7 +15,6 @@
 import ParticipantsOverTime from './ParticipantsOverTime';
 import StudySource from './StudySource';
 import SgmGroups from './SgmGroups';
-import Consents from './Consents';
 import Baselines from './Baselines';
 
 export default {
@@ -30,7 +28,6 @@ export default {
     ParticipantsOverTime,
     StudySource,
     SgmGroups,
-    Consents,
     Baselines,
   },
 

@@ -6,7 +6,7 @@
     <div class="card-body">
       <div class="row">
         <div class="col">
-          <CountryTable :data-obj="sgmGroups" :first-header="'SGM Group'" :second-header="'Count'" />
+          <ProgressTable :data-obj="sgmGroups" />
         </div>
         <div class="col">
           <PieChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></PieChart>
@@ -28,6 +28,7 @@
 import axios from 'axios';
 import PieChart from './charts/PieChart';
 import CountryTable from './CountryTable';
+import ProgressTable from './ProgressTable';
 
 export default {
   name: 'SgmGroups',
@@ -53,6 +54,7 @@ export default {
   components: {
     PieChart,
     CountryTable,
+    ProgressTable,
   },
 
   activated: function () {
