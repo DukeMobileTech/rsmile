@@ -5,11 +5,27 @@
     </div>
     <div class="card-body">
       <div class="row">
-        <div class="col">
-          <CountryTable :data-obj="surveySources" :first-header="'Source'" :second-header="'Count'" />
-        </div>
-        <div class="col">
-          <PieChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></PieChart>
+        <PieChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></PieChart>
+      </div>
+      <div class="row">
+        <SourceTable v-if="showSource" :country-name="countryName" :source="source" />
+        <div v-else>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(value, key, index) in surveySources" :key="key">
+                  <td class="link-primary" @click="setSource(key)">{{namedSource(key)}}</td>
+                  <td>{{value}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -19,7 +35,7 @@
 <script>
 import axios from 'axios';
 import PieChart from './charts/PieChart';
-import CountryTable from './CountryTable';
+import SourceTable from './SourceTable';
 
   export default {
     name: 'StudySource',
@@ -35,6 +51,8 @@ import CountryTable from './CountryTable';
           maintainAspectRatio: false
         },
       chartData: {},
+      source: null,
+      showSource: false,
     }),
 
     props: {
@@ -43,7 +61,7 @@ import CountryTable from './CountryTable';
 
     components: {
       PieChart,
-      CountryTable,
+      SourceTable,
     },
 
     activated: function () {
@@ -51,6 +69,64 @@ import CountryTable from './CountryTable';
     },
 
     methods: {
+      namedSource(number) {
+        let name = '';
+        switch (number) {
+          case '0':
+            name = 'Not Indicated'; break;
+          case '1':
+            name = 'Radio advertisement'; break;
+          case '2':
+            name = 'TV advertisement'; break;
+          case '3':
+            name = 'Podcast'; break;
+          case '4':
+            name = 'Billboard / sign / poster / pamphlet / newspaper advertisement'; break;
+          case '5':
+            name = 'Newspaper article / magazine article / newsletter'; break;
+          case '6':
+            name = 'Social media advertisement'; break;
+          case '7':
+            name = 'Social media post / discussion'; break;
+          case '8':
+            name = 'Friend / family member / acquaintance'; break;
+          case '9':
+            name = 'Local organization'; break;
+          case '10':
+            name = 'Local organization / peer educator'; break;
+          case '11':
+            name = 'Other'; break;
+          case '12':
+            name = 'VTC Team CBO'; break;
+          case '13':
+            name = 'FTM Vietnam Organization'; break;
+          case '14':
+            name = 'CSAGA'; break;
+          case '15':
+            name = 'BE+ Clun in University of Social Sciences and Humanities (HCMUSSH)'; break;
+          case '16':
+            name = 'Event Club in Van Lang University'; break;
+          case '17':
+            name = 'Club in Can Tho University'; break;
+          case '18':
+            name = 'RMIT University Vietnam'; break;
+          case '19':
+            name = 'YKAP Vietnam'; break;
+          case '20':
+            name = 'Song Tre Son La'; break;
+          case '21':
+            name = 'The Leader House An Giang'; break;
+          case '22':
+            name = 'Vuot Music Video'; break;
+          case '23':
+            name = 'Motive Agency'; break;
+          case '24':
+            name = 'Social work Club from University of Labour and Social Affairs 2'; break;
+          default:
+            name = number;
+        }
+        return name;
+      },
       fetchSourceData() {
         this.loaded = false;
         axios.get(`${this.$basePrefix}survey_responses/sources`, { params: {country: this.countryName } })
@@ -58,12 +134,16 @@ import CountryTable from './CountryTable';
           this.surveySources = response.data;
           let surveyResponses = response.data;
           let sources = Object.keys(surveyResponses);
+          let sourceNames = [];
+          sources.forEach((source) => {
+            sourceNames.push(this.namedSource(source));
+          });
           let counts = [];
           sources.forEach((source) => {
             counts.push(surveyResponses[source]);
           });
           this.chartData = {
-            labels: sources,
+            labels: sourceNames,
             datasets: [{
               borderWidth: 1,
               backgroundColor: [
@@ -86,6 +166,12 @@ import CountryTable from './CountryTable';
               'rgba(12, 80, 220, 0.4)',
               'rgba(255, 169, 184, 0.85)',
               'rgba(140, 125, 255, 0.8)',
+              'rgba(75, 60, 189, 0.8)',
+              'rgba(60, 160, 189, 0.8)',
+              'rgba(60, 189, 79, 0.69)',
+              'rgba(10, 82, 21, 0.6)',
+              'rgba(122, 138, 78, 0.86)',
+              'rgba(37, 6, 63, 0.52)',
               ],
               data: counts,
             }],
@@ -93,6 +179,13 @@ import CountryTable from './CountryTable';
           this.loaded = true;
         });
       },
+      setSource(source) {
+       this.source = source;
+       this.setShowSource(true);
+     },
+     setShowSource(visible) {
+       this.showSource = visible;
+     },
     },
   }
 </script>

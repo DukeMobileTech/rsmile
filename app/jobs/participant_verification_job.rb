@@ -7,7 +7,7 @@ class ParticipantVerificationJob < ApplicationJob
       to = participant.email
       channel = 'email'
     else
-      to = participant.phone_number
+      to = participant.phone_number.strip
       channel = 'sms'
     end
     account_sid = Rails.application.credentials.config[:TWILIO_SID]

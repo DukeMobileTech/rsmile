@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       get '/sgm_groups' => 'participants#sgm_groups'
       get '/grouped' => 'participants#grouped'
       get '/blank_stats' => 'participants#blank_stats'
+      get '/source_timeline' => 'participants#source_timeline'
     end
   end
   resources :survey_responses, only: [] do

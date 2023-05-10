@@ -356,6 +356,20 @@ class Participant < ApplicationRecord
     'Years'
   end
 
+  def self.source_timeline(kountry, source)
+    # ids = eligible_participants.where(country: kountry).pluck(:id)
+    #                                     # .where("survey_responses.metadata -> 'source' = :value", value: source)
+    # # participants.select {|participant| participant.survey_responses.even? }
+    # sr = SurveyResponse.where(id: ids).where(duplicate: false)
+    #                    .where(survey_title: 'SMILE Survey - Baseline')
+    #                    .where(survey_complete: true)
+
+    #                    # sr = SurveyResponse.group_by_week(:created_at, format: '%m/%d/%Y', week_start: :monday)
+    # sr.unscope(:order).group_by_week(:created_at, format: '%m/%d/%Y', week_start: :monday).each do |week, survey_responses|
+    #   puts "#{week} - #{survey_responses.count}"
+    # end
+  end
+
   private
 
   def assign_identifiers

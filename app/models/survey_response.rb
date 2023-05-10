@@ -71,8 +71,8 @@ class SurveyResponse < ApplicationRecord
     participant&.self_generated_id
   end
 
-  def self.named_source(name)
-    case name
+  def self.named_source(num)
+    case num
     when '0'
       'Not Indicated'
     when '1'
@@ -111,6 +111,20 @@ class SurveyResponse < ApplicationRecord
       'From a Club in Can Tho University'
     when '18'
       'From RMIT University Vietnam'
+    when '19'
+      'From YKAP Vietnam'
+    when '20'
+      'From Song Tre Son La'
+    when '21'
+      'From The Leader House An Giang'
+    when '22'
+      'From Vuot Music Video'
+    when '23'
+      'From Motive Agency'
+    when '24'
+      'From Social work Club from University of Labour and Social Affairs 2'
+    else
+      num
     end
   end
 
@@ -306,19 +320,12 @@ class SurveyResponse < ApplicationRecord
                           end
     end
     rs = response_sources.flatten
-    (0..18).each do |hf|
+    (0..24).each do |hf|
       next if hf == 3 && country_name != 'Brazil'
       next if hf == 9 && country_name == 'Vietnam'
-      next if hf == 10 && country_name != 'Vietnam'
-      next if hf == 12 && country_name != 'Vietnam'
-      next if hf == 13 && country_name != 'Vietnam'
-      next if hf == 14 && country_name != 'Vietnam'
-      next if hf == 15 && country_name != 'Vietnam'
-      next if hf == 16 && country_name != 'Vietnam'
-      next if hf == 17 && country_name != 'Vietnam'
-      next if hf == 18 && country_name != 'Vietnam'
+      next if country_name != 'Vietnam' && [10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].include?(hf)
 
-      source_count[named_source(hf.to_s)] = rs.count { |element| element.strip == hf.to_s }
+      source_count[hf.to_s] = rs.count { |element| element.strip == hf.to_s }
     end
     source_count
   end

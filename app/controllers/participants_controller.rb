@@ -14,4 +14,8 @@ class ParticipantsController < ApplicationController
   def blank_stats
     render json: Participant.blank_stats(params[:country])
   end
+
+  def source_timeline
+    render json: Participant.source_timeline(params[:country], params[:source])
+  end
 end
