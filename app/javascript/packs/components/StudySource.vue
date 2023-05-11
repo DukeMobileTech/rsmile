@@ -3,9 +3,9 @@
     <div class="card-header">
       <h5 class="card-title">How did you hear about this study?</h5>
     </div>
-    <div class="card-body">
+    <div v-if="loaded" class="card-body">
       <div class="row">
-        <PieChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></PieChart>
+        <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
       </div>
       <div class="row">
         <SourceTable v-if="showSource" :country-name="countryName" :source="source" />
@@ -56,7 +56,7 @@ import SourceTable from './SourceTable';
     }),
 
     props: {
-        countryName: String
+        countryName: String,
     },
 
     components: {

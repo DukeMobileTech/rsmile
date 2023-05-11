@@ -4,12 +4,13 @@
       <h5 class="card-title">SGM Groups</h5>
     </div>
     <div class="card-body">
-      <div class="row">
+      <div v-if="loading" class="loading">Loading...</div>
+      <div v-else class="row">
         <div class="col">
           <ProgressTable :data-obj="sgmGroups" />
         </div>
         <div class="col">
-          <PieChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></PieChart>
+          <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
         </div>
       </div>
       <div class="row">
@@ -34,7 +35,7 @@ export default {
   name: 'SgmGroups',
 
   data: () => ({
-    loaded: false,
+    loading: false,
     chartOptions: {
         legend: {
           display: true
@@ -64,7 +65,7 @@ export default {
 
   methods: {
     fetchSgmData() {
-      this.loaded = false;
+      this.loading = true;
       axios.get(`${this.$basePrefix}participants/sgm_groups`, { params: {country: this.countryName } })
       .then(response => {
         this.sgmGroups = response.data;
@@ -91,7 +92,7 @@ export default {
             data: counts,
           }],
         };
-        this.loaded = true;
+        this.loading = false;
       });
     },
 

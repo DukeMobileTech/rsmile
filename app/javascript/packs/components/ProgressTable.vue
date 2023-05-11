@@ -10,13 +10,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(value, key, index) in dataObj" :key="key">
+        <tr v-for="(value, key, index) in dataObj" :key="index">
           <td>{{key}}</td>
           <td>{{value}}</td>
           <td v-if="['ineligible', 'blank', 'no group'].includes(key)"></td>
           <td v-else>500</td>
           <td v-if="['ineligible', 'blank', 'no group'].includes(key)"></td>
           <td v-else> {{((value / 500) * 100).toFixed(1)}} %</td>
+        </tr>
+        <tr>
+          <td><strong>Total</strong></td>
+          <td><strong>{{sum}}</strong></td>
+          <td><strong>3500</strong></td>
+          <td><strong>{{progress}} %</strong></td>
         </tr>
       </tbody>
     </table>
@@ -29,6 +35,22 @@ export default {
 
   props: {
       dataObj: Object,
+  },
+
+  data: () => ({
+    sum: 0,
+    progress: 0,
+  }),
+
+  created: function () {
+    this.computeData();
+  },
+
+  methods: {
+    computeData() {
+      this.sum = Object.values(this.dataObj).reduce((ps, v) => ps + v, 0);
+      this.progress = ((this.sum / 3500) * 100).toFixed(1);
+    }
   },
 }
 </script>
