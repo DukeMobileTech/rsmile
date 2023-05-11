@@ -310,8 +310,12 @@ class SurveyResponse < ApplicationRecord
   def self.survey_sources(country_name)
     source_count = {}
     response_sources = []
-    responses = SurveyResponse.where(country: country_name, survey_title: 'SMILE Survey - Baseline')
-    sources = responses.map { |response| response.source }
+    ids = Participant.eligible_participants.where(country: country_name).pluck(:id)
+    responses = SurveyResponse.where(participant_id: ids)
+                              .where(survey_title: 'SMILE Survey - Baseline')
+                              .where(survey_complete: true)
+                              .where(duplicate: false)
+    sources = responses.map(&:source)
     sources.each do |src|
       response_sources << if src.blank?
                             '0'

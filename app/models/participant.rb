@@ -357,17 +357,26 @@ class Participant < ApplicationRecord
   end
 
   def self.source_timeline(kountry, source)
-    # ids = eligible_participants.where(country: kountry).pluck(:id)
-    #                                     # .where("survey_responses.metadata -> 'source' = :value", value: source)
-    # # participants.select {|participant| participant.survey_responses.even? }
-    # sr = SurveyResponse.where(id: ids).where(duplicate: false)
-    #                    .where(survey_title: 'SMILE Survey - Baseline')
-    #                    .where(survey_complete: true)
-
-    #                    # sr = SurveyResponse.group_by_week(:created_at, format: '%m/%d/%Y', week_start: :monday)
-    # sr.unscope(:order).group_by_week(:created_at, format: '%m/%d/%Y', week_start: :monday).each do |week, survey_responses|
-    #   puts "#{week} - #{survey_responses.count}"
-    # end
+    Groupdate.week_start = :monday
+    ids = eligible_participants.where(country: kountry).pluck(:id)
+    responses = SurveyResponse.where(participant_id: ids)
+                              .where(survey_title: 'SMILE Survey - Baseline')
+                              .where(survey_complete: true)
+                              .where(duplicate: false)
+    responses_by_source = if source == '0'
+                            responses.select { |r| r.source.blank? }
+                                     .group_by_week(format: '%m/%d/%y') { |r| r.created_at }
+                                     .to_h { |k, v| [k, v.count] }
+                          else
+                            responses.select { |r| r.source&.split(',')&.include?(source) }
+                                     .group_by_week(format: '%m/%d/%y') { |r| r.created_at }
+                                     .to_h { |k, v| [k, v.count] }
+                          end
+    weeklies = []
+    responses_by_source.each do |week, count|
+      weeklies << { week => count } if count.positive?
+    end
+    weeklies
   end
 
   private

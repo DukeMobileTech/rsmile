@@ -6,12 +6,12 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th>Weekly Recruitment</th>
+            <th v-for="(week, index) in weeks" :key="index">{{week}}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Weekly Counts</td>
+            <td v-for="(count, index) in counts" :key="index">{{count}}</td>
           </tr>
         </tbody>
       </table>
@@ -26,7 +26,8 @@ export default {
    name: 'SourceTable', 
 
    data: () => ({
-      surveySources: {},
+      weeks: [],
+      counts: [],
       loaded: false,
     }),
 
@@ -36,25 +37,21 @@ export default {
         showSource: Boolean,
     },
 
-  activated: function () {
-    this.fetchSourceData();
+  created: function () {
+    this.fetchWeeklySourceData();
   },
 
   methods: {
-      fetchSourceData() {
+      fetchWeeklySourceData() {
         this.loaded = false;
         axios.get(`${this.$basePrefix}participants/source_timeline`, { params: {country: this.countryName, source: this.source } })
-        .then(response => {
-          // this.surveySources = response.data;
-          // let surveyResponses = response.data;
-          // console.log(surveyResponses);
-          // let sources = Object.keys(surveyResponses);
-          // let counts = [];
-          // sources.forEach((source) => {
-          //   counts.push(surveyResponses[source]);
-          // });
-          // this.loaded = true;
-        });
+             .then(response => {
+                response.data.forEach((datum) => {
+                  this.weeks.push(Object.keys(datum)[0]);
+                  this.counts.push(Object.values(datum)[0]);
+                });
+                this.loaded = true;
+             });
       },
       goBack() {
         this.$parent.setShowSource(false);
