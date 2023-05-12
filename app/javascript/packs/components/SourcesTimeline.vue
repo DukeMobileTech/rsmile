@@ -28,12 +28,9 @@ import axios from 'axios';
 export default {
    name: 'SourcesTimeline', 
 
-   data: () => ({
-      weeks: [],
-      counts: [],
-      loaded: false,
-      sources: [],
-    }),
+   data() {
+      return this.initialState();
+   },
 
    props: {
         countryName: String,
@@ -44,6 +41,17 @@ export default {
   },
 
   methods: {
+    initialState() {
+        return {
+          weeks: [],
+          counts: [],
+          loaded: false,
+          sources: [],
+        }
+    },
+    reset() {
+        Object.assign(this.$data, this.initialState());
+    },
     fetchWeeklySourceData() {
       this.loaded = false;
       axios.get(`${this.$basePrefix}participants/weekly_stats`, { params: {country: this.countryName } })
@@ -70,9 +78,10 @@ export default {
           });
     },
     goBack() {
+      this.reset();
       this.$parent.setShowSource(false);
     },
-    },
+  },
 }
 </script>
 
@@ -80,5 +89,12 @@ export default {
 h5 {
   font-size: 1.5em;
   text-align: center;
+}
+
+.table th:first-child,
+.table td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: whitesmoke;
 }
 </style>
