@@ -39,6 +39,7 @@ gem 'rack-cors', '~> 1.1', '>= 1.1.1'
 gem 'rswag-api', '~> 2.8'
 gem 'rswag-ui', '~> 2.8'
 gem 'sidekiq', '~> 6.5', '>= 6.5.8'
+gem 'sorted_set', '~> 1.0', '>= 1.0.3'
 gem 'twilio-ruby', '~> 5.59.0'
 
 group :development, :test do

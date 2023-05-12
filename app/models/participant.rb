@@ -1,3 +1,5 @@
+require 'sorted_set'
+
 # == Schema Information
 #
 # Table name: participants
@@ -356,13 +358,17 @@ class Participant < ApplicationRecord
     'Years'
   end
 
+  def self.eligible_baselines(kountry)
+    ids = eligible_participants.where(country: kountry).pluck(:id)
+    SurveyResponse.where(participant_id: ids)
+                  .where(survey_title: 'SMILE Survey - Baseline')
+                  .where(survey_complete: true)
+                  .where(duplicate: false)
+  end
+
   def self.source_timeline(kountry, source)
     Groupdate.week_start = :monday
-    ids = eligible_participants.where(country: kountry).pluck(:id)
-    responses = SurveyResponse.where(participant_id: ids)
-                              .where(survey_title: 'SMILE Survey - Baseline')
-                              .where(survey_complete: true)
-                              .where(duplicate: false)
+    responses = eligible_baselines(kountry)
     responses_by_source = if source == '0'
                             responses.select { |r| r.source.blank? }
                                      .group_by_week(format: '%m/%d/%y') { |r| r.created_at }
@@ -377,6 +383,52 @@ class Participant < ApplicationRecord
       weeklies << { week => count } if count.positive?
     end
     weeklies
+  end
+
+  def self.all_sources_timeline(kountry)
+    Groupdate.week_start = :monday
+    responses = eligible_baselines(kountry)
+    sources = {}
+    weeks = SortedSet.new
+    25.times do |num|
+      next if num == 3 && kountry != 'Brazil'
+      next if num == 9 && kountry == 'Vietnam'
+      next if kountry != 'Vietnam' && [10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].include?(num)
+
+      responses_by_source = if num.zero?
+                              responses.select { |r| r.source.blank? }
+                                       .group_by_week(format: '%m/%d/%y') { |r| r.created_at }
+                                       .to_h { |k, v| [k, v.count] }
+                            else
+                              responses.select { |r| r.source&.split(',')&.include?(num.to_s) }
+                                       .group_by_week(format: '%m/%d/%y') { |r| r.created_at }
+                                       .to_h { |k, v| [k, v.count] }
+                            end
+      weeklies = {}
+      responses_by_source.each do |week, count|
+        next unless count.positive?
+
+        weeklies[week] = count
+        weeks << Date.strptime(week, '%m/%d/%y')
+      end
+      sources[num] = weeklies
+    end
+    final_sources = {}
+    sources.each do |source, weeklies|
+      next if weeklies.blank?
+
+      source_week_list = []
+      weeks.each do |week|
+        week_str = week.strftime('%m/%d/%y')
+        source_week_list << if weeklies[week_str].nil?
+                              { week_str => 0 }
+                            else
+                              { week_str => weeklies[week_str] }
+                            end
+      end
+      final_sources[source] = source_week_list
+    end
+    final_sources
   end
 
   private

@@ -18,4 +18,8 @@ class ParticipantsController < ApplicationController
   def source_timeline
     render json: Participant.source_timeline(params[:country], params[:source])
   end
+
+  def weekly_stats
+    render json: Participant.all_sources_timeline(params[:country])
+  end
 end

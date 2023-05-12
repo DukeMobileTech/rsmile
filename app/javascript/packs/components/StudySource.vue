@@ -29,6 +29,9 @@
         </div>
       </div>
     </div>
+    <div class="card-body">
+      <SourcesTimeline :country-name="countryName" />
+    </div>
   </div>
 </template>
 
@@ -36,6 +39,7 @@
 import axios from 'axios';
 import PieChart from './charts/PieChart';
 import SourceTable from './SourceTable';
+import SourcesTimeline from './SourcesTimeline';
 
   export default {
     name: 'StudySource',
@@ -62,6 +66,7 @@ import SourceTable from './SourceTable';
     components: {
       PieChart,
       SourceTable,
+      SourcesTimeline,
     },
 
     activated: function () {
