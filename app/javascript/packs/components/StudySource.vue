@@ -28,9 +28,9 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="card-body">
-      <SourcesTimeline :country-name="countryName" />
+      <div class="row">
+        <SourcesTimeline :country-name="countryName" />
+      </div>
     </div>
   </div>
 </template>

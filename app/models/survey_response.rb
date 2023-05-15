@@ -309,27 +309,22 @@ class SurveyResponse < ApplicationRecord
 
   def self.survey_sources(country_name)
     source_count = {}
-    response_sources = []
     ids = Participant.eligible_participants.where(country: country_name).pluck(:id)
     responses = SurveyResponse.where(participant_id: ids)
                               .where(survey_title: 'SMILE Survey - Baseline')
                               .where(survey_complete: true)
                               .where(duplicate: false)
-    sources = responses.map(&:source)
-    sources.each do |src|
-      response_sources << if src.blank?
-                            '0'
-                          else
-                            src.split(',')
-                          end
-    end
-    rs = response_sources.flatten
-    (0..24).each do |hf|
+    25.times do |hf|
       next if hf == 3 && country_name != 'Brazil'
       next if hf == 9 && country_name == 'Vietnam'
       next if country_name != 'Vietnam' && [10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].include?(hf)
 
-      source_count[hf.to_s] = rs.count { |element| element.strip == hf.to_s }
+      count = if hf.zero?
+                responses.select { |r| r.source.blank? }.size
+              else
+                responses.select { |r| r.source&.split(',')&.include?(hf.to_s) }.size
+              end
+      source_count[hf.to_s] = count if count.positive?
     end
     source_count
   end
