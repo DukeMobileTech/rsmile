@@ -2,7 +2,9 @@
   <div id="app" class="container">
     <nav class="navbar navbar-light bg-light mt-2 mb-2">
         <div class="container-fluid">
-        <div class="nav-item"><h1>{{ message }}</h1></div>
+        <div class="nav-item">
+          <img v-bind:src="require('images/smile.png')" alt="SMILE Study">
+        </div>
         <div class="nav-item">
           <button v-on:click="linkToAdmin" class="btn btn-link" >Admin</button>
         </div>
