@@ -3,7 +3,7 @@
     <nav class="navbar navbar-light bg-light mt-2 mb-2">
         <div class="container-fluid">
         <div class="nav-item">
-          <img v-bind:src="require('images/smile.png')" alt="SMILE Study">
+          <img v-bind:src="logo" alt="SMILE Study">
         </div>
         <div class="nav-item">
           <button v-on:click="linkToAdmin" class="btn btn-link" >Admin</button>
@@ -26,10 +26,15 @@
 
 export default {
   data: function () {
+    let image = require('images/smile.png');
+    if (process.env.NODE_ENV !== 'development') {
+      image = this.$basePrefix.substring(0, this.$basePrefix.length - 1) + image;
+    }
     return {
       message: "SMILE Study",
       admin: `${this.$basePrefix}admin`,
       country: null,
+      logo: image,
     }
   },
 
