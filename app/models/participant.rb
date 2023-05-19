@@ -108,9 +108,14 @@ class Participant < ApplicationRecord
   def self.eligible_participants
     Participant.includes(:survey_responses)
                .where(include: true)
-               .where.not(sgm_group: ['blank', 'ineligible', 'no group'])
+               .where.not(sgm_group: ineligible_sgm_groups)
                .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
                .where(survey_responses: { survey_complete: true })
+  end
+
+  def self.ineligible_participants
+    Participant.where(include: true)
+               .where(sgm_group: ineligible_sgm_groups)
   end
 
   def self.survey_titles
@@ -150,10 +155,28 @@ class Participant < ApplicationRecord
      'man attracted to men', 'multi-attracted woman', 'multi-attracted man', 'no group', 'ineligible', 'blank']
   end
 
-  def self.sgm_stats(kountry)
+  def self.eligible_sgm_groups
+    ['woman attracted to women', 'man attracted to men', 'multi-attracted woman',
+     'multi-attracted man', 'non-binary person', 'transgender woman', 'transgender man']
+  end
+
+  def self.ineligible_sgm_groups
+    ['blank', 'ineligible', 'no group']
+  end
+
+  def self.eligible_sgm_stats(kountry)
     stats = {}
     participants = eligible_participants.where(country: kountry)
-    all_sgm_groups.each do |group|
+    eligible_sgm_groups.each do |group|
+      stats[group] = participants.count { |participant| participant.sgm_group == group }
+    end
+    stats
+  end
+
+  def self.ineligible_sgm_stats(kountry)
+    stats = {}
+    participants = ineligible_participants.where(country: kountry)
+    ineligible_sgm_groups.each do |group|
       stats[group] = participants.count { |participant| participant.sgm_group == group }
     end
     stats

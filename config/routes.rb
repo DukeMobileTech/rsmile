@@ -37,7 +37,8 @@ Rails.application.routes.draw do
   root 'landing#index'
   resources :participants, only: [:index] do
     collection do
-      get '/sgm_groups' => 'participants#sgm_groups'
+      get '/eligible_sgm_stats' => 'participants#eligible_sgm_stats'
+      get '/ineligible_sgm_stats' => 'participants#ineligible_sgm_stats'
       get '/grouped' => 'participants#grouped'
       get '/blank_stats' => 'participants#blank_stats'
     end

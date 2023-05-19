@@ -3,8 +3,12 @@ class ParticipantsController < ApplicationController
     render json: Participant.summary_stats
   end
 
-  def sgm_groups
-    render json: Participant.sgm_stats(params[:country])
+  def eligible_sgm_stats
+    render json: Participant.eligible_sgm_stats(params[:country])
+  end
+
+  def ineligible_sgm_stats
+    render json: Participant.ineligible_sgm_stats(params[:country])
   end
 
   def grouped

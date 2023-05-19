@@ -5,22 +5,19 @@
         <tr>
           <th>SGM Group</th>
           <th>Recruited</th>
-          <th>Target</th>
-          <th>Progress</th>
+          <th>Percentage</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(value, key, index) in dataObj" :key="index">
           <td>{{key}}</td>
           <td>{{value}}</td>
-          <td>500</td>
-          <td>{{((value / 500) * 100).toFixed(1)}} %</td>
+          <td v-if="loaded">{{((value / sum) * 100).toFixed(1)}} %</td>
         </tr>
         <tr>
           <td><strong>Total</strong></td>
-          <td><strong>{{sum}}</strong></td>
-          <td><strong>3500</strong></td>
-          <td><strong>{{progress}} %</strong></td>
+          <td v-if="loaded"><strong>{{sum}}</strong></td>
+          <td><strong>100 %</strong></td>
         </tr>
       </tbody>
     </table>
@@ -29,7 +26,7 @@
 
 <script>
 export default {
-  name: 'ProgressTable',
+  name: 'IneligibleTable',
 
   props: {
       dataObj: Object,
@@ -38,16 +35,24 @@ export default {
   data: () => ({
     sum: 0,
     progress: 0,
+    loaded: false,
   }),
 
   created: function () {
     this.computeData();
   },
 
+  watch: {
+    dataObj: function () {
+      this.computeData();
+    }
+  },
+
   methods: {
     computeData() {
+      this.loaded = false;
       this.sum = Object.values(this.dataObj).reduce((ps, v) => ps + v, 0);
-      this.progress = ((this.sum / 3500) * 100).toFixed(1);
+      this.loaded = true;
     }
   },
 }

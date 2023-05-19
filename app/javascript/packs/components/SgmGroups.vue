@@ -13,11 +13,13 @@
           <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
         </div>
       </div>
-      <div class="row">
-        <div class="card-header">
-          <h5 class="card-title">Blank Breakdown</h5>
+      <div class="row mt-3 border-top">
+        <div class="col pt-1">
+          <p>Ineligible Breakdown</p>
+          <IneligibleTable :data-obj="ineligibleSgmGroups" />
         </div>
-        <div>
+        <div class="col pt-1">
+          <p>Blank Breakdown</p>
           <CountryTable :data-obj="blankStats" :first-header="'Survey Progress'" :second-header="'Count'" />
         </div>
       </div>
@@ -30,6 +32,7 @@ import axios from 'axios';
 import PieChart from './charts/PieChart';
 import CountryTable from './CountryTable';
 import ProgressTable from './ProgressTable';
+import IneligibleTable from './IneligibleTable';
 
 export default {
   name: 'SgmGroups',
@@ -46,6 +49,7 @@ export default {
     chartData: {},
     sgmGroups: {},
     blankStats: {},
+    ineligibleSgmGroups: {},
   }),
 
   props: {
@@ -56,17 +60,19 @@ export default {
     PieChart,
     CountryTable,
     ProgressTable,
+    IneligibleTable,
   },
 
   activated: function () {
-    this.fetchSgmData();
+    this.fetchEligibleSgmData();
+    this.fetchIneligibleSgmData();
     this.fetchBlankStats();
   },
 
   methods: {
-    fetchSgmData() {
+    fetchEligibleSgmData() {
       this.loading = true;
-      axios.get(`${this.$basePrefix}participants/sgm_groups`, { params: {country: this.countryName } })
+      axios.get(`${this.$basePrefix}participants/eligible_sgm_stats`, { params: {country: this.countryName } })
       .then(response => {
         this.sgmGroups = response.data;
         let groups = Object.keys(this.sgmGroups);
@@ -79,15 +85,13 @@ export default {
           datasets: [{
             borderWidth: 1,
             backgroundColor: [
-            'rgba(87, 0, 228, 0.71)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(16, 44, 58, 0.36)',
-            'rgba(40, 4, 246, 0.99)',
-            'rgba(25, 255, 111, 0.47)',
-            'rgba(246, 19, 4, 0.93)',
-            'rgba(255, 0, 255, 0.51)',
-            'rgba(200, 75, 0, 0.51)',
-            'rgba(200, 224, 0, 1)',
+            'rgba(87, 0, 228, 0.6)',
+            'rgba(40, 4, 246, 0.6)',
+            'rgba(25, 255, 111, 0.5)',
+            'rgba(246, 19, 4, 0.7)',
+            'rgba(255, 0, 255, 0.5)',
+            'rgba(200, 75, 0, 0.5)',
+            'rgba(180, 164, 50, 0.7)',
             ],
             data: counts,
           }],
@@ -101,7 +105,14 @@ export default {
       .then(response => {
         this.blankStats = response.data;
       });
-    }
+    },
+
+    fetchIneligibleSgmData() {
+      axios.get(`${this.$basePrefix}participants/ineligible_sgm_stats`, { params: {country: this.countryName } })
+      .then(response => {
+        this.ineligibleSgmGroups = response.data;
+      });
+    },
   },
 }
 </script>
@@ -110,5 +121,10 @@ export default {
 h5 {
   font-size: 2em;
   text-align: center;
+}
+p {
+  font-size: 1.2em;
+  text-align: center;
+  font-weight: bold;
 }
 </style>
