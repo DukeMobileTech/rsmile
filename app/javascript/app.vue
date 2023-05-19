@@ -6,7 +6,7 @@
           <img v-bind:src="logo" alt="SMILE Study">
         </div>
         <div class="nav-item">
-          <button v-on:click="linkToAdmin" class="btn btn-link" >Admin</button>
+          <button v-on:click="linkToAdmin" class="btn btn-outline-info" >Admin</button>
         </div>
         <div class="nav-item">
           <button v-on:click="handleLogout" class="btn btn-danger" >Sign Out</button>
@@ -57,7 +57,7 @@ export default {
       this.country = value;
     },
     linkToAdmin() {
-      window.location.href = '/admin';
+      window.location.href = this.admin;
     }
   },
 
