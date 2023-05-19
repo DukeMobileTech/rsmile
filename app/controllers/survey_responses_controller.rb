@@ -10,4 +10,8 @@ class SurveyResponsesController < ApplicationController
   def baselines
     render json: SurveyResponse.baseline_stats(params[:country])
   end
+
+  def sources_timeline
+    render json: SurveyResponse.sources_timeline(params[:country])
+  end
 end

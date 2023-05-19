@@ -40,8 +40,6 @@ Rails.application.routes.draw do
       get '/sgm_groups' => 'participants#sgm_groups'
       get '/grouped' => 'participants#grouped'
       get '/blank_stats' => 'participants#blank_stats'
-      get '/source_timeline' => 'participants#source_timeline'
-      get '/weekly_stats' => 'participants#weekly_stats'
     end
   end
   resources :survey_responses, only: [] do
@@ -49,6 +47,7 @@ Rails.application.routes.draw do
       get '/sources' => 'survey_responses#sources'
       get '/consents' => 'survey_responses#consents'
       get '/baselines' => 'survey_responses#baselines'
+      get '/sources_timeline' => 'survey_responses#sources_timeline'
     end
   end
 end

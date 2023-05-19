@@ -8,24 +8,23 @@
         <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
       </div>
       <div class="row">
-        <SourceTable v-if="showSource" :country-name="countryName" :source="source" />
-        <div v-else>
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Source</th>
-                  <th>Count</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(value, key, index) in surveySources" :key="key">
-                  <td class="link-primary" @click="setSource(key)">{{namedSource(key)}}</td>
-                  <td>{{value}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Count</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(value, key, index) in surveySources" :key="key">
+                <td>{{namedSource(key)}}</td>
+                <td>{{value}}</td>
+                <td>{{((value / total) * 100).toFixed(2)}}%</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="row">
@@ -38,7 +37,6 @@
 <script>
 import axios from 'axios';
 import PieChart from './charts/PieChart';
-import SourceTable from './SourceTable';
 import SourcesTimeline from './SourcesTimeline';
 
   export default {
@@ -55,8 +53,7 @@ import SourcesTimeline from './SourcesTimeline';
           maintainAspectRatio: false
         },
       chartData: {},
-      source: null,
-      showSource: false,
+      total: 0,
     }),
 
     props: {
@@ -65,7 +62,6 @@ import SourcesTimeline from './SourcesTimeline';
 
     components: {
       PieChart,
-      SourceTable,
       SourcesTimeline,
     },
 
@@ -144,8 +140,11 @@ import SourcesTimeline from './SourcesTimeline';
             sourceNames.push(this.namedSource(source));
           });
           let counts = [];
+          this.total = 0;
           sources.forEach((source) => {
-            counts.push(surveyResponses[source]);
+            let count = surveyResponses[source];
+            counts.push(count);
+            this.total += count;
           });
           this.chartData = {
             labels: sourceNames,
@@ -184,13 +183,6 @@ import SourcesTimeline from './SourcesTimeline';
           this.loaded = true;
         });
       },
-      setSource(source) {
-       this.source = source;
-       this.setShowSource(true);
-     },
-     setShowSource(visible) {
-       this.showSource = visible;
-     },
     },
   }
 </script>

@@ -54,7 +54,7 @@ export default {
     },
     fetchWeeklySourceData() {
       this.loaded = false;
-      axios.get(`${this.$basePrefix}participants/weekly_stats`, { params: {country: this.countryName } })
+      axios.get(`${this.$basePrefix}survey_responses/sources_timeline`, { params: {country: this.countryName } })
           .then(response => {
             let sourceIds = Object.keys(response.data);
             let titleRow = response.data[sourceIds[0]];
@@ -79,7 +79,6 @@ export default {
     },
     goBack() {
       this.reset();
-      this.$parent.setShowSource(false);
     },
   },
 }
