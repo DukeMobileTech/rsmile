@@ -9,7 +9,7 @@ ActiveAdmin.setup do |config|
   # Set the link url for the title. For example, to take
   # users to your main site. Defaults to no link.
   #
-  # config.site_title_link = "/"
+  config.site_title_link = :admin_root
 
   # Set an optional image to be displayed for the header
   # instead of a string (overrides :site_title)
@@ -232,6 +232,9 @@ ActiveAdmin.setup do |config|
 
   config.namespace :admin do |admin|
     admin.build_menu :utility_navigation do |menu|
+      menu.add label: 'Sidekiq', url: proc { sidekiq_path }
+      menu.add label: 'SMILE Study Dashboard', url: proc { root_path }
+      admin.add_current_user_to_menu  menu
       admin.add_logout_button_to_menu menu
     end
   end
