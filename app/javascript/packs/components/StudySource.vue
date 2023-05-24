@@ -4,35 +4,49 @@
       <h5 class="card-title">How did you hear about this study?</h5>
     </div>
     <div v-if="loaded" class="card-body">
-      <div class="row">
+      <div class="row mb-4">
+        <p>Eligible participants chart</p>
         <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
       </div>
       <div class="row">
+        <p>All participants table</p>
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
               <tr>
                 <th>Source</th>
-                <th>Eligible</th>
-                <th>Eligible %</th>
-                <th>Ineligible</th>
-                <th>Ineligible %</th>
+                <th onmouseover='this.style.textDecoration="underline"'
+                    onmouseout='this.style.textDecoration="none"'
+                    class="text-info"
+                    title="Participants whose responses to the orientation questions place them in one of the eligible sgm groups.">
+                    Eligible
+                </th>
+                <th onmouseover='this.style.textDecoration="underline"'
+                    onmouseout='this.style.textDecoration="none"'
+                    class="text-info"
+                    title="Participants whose responses to the attraction questions place them in one of the eligible sgm groups although their orientation responses disqualify them.">
+                    Derived
+                </th>
+                <th onmouseover='this.style.textDecoration="underline"'
+                    onmouseout='this.style.textDecoration="none"'
+                    class="text-info"
+                    title="Participants whose responses to the orientation questions disqualify them from the eligible sgm groups. Includes duplicates and partials.">
+                    Ineligible
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(value, key, index) in surveySources" :key="key">
                 <td>{{namedSource(key)}}</td>
                 <td>{{value['eligible']}}</td>
-                <td>{{((value['eligible'] / (value['eligible'] + value['ineligible'])) * 100).toFixed(0)}}%</td>
+                <td>{{value['derived']}}</td>
                 <td>{{value['ineligible']}}</td>
-                <td>{{((value['ineligible'] / (value['eligible'] + value['ineligible'])) * 100).toFixed(0)}}%</td>
               </tr>
               <tr>
                 <td><strong>Total</strong></td>
                 <td><strong>{{eligibleTotal}}</strong></td>
-                <td><strong>{{((eligibleTotal / (eligibleTotal + ineligibleTotal)) * 100).toFixed(0)}}%</strong></td>
+                <td><strong>{{derivedTotal}}</strong></td>
                 <td><strong>{{ineligibleTotal}}</strong></td>
-                <td><strong>{{((ineligibleTotal / (eligibleTotal + ineligibleTotal)) * 100).toFixed(0)}}%</strong></td>
               </tr>
             </tbody>
           </table>
@@ -66,6 +80,7 @@ import SourcesTimeline from './SourcesTimeline';
       chartData: {},
       eligibleTotal: 0,
       ineligibleTotal: 0,
+      derivedTotal: 0,
     }),
 
     props: {
@@ -149,10 +164,12 @@ import SourcesTimeline from './SourcesTimeline';
           let sourceNames = [];
           this.eligibleTotal = 0;
           this.ineligibleTotal = 0;
+          this.derivedTotal = 0;
           sources.forEach((source) => {
             sourceNames.push(this.namedSource(source));
             this.eligibleTotal += this.surveySources[source]['eligible'];
             this.ineligibleTotal += this.surveySources[source]['ineligible'];
+            this.derivedTotal += this.surveySources[source]['derived'];
           });
           let counts = [];
           sources.forEach((source) => {
@@ -203,6 +220,11 @@ import SourcesTimeline from './SourcesTimeline';
 <style scoped>
 h5 {
   font-size: 2em;
+  text-align: center;
+}
+p {
+  font-size: 1.2em;
+  font-weight: bold;
   text-align: center;
 }
 </style>

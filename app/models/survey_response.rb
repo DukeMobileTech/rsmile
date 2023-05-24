@@ -376,6 +376,10 @@ class SurveyResponse < ApplicationRecord
     ineligible = cr.where(survey_complete: false)
                    .or(cr.where(duplicate: true))
                    .or(cr.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups))
+    derived_eligible = []
+    cr.each do |response|
+      derived_eligible << response if response.attraction_eligible?
+    end
     responses = []
     eligible.group_by(&:participant).each do |participant, part_resp|
       if participant.blank? || participant.include == false
@@ -389,19 +393,20 @@ class SurveyResponse < ApplicationRecord
       next if hf == 9 && country_name == 'Vietnam'
       next if country_name != 'Vietnam' && [10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].include?(hf)
 
-      count = if hf.zero?
-                responses.select { |r| r.source.blank? }.size
-              else
-                responses.select { |r| r.source&.split(',')&.include?(hf.to_s) }.size
-              end
-      count2 = if hf.zero?
-                 ineligible.select { |r| r.source.blank? }.size
-               else
-                 ineligible.select { |r| r.source&.split(',')&.include?(hf.to_s) }.size
-               end
-      source_count[hf.to_s] = { eligible: count, ineligible: count2 } if (count + count2).positive?
+      count1 = response_counts(hf, responses)
+      count2 = response_counts(hf, ineligible)
+      count3 = response_counts(hf, derived_eligible)
+      source_count[hf.to_s] = { eligible: count1, ineligible: count2, derived: count3 } if (count1 + count2 + count3).positive?
     end
     source_count
+  end
+
+  def self.response_counts(num, responses)
+    if num.zero?
+      responses.select { |r| r.source.blank? }.size
+    else
+      responses.select { |r| r.source&.split(',')&.include?(num.to_s) }.size
+    end
   end
 
   def self.consent_stats(country_name)
