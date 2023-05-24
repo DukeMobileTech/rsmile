@@ -363,13 +363,27 @@ class SurveyResponse < ApplicationRecord
     final_sources
   end
 
+  def self.ineligible_sgm_groups
+    ['blank', 'ineligible', 'no group']
+  end
+
   def self.survey_sources(country_name)
     source_count = {}
-    ids = Participant.eligible_participants.where(country: country_name).pluck(:id)
-    responses = SurveyResponse.where(participant_id: ids)
-                              .where(survey_title: 'SMILE Survey - Baseline')
-                              .where(survey_complete: true)
-                              .where(duplicate: false)
+    cr = baselines.where(country: country_name)
+    eligible = cr.where(survey_complete: true)
+                 .where(duplicate: false)
+                 .where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    ineligible = cr.where(survey_complete: false)
+                   .or(cr.where(duplicate: true))
+                   .or(cr.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups))
+    responses = []
+    eligible.group_by(&:participant).each do |participant, part_resp|
+      if participant.blank? || participant.include == false
+        ineligible += part_resp
+        next
+      end
+      responses << part_resp[0]
+    end
     25.times do |hf|
       next if hf == 3 && country_name != 'Brazil'
       next if hf == 9 && country_name == 'Vietnam'
@@ -380,7 +394,12 @@ class SurveyResponse < ApplicationRecord
               else
                 responses.select { |r| r.source&.split(',')&.include?(hf.to_s) }.size
               end
-      source_count[hf.to_s] = count if count.positive?
+      count2 = if hf.zero?
+                 ineligible.select { |r| r.source.blank? }.size
+               else
+                 ineligible.select { |r| r.source&.split(',')&.include?(hf.to_s) }.size
+               end
+      source_count[hf.to_s] = { eligible: count, ineligible: count2 } if (count + count2).positive?
     end
     source_count
   end

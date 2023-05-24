@@ -13,15 +13,26 @@
             <thead>
               <tr>
                 <th>Source</th>
-                <th>Count</th>
-                <th>Percentage</th>
+                <th>Eligible</th>
+                <th>Eligible %</th>
+                <th>Ineligible</th>
+                <th>Ineligible %</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(value, key, index) in surveySources" :key="key">
                 <td>{{namedSource(key)}}</td>
-                <td>{{value}}</td>
-                <td>{{((value / total) * 100).toFixed(2)}}%</td>
+                <td>{{value['eligible']}}</td>
+                <td>{{((value['eligible'] / (value['eligible'] + value['ineligible'])) * 100).toFixed(0)}}%</td>
+                <td>{{value['ineligible']}}</td>
+                <td>{{((value['ineligible'] / (value['eligible'] + value['ineligible'])) * 100).toFixed(0)}}%</td>
+              </tr>
+              <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>{{eligibleTotal}}</strong></td>
+                <td><strong>{{((eligibleTotal / (eligibleTotal + ineligibleTotal)) * 100).toFixed(0)}}%</strong></td>
+                <td><strong>{{ineligibleTotal}}</strong></td>
+                <td><strong>{{((ineligibleTotal / (eligibleTotal + ineligibleTotal)) * 100).toFixed(0)}}%</strong></td>
               </tr>
             </tbody>
           </table>
@@ -53,7 +64,8 @@ import SourcesTimeline from './SourcesTimeline';
           maintainAspectRatio: false
         },
       chartData: {},
-      total: 0,
+      eligibleTotal: 0,
+      ineligibleTotal: 0,
     }),
 
     props: {
@@ -133,18 +145,19 @@ import SourcesTimeline from './SourcesTimeline';
         axios.get(`${this.$basePrefix}survey_responses/sources`, { params: {country: this.countryName } })
         .then(response => {
           this.surveySources = response.data;
-          let surveyResponses = response.data;
-          let sources = Object.keys(surveyResponses);
+          let sources = Object.keys(this.surveySources);
           let sourceNames = [];
+          this.eligibleTotal = 0;
+          this.ineligibleTotal = 0;
           sources.forEach((source) => {
             sourceNames.push(this.namedSource(source));
+            this.eligibleTotal += this.surveySources[source]['eligible'];
+            this.ineligibleTotal += this.surveySources[source]['ineligible'];
           });
           let counts = [];
-          this.total = 0;
           sources.forEach((source) => {
-            let count = surveyResponses[source];
+            let count = this.surveySources[source]['eligible'];
             counts.push(count);
-            this.total += count;
           });
           this.chartData = {
             labels: sourceNames,

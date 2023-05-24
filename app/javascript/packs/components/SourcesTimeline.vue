@@ -1,6 +1,6 @@
 <template>
   <div v-if="loaded" :key="'source-table'">
-    <h5>Participants recruited by source per week</h5>
+    <h5>Eligible participants recruited by source per week</h5>
     <div class="table-responsive">
       <table class="table table-hover">
         <thead>
