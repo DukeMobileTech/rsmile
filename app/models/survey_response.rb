@@ -418,21 +418,40 @@ class SurveyResponse < ApplicationRecord
   end
 
   def self.baseline_stats(country_name)
-    responses = SurveyResponse.joins(:participant)
-                              .where(country: country_name)
-                              .where(survey_title: 'SMILE Survey - Baseline')
-                              .where(duplicate: false)
-                              .where(participants: { include: true })
-
-    completed = responses.where(survey_complete: true).pluck(:participant_id).uniq
-    eligible_completed = responses.where(survey_complete: true)
-                                  .where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ['blank', 'ineligible', 'no group'])
-                                  .pluck(:participant_id).uniq
+    responses = baselines.where(country: country_name)
     partials = responses.where(survey_complete: false)
+    completed = responses.where(survey_complete: true)
+    all_eligible = completed.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    eligible = []
+    duplicates = []
+    excluded = []
+    all_eligible.group_by(&:participant).each do |participant, part_resp|
+      if participant.blank? || participant.include == false
+        excluded += part_resp
+        next
+      end
+      if part_resp.size == 1
+        eligible += part_resp
+      else
+        eligible << part_resp[0]
+        duplicates += part_resp[1..]
+      end
+    end
+    ineligible = completed.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    derived = []
+    ineligible.each do |response|
+      derived << response if response.attraction_eligible?
+    end
+
     {
+      All: responses.size,
       Completed: completed.size,
-      'Eligible Completed': eligible_completed.size,
-      Partials: partials.size
+      Partials: partials.size,
+      Eligible: eligible.size,
+      Ineligible: ineligible.size,
+      Derived: derived.size,
+      Duplicates: duplicates.size,
+      Excluded: excluded.size
     }
   end
 
