@@ -1,12 +1,8 @@
 <template>
-  <div class="card mt-5 mb-5">
-    <div class="card-header">
-      <h5 class="card-title">Baseline Surveys</h5>
-    </div>
-    <div class="card-body">
-      <div v-if="loaded" class="row">
-        <CountryTable :data-obj="surveyBaselines" :first-header="'Status'" :second-header="'Count'" />
-      </div>
+  <div>
+    <h5>Baseline Surveys</h5>
+    <div v-if="loaded" class="row">
+      <CountryTable :data-obj="surveyBaselines" :first-header="'Status'" :second-header="'Count'" />
     </div>
   </div>
 </template>
@@ -31,7 +27,13 @@ export default {
     CountryTable,
   },
 
-  activated: function () {
+  watch: {
+    countryName: function () {
+      this.fetchData();
+    }
+  },
+
+  mounted: function () {
     this.fetchData();
   },
 

@@ -1,27 +1,24 @@
 <template>
-  <div :key="'sgm-group'" class="card mt-5">
-    <div class="card-header">
-      <h5 class="card-title">SGM Groups</h5>
-    </div>
-    <div class="card-body">
-      <div v-if="loading" class="loading">Loading...</div>
-      <div v-else class="row">
-        <div class="col">
-          <ProgressTable :data-obj="sgmGroups" />
-        </div>
-        <div class="col">
-          <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
-        </div>
+  <div :key="'sgm-group'">
+    <h5>SGM Groups</h5>
+    <div v-if="loading" class="loading">Loading...</div>
+    <div v-else class="row">
+      <div class="col">
+        <p>Eligible</p>
+        <ProgressTable :data-obj="sgmGroups" />
       </div>
-      <div class="row mt-3 border-top">
-        <div class="col pt-1">
-          <p>Ineligible Breakdown</p>
-          <IneligibleTable :data-obj="ineligibleSgmGroups" />
-        </div>
-        <div class="col pt-1">
-          <p>Blank Breakdown</p>
-          <CountryTable :data-obj="blankStats" :first-header="'Survey Progress'" :second-header="'Count'" />
-        </div>
+      <div class="col">
+        <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
+      </div>
+    </div>
+    <div class="row mt-3 border-top">
+      <div class="col pt-1">
+        <p>Ineligible</p>
+        <IneligibleTable :data-obj="ineligibleSgmGroups" />
+      </div>
+      <div class="col pt-1">
+        <p>Blanks</p>
+        <CountryTable :data-obj="blankStats" :first-header="'Survey Progress'" :second-header="'Count'" />
       </div>
     </div>
   </div>
@@ -63,13 +60,23 @@ export default {
     IneligibleTable,
   },
 
-  activated: function () {
-    this.fetchEligibleSgmData();
-    this.fetchIneligibleSgmData();
-    this.fetchBlankStats();
+  watch: {
+    countryName: function () {
+      this.fetchData();
+    }
+  },
+
+  mounted: function () {
+    this.fetchData();
   },
 
   methods: {
+    fetchData() {
+      this.fetchEligibleSgmData();
+      this.fetchIneligibleSgmData();
+      this.fetchBlankStats();
+    },
+
     fetchEligibleSgmData() {
       this.loading = true;
       axios.get(`${this.$basePrefix}participants/eligible_sgm_stats`, { params: {country: this.countryName } })

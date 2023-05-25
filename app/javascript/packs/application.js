@@ -8,6 +8,7 @@ import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 import "bootstrap/dist/css/bootstrap.css"
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Rails.start()
 Turbolinks.start()

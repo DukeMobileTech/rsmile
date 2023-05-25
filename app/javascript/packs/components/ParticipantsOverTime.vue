@@ -1,11 +1,7 @@
 <template>
-    <div :key="'group-by-date'" class="card mt-5 mb-5">
-      <div class="card-header">
-        <h5 class="card-title">Participant Recruitment Timeline</h5>
-      </div>
-      <div class="card-body">
-        <LineChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></LineChart>
-      </div>
+    <div :key="'group-by-date'">
+      <h5>Participant Recruitment Timeline</h5>
+      <LineChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></LineChart>
     </div>
 </template>
 
@@ -51,7 +47,13 @@ import LineChart from './charts/LineChart';
       LineChart,
     },
 
-    activated: function () {
+    watch: {
+      countryName: function () {
+        this.fetchData();
+      }
+    },
+
+    mounted: function () {
       this.fetchData();
     },
 

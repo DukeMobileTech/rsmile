@@ -1,9 +1,7 @@
 <template>
-  <div :key="'study-source'" class="card mt-2">
-    <div class="card-header">
-      <h5 class="card-title">How did you hear about this study?</h5>
-    </div>
-    <div v-if="loaded" class="card-body">
+  <div :key="'study-source'">
+      <h5>How did you hear about this study?</h5>
+    <div v-if="loaded">
       <div class="row mb-4">
         <p>Eligible participants chart</p>
         <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
@@ -92,8 +90,14 @@ import SourcesTimeline from './SourcesTimeline';
       SourcesTimeline,
     },
 
-    activated: function () {
-      this.fetchSourceData();
+    watch: {
+      countryName: function () {
+        this.fetchData();
+      }
+    },
+
+    mounted: function () {
+      this.fetchData();
     },
 
     methods: {
@@ -155,7 +159,8 @@ import SourcesTimeline from './SourcesTimeline';
         }
         return name;
       },
-      fetchSourceData() {
+
+      fetchData() {
         this.loaded = false;
         axios.get(`${this.$basePrefix}survey_responses/sources`, { params: {country: this.countryName } })
         .then(response => {

@@ -4,10 +4,22 @@
       <button type="button" class="btn btn-outline-secondary" @click="goBack">Back</button>
     </div>
     <h5>{{countryName}}</h5>
-    <StudySource :country-name="countryName"></StudySource>
-    <SgmGroups :country-name="countryName"></SgmGroups>
-    <Baselines :country-name="countryName"></Baselines>
-    <ParticipantsOverTime :country-name="countryName"></ParticipantsOverTime>
+    <b-card no-body>
+      <b-tabs card justified content-class="mt-3 mb-5">
+        <b-tab active title="Recruitment Sources">
+          <StudySource :country-name="countryName"></StudySource>
+        </b-tab>
+        <b-tab lazy title="SGM Groups">
+          <SgmGroups :country-name="countryName"></SgmGroups>
+        </b-tab>
+        <b-tab lazy title="Baseline Surveys">
+          <Baselines :country-name="countryName"></Baselines>
+        </b-tab>
+        <b-tab lazy title="Recruitment Timeline">
+          <ParticipantsOverTime :country-name="countryName"></ParticipantsOverTime>
+        </b-tab>
+      </b-tabs>
+    </b-card>
   </div>
 </template>
 
