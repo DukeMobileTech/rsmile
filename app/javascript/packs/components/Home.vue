@@ -49,7 +49,7 @@
  import ParticipantsPerCountry from './ParticipantsPerCountry'
 
  export default {
-   name: 'Participant',
+   name: 'Home',
 
    data: () => ({
      participantsPerCountry: {},

@@ -21,7 +21,7 @@
 
 <script>
  import axios from 'axios';
- import Participant from './packs/components/Participant';
+ import Home from './packs/components/Home';
  import CountryData from './packs/components/CountryData';
 
 export default {
@@ -39,7 +39,7 @@ export default {
   },
 
   components: {
-    Participant,
+    Home,
     CountryData,
   },
 
@@ -64,7 +64,7 @@ export default {
   computed: {
     visibleComponent() {
       if(this.country == null) {
-        return 'Participant';
+        return 'Home';
       } else {
         return 'CountryData';
       }
