@@ -29,6 +29,7 @@ class Participant < ApplicationRecord
   validates :phone_number, :country, presence: true
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
   before_save :assign_identifiers
+  before_save :enforce_unique_code
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
@@ -384,5 +385,11 @@ class Participant < ApplicationRecord
   def assign_identifiers
     self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if code.blank?
     self.study_id = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if study_id.blank?
+  end
+
+  def enforce_unique_code
+    begin
+      self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}"
+    end while self.class.exists?(code: code)
   end
 end
