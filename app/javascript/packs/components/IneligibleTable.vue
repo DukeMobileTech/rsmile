@@ -5,19 +5,19 @@
         <tr>
           <th>SGM Group</th>
           <th>Recruited</th>
-          <th>Percentage</th>
+          <th v-if="sum != 0">Percentage</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(value, key, index) in dataObj" :key="index">
           <td>{{key}}</td>
           <td>{{value}}</td>
-          <td v-if="loaded">{{((value / sum) * 100).toFixed(1)}} %</td>
+          <td v-if="loaded && sum != 0">{{((value / sum) * 100).toFixed(1)}} %</td>
         </tr>
         <tr>
           <td><strong>Total</strong></td>
           <td v-if="loaded"><strong>{{sum}}</strong></td>
-          <td><strong>100 %</strong></td>
+          <td v-if="sum != 0"><strong>100 %</strong></td>
         </tr>
       </tbody>
     </table>
