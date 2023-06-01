@@ -164,6 +164,9 @@ import SourcesTimeline from './SourcesTimeline';
         this.loaded = false;
         axios.get(`${this.$basePrefix}survey_responses/sources`, { params: {country: this.countryName } })
         .then(response => {
+          if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+            window.location.reload();
+          }
           this.surveySources = response.data;
           let sources = Object.keys(this.surveySources);
           let sourceNames = [];

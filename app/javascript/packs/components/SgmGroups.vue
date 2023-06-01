@@ -81,6 +81,9 @@ export default {
       this.loading = true;
       axios.get(`${this.$basePrefix}participants/eligible_sgm_stats`, { params: {country: this.countryName } })
       .then(response => {
+        if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+          window.location.reload();
+        }
         this.sgmGroups = response.data;
         let groups = Object.keys(this.sgmGroups);
         let counts = [];
@@ -110,6 +113,9 @@ export default {
     fetchBlankStats() {
       axios.get(`${this.$basePrefix}participants/blank_stats`, { params: { country: this.countryName } })
       .then(response => {
+        if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+          window.location.reload();
+        }
         this.blankStats = response.data;
       });
     },
@@ -117,6 +123,9 @@ export default {
     fetchIneligibleSgmData() {
       axios.get(`${this.$basePrefix}participants/ineligible_sgm_stats`, { params: {country: this.countryName } })
       .then(response => {
+        if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+          window.location.reload();
+        }
         this.ineligibleSgmGroups = response.data;
       });
     },

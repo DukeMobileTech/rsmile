@@ -56,6 +56,9 @@ export default {
       this.loaded = false;
       axios.get(`${this.$basePrefix}survey_responses/sources_timeline`, { params: {country: this.countryName } })
           .then(response => {
+            if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+              window.location.reload();
+            }
             let sourceIds = Object.keys(response.data);
             let titleRow = response.data[sourceIds[0]];
             if (titleRow) {

@@ -42,6 +42,9 @@ export default {
       this.loaded = false;
       axios.get(`${this.$basePrefix}survey_responses/baselines`, { params: {country: this.countryName } })
       .then(response => {
+        if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+          window.location.reload();
+        }
         this.surveyBaselines = response.data;
         this.loaded = true;
       });

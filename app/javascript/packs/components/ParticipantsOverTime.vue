@@ -62,6 +62,9 @@ import LineChart from './charts/LineChart';
         this.loaded = false;
         axios.get(`${this.$basePrefix}participants/grouped`, { params: {country: this.countryName } })
         .then(response => {
+          if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+            window.location.reload();
+          }
           let grouped = response.data;
           let dates = [];
           let totalCounts = [];

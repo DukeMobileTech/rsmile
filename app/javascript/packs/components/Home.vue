@@ -68,9 +68,13 @@
    methods: {
      fetchParticipants () {
        this.loaded = false;
-       axios.get(`${this.$basePrefix}participants`).then(response => {
-         this.participantsPerCountry = response.data;
-         this.loaded = true;
+       axios.get(`${this.$basePrefix}participants`)
+       .then(response => {
+          if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+            window.location.reload();
+          }
+          this.participantsPerCountry = response.data;
+          this.loaded = true;
        });
      },
      showCountry(country) {
