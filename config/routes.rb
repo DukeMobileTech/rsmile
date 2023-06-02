@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       get '/ineligible_sgm_stats' => 'participants#ineligible_sgm_stats'
       get '/grouped' => 'participants#grouped'
       get '/blank_stats' => 'participants#blank_stats'
+      get '/weekly_participants' => 'participants#weekly_participants'
     end
   end
   resources :survey_responses, only: [] do

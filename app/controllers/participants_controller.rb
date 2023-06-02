@@ -18,4 +18,8 @@ class ParticipantsController < ApplicationController
   def blank_stats
     render json: Participant.blank_stats(params[:country])
   end
+
+  def weekly_participants
+    render json: Participant.weekly_participants
+  end
 end

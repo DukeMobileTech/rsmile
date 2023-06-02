@@ -38,15 +38,13 @@
         </table>
       </div>
     </div>
-   <ParticipantsPerCountry v-if="loaded" :participants-per-country="participantsPerCountry"/>
-</div>
-
+    <Participants />
+  </div>
 </template>
 
 <script>
- import axios from 'axios';
-
- import ParticipantsPerCountry from './ParticipantsPerCountry'
+  import axios from 'axios';
+  import Participants from './Participants'
 
  export default {
    name: 'Home',
@@ -58,7 +56,7 @@
    }),
 
    components: {
-     ParticipantsPerCountry,
+      Participants,
    },
 
    created: function () {

@@ -1,3 +1,5 @@
+require 'sorted_set'
+
 # == Schema Information
 #
 # Table name: participants
@@ -202,7 +204,7 @@ class Participant < ApplicationRecord
 
   def self.weekly_statistics(kountry)
     stats = []
-    participants = eligible_participants.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%Y', week_start: :monday).count
+    participants = eligible_participants.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
     total = []
     index = 0
     participants.each do |week, count|
@@ -213,6 +215,42 @@ class Participant < ApplicationRecord
       index += 1
     end
     stats
+  end
+
+  def self.weekly_statistics_by_country
+    Groupdate.week_start = :monday
+    weeks = SortedSet.new
+    stats = {}
+    countries.each do |country|
+      country_stats = {}
+      participants = eligible_participants.where(country: country).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
+      participants.each do |week, count|
+        next unless count.positive?
+
+        country_stats[week] = count
+        weeks << Date.strptime(week, '%m/%d/%y')
+      end
+      stats[country] = country_stats
+    end
+    [weeks, stats]
+  end
+
+  def self.weekly_participants
+    wsbc = weekly_statistics_by_country
+    final_stats = {}
+    wsbc[1].each do |country, country_stats|
+      country_week_list = []
+      wsbc[0].each do |week|
+        week_str = week.strftime('%m/%d/%y')
+        country_week_list << if country_stats[week_str].blank?
+                               { week_str => 0 }
+                             else
+                               { week_str => country_stats[week_str] }
+                             end
+      end
+      final_stats[country] = country_week_list
+    end
+    final_stats
   end
 
   def self.check_resume_code(code)
