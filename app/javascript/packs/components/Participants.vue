@@ -46,7 +46,7 @@ import LineChart from './charts/LineChart';
         'Kenya (cumulative)': '#000000',
         'Vietnam': '#DA251D',
         'Vietnam (cumulative)': '#FFCD00',
-        'Brazil': '#FEDF00',
+        'Brazil': '#0C87D1',
         'Brazil (cumulative)': '#002776',
         'All': '#732982',
       }
