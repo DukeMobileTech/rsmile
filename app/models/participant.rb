@@ -39,19 +39,19 @@ class Participant < ApplicationRecord
   before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
 
   def consents
-    survey_responses.where(survey_title: 'SMILE Consent')
+    survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
   end
 
   def contacts
-    survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline')
+    survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline').order(:created_at)
   end
 
   def baselines
-    survey_responses.where(survey_title: 'SMILE Survey - Baseline')
+    survey_responses.where(survey_title: 'SMILE Survey - Baseline').order(:created_at)
   end
 
   def safety_plans
-    survey_responses.where(survey_title: 'Safety Planning')
+    survey_responses.where(survey_title: 'Safety Planning').order(:created_at)
   end
 
   def send_verification_message(language)
