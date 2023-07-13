@@ -25,6 +25,7 @@ class SurveyResponse < ApplicationRecord
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }
   before_save { self.sgm_group = sgm_group&.downcase }
   after_create { SurveyMetadataJob.set(wait: 15.days).perform_later(id) if baseline_survey? }
+  after_save :assign_participant_sgm_group
 
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
@@ -569,5 +570,13 @@ class SurveyResponse < ApplicationRecord
     when 'C'
       octets&.last
     end
+  end
+
+  private
+
+  def assign_participant_sgm_group
+    return if participant.blank? || !baseline_survey?
+
+    participant.assign_sgm_group
   end
 end

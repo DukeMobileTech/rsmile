@@ -418,6 +418,18 @@ class Participant < ApplicationRecord
     'Years'
   end
 
+  def self.assign_sgm_groups
+    Participant.find_each(&:assign_sgm_group)
+  end
+
+  def assign_sgm_group
+    baseline = baselines.where(duplicate: false).first
+    return if baseline.nil? || baseline.sgm_group == sgm_group
+
+    self.sgm_group = baseline.sgm_group
+    save
+  end
+
   private
 
   def assign_identifiers
