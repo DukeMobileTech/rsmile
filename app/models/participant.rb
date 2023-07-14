@@ -109,6 +109,8 @@ class Participant < ApplicationRecord
   # ii) the sgm_group is not 'blank', not 'ineligible', and not 'no group'
   # iii) have completed the baseline survey
   def self.eligible_participants
+    # Participant.where(include: true).where.not(sgm_group: ineligible_sgm_groups)
+
     Participant.includes(:survey_responses)
                .where(include: true)
                .where.not(sgm_group: ineligible_sgm_groups)
@@ -428,6 +430,43 @@ class Participant < ApplicationRecord
 
     self.sgm_group = baseline.sgm_group
     save
+  end
+
+  def filter_duplicate_baselines
+    accepted = baselines.where(duplicate: false)
+    return if accepted.size <= 1
+
+    accepted = baselines.where(survey_complete: true).first
+    if accepted
+      duplicates = baselines.where.not(id: accepted.id)
+      accepted.update(duplicate: false)
+      update_duplicates(duplicates)
+    else
+      filter_duplicate_baselines_by_progress
+    end
+  end
+
+  def most_progress
+    progs = baselines.map { |b| b.progress.to_i }
+    max_prog = progs.max
+    return nil if max_prog.nil?
+
+    baselines.where('metadata @> hstore(:key, :value)', key: 'progress', value: max_prog.to_s).first
+  end
+
+  def filter_duplicate_baselines_by_progress
+    accepted = most_progress
+    return unless accepted
+
+    duplicates = baselines.where.not(id: accepted.id)
+    accepted.update(duplicate: false)
+    update_duplicates(duplicates)
+  end
+
+  def update_duplicates(duplicates)
+    duplicates.each do |duplicate|
+      duplicate.update(duplicate: true)
+    end
   end
 
   private

@@ -12,12 +12,20 @@ ActiveAdmin.register Participant do
     redirect_to resource_path
   end
 
+  collection_action :participant_duplicates, method: :get do
+    redirect_to resource_path
+  end
+
   action_item :enrollment, only: :index do
     link_to 'Enrollment Logbook', enrollment_admin_participants_path
   end
 
   action_item :participant_level, only: :index do
     link_to 'Participant Level Data', participant_level_admin_participants_path
+  end
+
+  action_item :participant_duplicates, only: :index do
+    link_to 'Filter Baseline Duplicates', participant_duplicates_admin_participants_path
   end
 
   controller do
@@ -29,6 +37,13 @@ ActiveAdmin.register Participant do
     def participant_level
       send_file Participant.participant_level, type: 'text/xlsx',
                                                filename: "Participant-Level-Data-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+    end
+
+    def participant_duplicates
+      Participant.find_each do |participant|
+        ParticipantDuplicatesJob.perform_later(participant.id)
+      end
+      redirect_to admin_participants_path
     end
   end
 
