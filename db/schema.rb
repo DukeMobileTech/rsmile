@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_24_141151) do
+ActiveRecord::Schema.define(version: 2023_07_20_165632) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -76,6 +76,18 @@ ActiveRecord::Schema.define(version: 2023_04_24_141151) do
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
     t.index ["resume_code"], name: "index_participants_on_resume_code", unique: true
+  end
+
+  create_table "response_exports", force: :cascade do |t|
+    t.string "country"
+    t.string "survey_id"
+    t.string "progress_id"
+    t.decimal "percent_complete"
+    t.string "status"
+    t.string "file_id"
+    t.string "file_path"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "survey_responses", force: :cascade do |t|
