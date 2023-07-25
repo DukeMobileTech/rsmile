@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     post '/signup/:invite_code' => 'invites#redeem_invite', as: 'redeem_invite'
   end
 
-  constraints Clearance::Constraints::SignedIn.new { |user| user.admin? } do
+  constraints Clearance::Constraints::SignedIn.new(&:admin?) do
     mount Rswag::Ui::Engine => '/api-docs'
     mount Rswag::Api::Engine => '/api-docs'
     mount Sidekiq::Web, at: '/admin/sidekiq', as: 'sidekiq'

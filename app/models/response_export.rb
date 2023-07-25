@@ -59,6 +59,27 @@ class ResponseExport < ApplicationRecord
     unzip_download(response)
   end
 
+  def process_csv
+    filename = "#{file_path}/#{country}-raw.csv"
+    array = CSV.generate do |csv|
+      index = 0
+      invalid_ids = duplicate_identifiers + excluded_identifiers
+      CSV.foreach(filename) do |row|
+        next if invalid_ids.include?(row[8]&.strip)
+
+        if index.zero?
+          @headers = row
+          csv << column_data(row, index)
+          csv << renamed_headers(row)
+        end
+        csv << column_data(row, index) if index > 2
+        puts row[8] if index < 10
+        index += 1
+      end
+    end
+    File.new("#{file_path}/#{country}-processed.csv", 'w').write(array)
+  end
+
   private
 
   def load_yaml_files
@@ -127,29 +148,8 @@ class ResponseExport < ApplicationRecord
     FileUtils.mv(Dir["#{file_path}/*.csv"][0], "#{file_path}/#{country}-raw.csv")
   end
 
-  def process_csv
-    filename = "#{file_path}/#{country}-raw.csv"
-    array = CSV.generate do |csv|
-      index = 0
-      invalid_ids = duplicate_identifiers + excluded_identifiers
-      CSV.foreach(filename) do |row|
-        next if invalid_ids.include?(row[8]&.strip)
-
-        if index.zero?
-          @headers = row
-          csv << column_data(row, index)
-          csv << renamed_headers(row)
-        end
-        csv << column_data(row, index) if index > 2
-        puts row[8] if index < 10
-        index += 1
-      end
-    end
-    File.new("#{file_path}/#{country}-processed.csv", 'w').write(array)
-  end
-
   def included_columns
-    [0, 1, (4..8).to_a, 1123, 1153, 1128, 16, (29..68).to_a, (77..194).to_a].flatten
+    [0, 1, (4..8).to_a, 1123, 1153, 1128, 16, (29..68).to_a, (77..210).to_a].flatten
   end
 
   def column_data(row, index)
