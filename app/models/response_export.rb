@@ -14,6 +14,9 @@
 #  updated_at       :datetime         not null
 #
 class ResponseExport < ApplicationRecord
+  attr_accessor :variables, :labels
+
+  after_initialize :load_yaml_files
   after_create :start_export
   after_create { ResponseExportProgressJob.set(wait: 30.seconds).perform_later(id) }
 
@@ -58,6 +61,11 @@ class ResponseExport < ApplicationRecord
 
   private
 
+  def load_yaml_files
+    self.variables = YAML.safe_load(File.read('db/data/variables.yml'))
+    self.labels = YAML.safe_load(File.read('db/data/labels.yml'))
+  end
+
   def filter_id
     case country
     when 'Brazil'
@@ -98,8 +106,7 @@ class ResponseExport < ApplicationRecord
   def unzip_download(response)
     create_path
     save_download(response)
-    csv = process_scv
-    File.new("#{file_path}/#{country}-processed.csv", 'w').write(csv)
+    process_csv
   end
 
   def create_path
@@ -120,22 +127,61 @@ class ResponseExport < ApplicationRecord
     FileUtils.mv(Dir["#{file_path}/*.csv"][0], "#{file_path}/#{country}-raw.csv")
   end
 
-  def process_scv
-    filename = Dir["#{file_path}/*.csv"].first
-    # puts "filename: #{filename}"
-    CSV.generate do |csv|
+  def process_csv
+    filename = "#{file_path}/#{country}-raw.csv"
+    array = CSV.generate do |csv|
       index = 0
       invalid_ids = duplicate_identifiers + excluded_identifiers
-      headers = []
       CSV.foreach(filename) do |row|
-        next if invalid_ids.include?(row[8].strip)
+        next if invalid_ids.include?(row[8]&.strip)
 
-        headers << row if index.zero?
-        csv << row if index.zero? || index > 2
+        if index.zero?
+          @headers = row
+          csv << column_data(row, index)
+          csv << renamed_headers(row)
+        end
+        csv << column_data(row, index) if index > 2
         puts row[8] if index < 10
         index += 1
       end
     end
+    File.new("#{file_path}/#{country}-processed.csv", 'w').write(array)
+  end
+
+  def included_columns
+    [0, 1, (4..8).to_a, 1123, 1153, 1128, 16, (29..68).to_a, (77..194).to_a].flatten
+  end
+
+  def column_data(row, index)
+    cols = included_columns.map do |i|
+      label = @headers[i]
+      if labels[label].present?
+        [row[i], index.zero? ? "#{row[i]}_labels" : labels[label][row[i]&.strip&.to_i]]
+      else
+        row[i]
+      end
+    end
+    cols.flatten
+  end
+
+  def renamed_headers(row)
+    cols = included_columns.map do |i|
+      if labels[row[i].strip].present?
+        [variables[row[i].strip].presence || underscore(row[i].split[0]),
+         "#{variables[row[i].strip].presence || underscore(row[i].split[0])}_label"]
+      else
+        (variables[row[i].strip].presence || underscore(row[i].split[0]))
+      end
+    end
+    cols.flatten
+  end
+
+  def underscore(variable)
+    variable.gsub(/::/, '/')
+            .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+            .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+            .tr('-', '_')
+            .downcase
   end
 
   def duplicate_identifiers
