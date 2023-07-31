@@ -54,6 +54,18 @@ class Participant < ApplicationRecord
     survey_responses.where(survey_title: 'Safety Planning').order(:created_at)
   end
 
+  def baseline
+    baselines.where(duplicate: false).first
+  end
+
+  def consent
+    consents.where(duplicate: false).first
+  end
+
+  def contact
+    contacts.where(duplicate: false).first
+  end
+
   def send_verification_message(language)
     # return if verified
     language = language&.downcase&.strip
@@ -285,67 +297,28 @@ class Participant < ApplicationRecord
     file
   end
 
-  def self.add_country_sheet(wb, kountry)
-    wb.add_worksheet(name: kountry) do |sheet|
-      tab_color = colors[countries.index(kountry)]
-      sheet.sheet_pr.tab_color = tab_color
-      sheet.add_row country_header
-      participants = Participant.where(country: kountry)
-                                # TODO: Add back later
-                                # .where.not(sgm_group: %w[blank ineligible])
-      participants.each do |participant|
-        sheet.add_row [participant.self_generated_id, participant.id, participant.baselines.pluck(:id).join(' | '),
-                       participant.contacts.pluck(:id).join(' | '), participant.consents.pluck(:id).join(' | '),
-                       participant.consents.last&.created_at&.strftime('%Y-%m-%d'),
-                       participant.baselines.last&.created_at&.strftime('%Y-%m-%d'),
-                       participant.gender_identity, participant.sexual_orientation,
-                       participant.intersex, participant.sexual_attraction,
-                       participant.attraction_eligibility, participant.sgm_group, participant.mismatch,
-                       participant.ip_addresses&.join(' | '), participant.duration,
-                       participant.completion, participant.verified, participant.age_year_match, '', '']
-      end
-    end
-  end
-
-  def self.colors
-    %w[9C6ACB 6DD865 85B2C9 559F93]
-  end
-
-  def self.country_header
-    ['Participant Self-Gen ID',	'Participant Database ID', 'Baseline Survey IDs',
-     'Contact Info Form ID', 'Consent ID',	'Date of Enrollment (Consent)',
-     'Baseline Survey Completion Date', 'Gender Identity',
-     'Sexual Orientation', 'Intersex', 'Sexual Attraction', 'Attraction Eligibility',
-     'SGM Group', 'Mismatch', 'IP Address', 'Duration (min)',
-     '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome', 'Notes']
-  end
-
-  def self.countries
-    %w[Vietnam Kenya Brazil]
-  end
-
   def ip_addresses
-    survey_responses.map { |sr| sr.ip_address&.strip }.uniq.reject { |sr| sr.blank? }
+    survey_responses.map { |sr| sr.ip_address&.strip }.uniq.compact_blank
   end
 
   def duration
-    d = baselines.last&.duration
+    d = baseline&.duration
     len = nil
     len = (d.to_i / 60.0).ceil if d
     len
   end
 
   def completion
-    baselines.last&.progress
+    baseline&.progress
   end
 
   def age_year_match
-    birth_year = contacts.last&.birth_year
-    age = baselines.last&.age&.to_i
+    birth_year = contact&.birth_year
+    age = baseline&.age
     return 'No' if birth_year.blank? || age.blank?
 
     cal_age = created_at.year - birth_year.to_i
-    diff = cal_age - age
+    diff = cal_age - age.to_i
     diff.abs <= 2 ? 'Yes' : 'No'
   end
 
@@ -376,44 +349,44 @@ class Participant < ApplicationRecord
   end
 
   def race
-    baselines.map(&:race).compact_blank.uniq.join('|')
+    baseline&.race
   end
 
   def ethnicity
-    baselines.map(&:ethnicity).compact_blank.uniq.join('|')
+    baseline&.ethnicity
   end
 
   def gender
-    baselines.map(&:gender).compact_blank.uniq.join('|')
+    baseline&.gender
   end
 
   def age
-    baselines.map(&:age).compact_blank.uniq.join('|')
+    baseline&.age
   end
 
   def gender_identity
-    baselines.map(&:gender_identity_label).compact_blank.uniq.join('|')
+    baseline&.gender_identity_label
   end
 
   def sexual_orientation
-    baselines.map(&:sexual_orientation_label).compact_blank.uniq.join('|')
+    baseline&.sexual_orientation_label
   end
 
   def intersex
-    baselines.map(&:intersex).compact_blank.uniq.join('|')
+    baseline&.intersex
   end
 
   def sexual_attraction
-    baselines.map(&:sexual_attraction_label).compact_blank.uniq.join('|')
+    baseline&.sexual_attraction_label
   end
 
   def attraction_eligibility
-    baselines.map(&:attraction_sgm_group).compact_blank.uniq.join('|')
+    baseline&.attraction_sgm_group
   end
 
   def mismatch
-    mm = baselines.map(&:sgm_group_mismatch?)
-    mm.map { |m| m ? 'Yes' : 'No' }.compact.uniq.join('|')
+    mm = baseline&.sgm_group_mismatch?
+    mm ? 'Yes' : 'No'
   end
 
   def age_unit
@@ -466,6 +439,66 @@ class Participant < ApplicationRecord
   def update_duplicates(duplicates)
     duplicates.each do |duplicate|
       duplicate.update(duplicate: true)
+    end
+  end
+
+  # an unnamed instance of the Participant class
+  class << self
+
+    # private class methods
+    private
+
+    def colors
+      %w[9C6ACB 6DD865 85B2C9 559F93]
+    end
+
+    def countries
+      %w[Vietnam Kenya Brazil]
+    end
+
+    def country_header
+      ['Self Generated ID',	'Database ID', 'Baseline Survey ID',
+       'Contact Info Form ID', 'Consent ID',	'Date of Enrollment (Consent)',
+       'Baseline Survey Completion Date', 'Gender Identity',
+       'Sexual Orientation', 'Intersex', 'Sexual Attraction', 'Attraction Eligibility',
+       'SGM Group', 'Mismatch', 'IP Addresses', 'Duration (min)',
+       '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome', 'Notes']
+    end
+
+    def add_country_sheet(workbook, kountry)
+      workbook.add_worksheet(name: kountry) do |sheet|
+        tab_color = colors[countries.index(kountry)]
+        sheet.sheet_pr.tab_color = tab_color
+        sheet.add_row country_header
+        participants = Participant.where(country: kountry)
+                                  .where.not(sgm_group: ineligible_sgm_groups)
+                                  .where(include: true)
+        add_participants_to_sheet(participants, sheet)
+        summarize_sgm_groups(participants, sheet)
+      end
+    end
+
+    def add_participants_to_sheet(participants, sheet)
+      participants.each do |participant|
+        sheet.add_row [participant.self_generated_id, participant.id, participant.baseline&.id,
+                       participant.contact&.id, participant.consent&.id,
+                       participant.consent&.created_at&.strftime('%Y-%m-%d'),
+                       participant.baseline&.created_at&.strftime('%Y-%m-%d'),
+                       participant.gender_identity, participant.sexual_orientation,
+                       participant.intersex, participant.sexual_attraction,
+                       participant.attraction_eligibility, participant.sgm_group, participant.mismatch,
+                       participant.ip_addresses&.join(' | '), participant.duration,
+                       participant.completion, participant.verified, participant.age_year_match, '', '']
+      end
+    end
+
+    def summarize_sgm_groups(participants, sheet)
+      sheet.add_row []
+      sheet.add_row ['SGM Group', 'Enrollment Count']
+      eligible_sgm_groups.each do |group|
+        sheet.add_row [group, participants.count { |participant| participant.sgm_group == group }]
+      end
+      sheet.add_row ['TOTAL', participants.size]
     end
   end
 
