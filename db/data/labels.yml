@@ -1,11 +1,13 @@
+QNONE: &yes_no
+  1: "yes"
+  2: "no"
 Q6.2:
   1: "male"
   2: "female"
   3: "other (specify)"
   4: "decline to state"
 Q6.3:
-  1: "yes"
-  2: "no"
+  << : *yes_no
   3: "not sure"
 Q6.5:
   10: "woman"
@@ -13,22 +15,19 @@ Q6.5:
   12: "non-binary person"
   13: "transgender woman"
   14: "transgender man"
-Q8.1:
+Q8.1: &gender_identity
   1: "woman"
   2: "man"
   3: "non-binary"
   4: "part time one/other gender"
 Q8.1-K:
-  1: "woman"
-  2: "man"
-  3: "non-binary"
-  4: "part time one/other gender"
+  << : *gender_identity
 Q8.11:
   1: "I am out to myself, but have not shared my gender identity with others."
   2: "I share my gender identity with some people."
   3: "I share my gender identity with most people."
   4: "I share my gender identity with all people."
-Q8.12:
+Q8.12: &safety
   1: "Extremely safe"
   2: "Safe"
   3: "Neutral"
@@ -46,11 +45,7 @@ Q11.2:
   3: "I share my sexual orientation with most people."
   4: "I share my sexual orientation with all people."
 Q11.3:
-  1: "Extremely safe"
-  2: "Safe"
-  3: "Neutral"
-  4: "Unsafe"
-  5: "Extremely unsafe"
+  << : *safety
 Q17.2:
   1: "18"
   2: "19"
@@ -167,7 +162,7 @@ Q17.15:
   4: "only a few weeks"
   5: "did not have to skip or cut the size of meals"
   6: "prefer not to answer"
-Q19.3:
+Q19.3: &regularity
   1: "not at all"
   2: "several days"
   3: "more than half the days"
@@ -175,107 +170,472 @@ Q19.3:
   88: "don't know"
   77: "refuse"
 Q19.4:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q19.5:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q19.6:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q19.7:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q19.8:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q19.9:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q19.10:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q20.2:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q20.3:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q20.4:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q20.5:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q20.6:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q20.7:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q20.8:
-  1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
-  88: "don't know"
-  77: "refuse"
+  << : *regularity
 Q20.9:
+  << : *regularity
+Q27.2: &hbt
+  1: "disagree strongly"
+  2: "disagree somewhat"
+  3: "neither agree nor disagree"
+  4: "agree somewhat"
+  5: "agree strongly"
+Q27.3: 
+  << : *hbt
+Q27.4: 
+  << : *hbt
+Q27.5: 
+  << : *hbt
+Q27.6: 
+  << : *hbt
+Q27.7: 
+  << : *hbt
+Q27.9: 
+  << : *hbt
+Q27.10: 
+  << : *hbt
+Q27.11: 
+  << : *hbt
+Q27.12: 
+  << : *hbt
+Q27.13: 
+  << : *hbt
+Q27.14: 
+  << : *hbt
+Q27.15: 
+  << : *hbt
+3_Q29.2: &frequency
+  0: "never"
+  1: "almost every day"
+  2: "at least once a week"
+  3: "a few times a month"
+  4: "a few times a year"
+  99: "not applicable"
+4_Q29.2:
+  << : *frequency
+5_Q29.2:
+  << : *frequency
+17_Q29.2:
+  << : *frequency
+3_Q29.5: &targeted_reasons
+  1: "ability / disability status"
+  2: "ancestry or national origins"
+  3: "age"
+  4: "body size, weight, shape, or other physical appearance"
+  5: "education or income level"
+  6: "gender expression"
+  7: "gender identity"
+  8: "race and/or ethnicity"
+  9: "religion"
+  10: "sexual orientation"
+  11: "tribe"
+  12: "something else (please specify)"
+4_Q29.5:
+  << : *targeted_reasons
+5_Q29.5:
+  << : *targeted_reasons
+17_Q29.5:
+  << : *targeted_reasons
+1_Q31.2:
+  << : *frequency
+2_Q31.2:
+  << : *frequency
+16_Q31.2:
+  << : *frequency
+17_Q31.2:
+  << : *frequency
+1_Q31.3:
+  << : *targeted_reasons
+2_Q31.3:
+  << : *targeted_reasons
+16_Q31.3:
+  << : *targeted_reasons
+17_Q31.3:
+  << : *targeted_reasons
+7_Q33.2:
+  << : *frequency
+8_Q33.2:
+  << : *frequency
+9_Q33.2:
+  << : *frequency
+10_Q33.2:
+  << : *frequency
+15_Q33.2:
+  << : *frequency
+17_Q33.2:
+  << : *frequency
+7_Q33.5:
+  << : *targeted_reasons
+8_Q33.5:
+  << : *targeted_reasons
+9_Q33.5:
+  << : *targeted_reasons
+10_Q33.5:
+  << : *targeted_reasons
+15_Q33.5:
+  << : *targeted_reasons
+17_Q33.5:
+  << : *targeted_reasons
+11_Q35.2:
+  << : *frequency
+12_Q35.2:
+  << : *frequency
+13_Q35.2:
+  << : *frequency
+14_Q35.2:
+  << : *frequency
+17_Q35.2:
+  << : *frequency
+11_Q35.7:
+  << : *targeted_reasons
+11_Q35.8:
+  << : *targeted_reasons
+12_Q35.7:
+  << : *targeted_reasons
+12_Q35.8:
+  << : *targeted_reasons
+13_Q35.7:
+  << : *targeted_reasons
+13_Q35.8:
+  << : *targeted_reasons
+14_Q35.7:
+  << : *targeted_reasons
+14_Q35.8:
+  << : *targeted_reasons
+17_Q35.7:
+  << : *targeted_reasons
+17_Q35.8:
+  << : *targeted_reasons
+Q36.1_1: &relationship
+  1: "not at all related"
+  2: "a little bit related"
+  3: "moderately related"
+  4: "quite a bit related"
+  5: "very related"
+Q36.1_2:
+  << : *relationship
+Q36.1_3:
+  << : *relationship
+Q38.12: &support
+  1: "extremely supportive"
+  2: "somewhat supportive"
+  3: "neither supportive nor unsupportive"
+  4: "somewhat unsupportive"
+  5: "extremely unsupportive"
+  99: "not applicable"
+Q38.13: &degree
   1: "not at all"
-  2: "several days"
-  3: "more than half the days"
-  4: "nearly every day"
+  2: "somewhat"
+  3: "a lot"
+Q38.6:
+  << : *support
+Q38.7:
+  << : *degree
+Q38.8:
+  << : *degree
+Q38.9:
+  << : *degree
+Q38.10:
+  << : *degree
+Q38.11:
+  << : *degree
+Q39.1:
+  1: "excellent"
+  2: "very good"
+  3: "good"
+  4: "fair"
+  5: "poor"
+Q40.2:
+  << : *yes_no
   88: "don't know"
-  77: "refuse"
+Q40.3:
+  << : *yes_no
+Q40.6:
+  1: "i cannot afford he cost of gender-affirming care visits"
+  2: "discrimination from clinic staff"
+  3: "i have to travel too far to visit my gender-affirming care provider"
+  4: "i don't know how to find a gender-affirming care provider"
+  5: "gender-affirming care procedures aren't offered where i live"
+  6: "other (specify)"
+Q42.2:
+  1: "never"
+  2: "it was just a brief passing thought"
+  3: "i have had a plan at least once to kill myself but did not try to do it"
+  4: "i have had a plan at least once to kill myself and really wanted to die"
+  5: "i have attempted to kill myself, but did not want to die"
+  6: "i have attempted to kill myself, and really hoped to die"
+Q42.4:
+  1: "never"
+  2: "rarely (1 time)"
+  3: "sometimes (2 times)"
+  4: "often (3-4 times)"
+  5: "very often (5 or more times)"
+Q42.5:
+  1: "no"
+  2: "yes, at one time, but did not really want to die"
+  3: "yes, at one time, and really wanted to die"
+  4: "yes, more than once, but did not really want to die"
+  5: "yes, more than once, and really wanted to die"
+Q42.6:
+  1: "never"
+  2: "no chance at all"
+  3: "rather unlikely"
+  4: "unlikely"
+  5: "likely"
+  6: "rather likely"
+  7: "very likely"
+Q18.6: &yes_no_not_sure
+  << : *yes_no
+  3: "not sure"
+Q18.6-B:
+  << : *yes_no_not_sure
+Q18.6-K:
+  << : *yes_no_not_sure
+Q18.7_1: &connections
+  1: "0"
+  4: "1"
+  5: "2"
+  6: "3"
+  7: "4"
+  8: "5"
+  9: "6"
+  10: "7"
+  11: "8"
+  12: "9"
+  13: "10"
+  14: "11"
+  15: "12"
+  16: "13"
+  17: "14"
+  18: "15"
+  19: "16"
+  20: "17"
+  21: "18"
+  22: "19"
+  23: "20"
+  24: "21"
+  25: "22"
+  26: "23"
+  27: "24"
+  28: "25"
+  29: "26"
+  30: "27"
+  31: "28"
+  32: "29"
+  33: "30"
+  34: "31"
+  35: "32"
+  36: "33"
+  37: "34"
+  38: "35"
+  39: "36"
+  40: "37"
+  41: "38"
+  42: "39"
+  43: "40"
+  44: "41"
+  45: "42"
+  46: "43"
+  47: "44"
+  48: "45"
+  49: "46"
+  50: "47"
+  51: "48"
+  52: "49"
+  53: "50"
+  54: "51"
+  55: "52"
+  56: "53"
+  57: "54"
+  58: "55"
+  59: "56"
+  60: "57"
+  61: "58"
+  62: "59"
+  63: "60"
+  64: "61"
+  65: "62"
+  66: "63"
+  67: "64"
+  68: "65"
+  69: "66"
+  70: "67"
+  71: "68"
+  72: "69"
+  73: "70"
+  74: "71"
+  75: "72"
+  76: "73"
+  77: "74"
+  78: "75"
+  79: "76"
+  80: "77"
+  81: "78"
+  82: "79"
+  83: "80"
+  84: "81"
+  85: "82"
+  86: "83"
+  87: "84"
+  88: "85"
+  89: "86"
+  90: "87"
+  91: "88"
+  92: "89"
+  93: "90"
+  94: "91"
+  95: "92"
+  96: "93"
+  97: "94"
+  98: "95"
+  99: "96"
+  100: "97"
+  101: "98"
+  102: "99"
+  103: "100"
+  104: "101"
+  105: "102"
+  106: "103"
+  107: "104"
+  108: "105"
+  109: "106"
+  110: "107"
+  111: "108"
+  112: "109"
+  113: "110"
+  114: "111"
+  115: "112"
+  116: "113"
+  117: "114"
+  118: "115"
+  119: "116"
+  120: "117"
+  121: "118"
+  122: "119"
+  123: "120"
+  124: "121"
+  125: "122"
+  126: "123"
+  127: "124"
+  128: "125"
+  129: "126"
+  130: "127"
+  131: "128"
+  132: "129"
+  133: "130"
+  134: "131"
+  135: "132"
+  136: "133"
+  137: "134"
+  138: "135"
+  139: "136"
+  140: "137"
+  141: "138"
+  142: "139"
+  143: "140"
+  144: "141"
+  145: "142"
+  146: "143"
+  147: "144"
+  148: "145"
+  149: "146"
+  150: "147"
+  151: "148"
+  152: "149"
+  153: "150"
+  154: "151"
+  155: "152"
+  156: "153"
+  157: "154"
+  158: "155"
+  159: "156"
+  160: "157"
+  161: "158"
+  162: "159"
+  163: "160"
+  164: "161"
+  165: "162"
+  166: "163"
+  167: "164"
+  168: "165"
+  169: "166"
+  170: "167"
+  171: "168"
+  172: "169"
+  173: "170"
+  174: "171"
+  175: "172"
+  176: "173"
+  177: "174"
+  178: "175"
+  179: "176"
+  180: "177"
+  181: "178"
+  182: "179"
+  183: "180"
+  184: "181"
+  185: "182"
+  186: "183"
+  187: "184"
+  188: "185"
+  189: "186"
+  190: "187"
+  191: "188"
+  192: "189"
+  193: "190"
+  194: "191"
+  195: "192"
+  196: "193"
+  197: "194"
+  198: "195"
+  199: "196"
+  200: "197"
+  201: "198"
+  202: "199"
+  203: "200+"
+Q18.7_2:
+  << : *connections
+Q18.7_3:
+  << : *connections
+Q18.7_4:
+  << : *connections
+Q18.7_5:
+  << : *connections
+Q18.7_6: 
+  << : *connections
+Q18.7_7:
+  << : *connections
+Q18.7_8:
+  << : *connections
+Q18.7_9:
+  << : *connections
+Q18.7_10:
+  << : *connections
+Q350: &continue_finish
+  1: "Continue"
+  2: "Finish"

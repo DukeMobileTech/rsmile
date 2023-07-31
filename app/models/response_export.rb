@@ -84,7 +84,7 @@ class ResponseExport < ApplicationRecord
 
   def load_yaml_files
     self.variables = YAML.safe_load(File.read('db/data/variables.yml'))
-    self.labels = YAML.safe_load(File.read('db/data/labels.yml'))
+    self.labels = YAML.safe_load(File.read('db/data/labels.yml'), aliases: true)
   end
 
   def filter_id
@@ -149,7 +149,7 @@ class ResponseExport < ApplicationRecord
   end
 
   def included_columns
-    [0, 1, (4..8).to_a, 1123, 1153, 1128, 16, (29..68).to_a, (77..210).to_a].flatten
+    [0, 1, (4..8).to_a, 1123, 1153, 1128, 16, (29..68).to_a, (77..696).to_a].flatten
   end
 
   def column_data(row, index)
