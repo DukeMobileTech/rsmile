@@ -332,22 +332,6 @@ class Participant < ApplicationRecord
     file
   end
 
-  def self.add_participant_sheet(workbook)
-    workbook.add_worksheet(name: 'Participant Level Data') do |sheet|
-      sheet.sheet_pr.tab_color = colors[0]
-      sheet.add_row participant_header
-      participants = Participant.where.not(sgm_group: %w[blank ineligible])
-      participants.each do |participant|
-        sheet.add_row [participant.race, participant.ethnicity, participant.gender,
-                       participant.age, participant.age_unit]
-      end
-    end
-  end
-
-  def self.participant_header
-    ['Race',	'Ethnicity', 'Gender', 'Age', 'Age Unit']
-  end
-
   def race
     baseline&.race
   end
@@ -465,14 +449,17 @@ class Participant < ApplicationRecord
        '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome', 'Notes']
     end
 
+    def enrolled_eligible_participants
+      Participant.where(include: true)
+                 .where.not(sgm_group: ineligible_sgm_groups)
+    end
+
     def add_country_sheet(workbook, kountry)
       workbook.add_worksheet(name: kountry) do |sheet|
         tab_color = colors[countries.index(kountry)]
         sheet.sheet_pr.tab_color = tab_color
         sheet.add_row country_header
-        participants = Participant.where(country: kountry)
-                                  .where.not(sgm_group: ineligible_sgm_groups)
-                                  .where(include: true)
+        participants = enrolled_eligible_participants.where(country: kountry)
         add_participants_to_sheet(participants, sheet)
         summarize_sgm_groups(participants, sheet)
       end
@@ -499,6 +486,22 @@ class Participant < ApplicationRecord
         sheet.add_row [group, participants.count { |participant| participant.sgm_group == group }]
       end
       sheet.add_row ['TOTAL', participants.size]
+    end
+
+    def add_participant_sheet(workbook)
+      workbook.add_worksheet(name: 'Participant Level Data') do |sheet|
+        sheet.sheet_pr.tab_color = colors[0]
+        sheet.add_row participant_header
+        participants = enrolled_eligible_participants
+        participants.each do |participant|
+          sheet.add_row [participant.race, participant.ethnicity, participant.gender,
+                         participant.age, participant.age_unit]
+        end
+      end
+    end
+
+    def participant_header
+      ['Race',	'Ethnicity', 'Gender', 'Age', 'Age Unit']
     end
   end
 
