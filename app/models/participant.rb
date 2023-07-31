@@ -286,15 +286,23 @@ class Participant < ApplicationRecord
   end
 
   def self.enrollment
-    file = Tempfile.new(Time.now.to_i.to_s)
-    Axlsx::Package.new do |p|
-      wb = p.workbook
-      countries.each do |state|
-        add_country_sheet(wb, state)
-      end
-      p.serialize(file.path)
-    end
-    file
+    EnrollmentLogbook.new.file
+  end
+
+  def self.participant_level
+    ParticipantLevelData.new.file
+  end
+
+  def self.colors
+    %w[9C6ACB 6DD865 85B2C9 559F93]
+  end
+
+  def self.countries
+    %w[Vietnam Kenya Brazil]
+  end
+
+  def self.enrolled_eligible_participants
+    Participant.where(include: true).where.not(sgm_group: ineligible_sgm_groups)
   end
 
   def ip_addresses
@@ -320,16 +328,6 @@ class Participant < ApplicationRecord
     cal_age = created_at.year - birth_year.to_i
     diff = cal_age - age.to_i
     diff.abs <= 2 ? 'Yes' : 'No'
-  end
-
-  def self.participant_level
-    file = Tempfile.new(Time.zone.now.to_i.to_s)
-    Axlsx::Package.new do |p|
-      wb = p.workbook
-      add_participant_sheet(wb)
-      p.serialize(file.path)
-    end
-    file
   end
 
   def race
@@ -423,85 +421,6 @@ class Participant < ApplicationRecord
   def update_duplicates(duplicates)
     duplicates.each do |duplicate|
       duplicate.update(duplicate: true)
-    end
-  end
-
-  # an unnamed instance of the Participant class
-  class << self
-
-    # private class methods
-    private
-
-    def colors
-      %w[9C6ACB 6DD865 85B2C9 559F93]
-    end
-
-    def countries
-      %w[Vietnam Kenya Brazil]
-    end
-
-    def country_header
-      ['Self Generated ID',	'Database ID', 'Baseline Survey ID',
-       'Contact Info Form ID', 'Consent ID',	'Date of Enrollment (Consent)',
-       'Baseline Survey Completion Date', 'Gender Identity',
-       'Sexual Orientation', 'Intersex', 'Sexual Attraction', 'Attraction Eligibility',
-       'SGM Group', 'Mismatch', 'IP Addresses', 'Duration (min)',
-       '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome', 'Notes']
-    end
-
-    def enrolled_eligible_participants
-      Participant.where(include: true)
-                 .where.not(sgm_group: ineligible_sgm_groups)
-    end
-
-    def add_country_sheet(workbook, kountry)
-      workbook.add_worksheet(name: kountry) do |sheet|
-        tab_color = colors[countries.index(kountry)]
-        sheet.sheet_pr.tab_color = tab_color
-        sheet.add_row country_header
-        participants = enrolled_eligible_participants.where(country: kountry)
-        add_participants_to_sheet(participants, sheet)
-        summarize_sgm_groups(participants, sheet)
-      end
-    end
-
-    def add_participants_to_sheet(participants, sheet)
-      participants.each do |participant|
-        sheet.add_row [participant.self_generated_id, participant.id, participant.baseline&.id,
-                       participant.contact&.id, participant.consent&.id,
-                       participant.consent&.created_at&.strftime('%Y-%m-%d'),
-                       participant.baseline&.created_at&.strftime('%Y-%m-%d'),
-                       participant.gender_identity, participant.sexual_orientation,
-                       participant.intersex, participant.sexual_attraction,
-                       participant.attraction_eligibility, participant.sgm_group, participant.mismatch,
-                       participant.ip_addresses&.join(' | '), participant.duration,
-                       participant.completion, participant.verified, participant.age_year_match, '', '']
-      end
-    end
-
-    def summarize_sgm_groups(participants, sheet)
-      sheet.add_row []
-      sheet.add_row ['SGM Group', 'Enrollment Count']
-      eligible_sgm_groups.each do |group|
-        sheet.add_row [group, participants.count { |participant| participant.sgm_group == group }]
-      end
-      sheet.add_row ['TOTAL', participants.size]
-    end
-
-    def add_participant_sheet(workbook)
-      workbook.add_worksheet(name: 'Participant Level Data') do |sheet|
-        sheet.sheet_pr.tab_color = colors[0]
-        sheet.add_row participant_header
-        participants = enrolled_eligible_participants
-        participants.each do |participant|
-          sheet.add_row [participant.race, participant.ethnicity, participant.gender,
-                         participant.age, participant.age_unit]
-        end
-      end
-    end
-
-    def participant_header
-      ['Race',	'Ethnicity', 'Gender', 'Age', 'Age Unit']
     end
   end
 
