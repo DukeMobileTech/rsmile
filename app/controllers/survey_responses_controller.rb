@@ -14,4 +14,8 @@ class SurveyResponsesController < ApplicationController
   def sources_timeline
     render json: SurveyResponse.sources_timeline(params[:country])
   end
+
+  def progress
+    render json: SurveyResponse.progress_stats(params[:country])
+  end
 end

@@ -18,6 +18,9 @@
         <b-tab lazy title="Baseline Surveys">
           <Baselines :country-name="countryName"></Baselines>
         </b-tab>
+        <b-tab lazy title="Survey Blocks Progress">
+          <Progress :country-name="countryName"></Progress>
+        </b-tab>
       </b-tabs>
     </b-card>
   </div>
@@ -28,6 +31,7 @@ import ParticipantsOverTime from './ParticipantsOverTime';
 import StudySource from './StudySource';
 import SgmGroups from './SgmGroups';
 import Baselines from './Baselines';
+import Progress from './Progress';
 
 export default {
   name: 'CountryData',
@@ -41,6 +45,7 @@ export default {
     StudySource,
     SgmGroups,
     Baselines,
+    Progress
   },
 
   methods: {

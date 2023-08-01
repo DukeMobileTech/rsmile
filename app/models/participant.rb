@@ -37,6 +37,7 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
+  scope :excluded, -> { where(include: false) }
 
   def consents
     survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
@@ -302,7 +303,9 @@ class Participant < ApplicationRecord
   end
 
   def self.enrolled_eligible_participants
-    Participant.where(include: true).where.not(sgm_group: ineligible_sgm_groups)
+    Participant.includes(:survey_responses)
+               .where(include: true)
+               .where.not(sgm_group: ineligible_sgm_groups)
   end
 
   def ip_addresses

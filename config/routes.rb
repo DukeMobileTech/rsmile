@@ -50,6 +50,7 @@ Rails.application.routes.draw do
       get '/consents' => 'survey_responses#consents'
       get '/baselines' => 'survey_responses#baselines'
       get '/sources_timeline' => 'survey_responses#sources_timeline'
+      get '/progress' => 'survey_responses#progress'
     end
   end
 end

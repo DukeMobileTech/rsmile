@@ -30,12 +30,30 @@ class SurveyResponse < ApplicationRecord
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
                  :gender_identity, :sexual_orientation, :intersex,
-                 :sexual_attraction, :attraction_eligibility, :attraction_sgm_group
+                 :sexual_attraction, :attraction_eligibility, :attraction_sgm_group,
+                 :short_survey, :group_a, :group_b, :group_c
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
   scope :safety_plans, -> { where(survey_title: 'Safety Planning') }
+  scope :short_surveys, -> { where(survey_uuid: Rails.application.credentials.config[:SHORT_SURVEY_ID]) }
+  scope :started_short_survey, lambda {
+    short_surveys.where(duplicate: false)
+                 .where.not(participant_id: Participant.excluded.pluck(:id))
+  }
+  scope :completed_main_block, lambda {
+    started_short_survey.where('metadata @> hstore(:key, :value)', key: 'short_survey', value: 'true')
+  }
+  scope :completed_group_a, lambda {
+    started_short_survey.where('metadata @> hstore(:key, :value)', key: 'group_a', value: 'true')
+  }
+  scope :completed_group_b, lambda {
+    started_short_survey.where('metadata @> hstore(:key, :value)', key: 'group_b', value: 'true')
+  }
+  scope :completed_group_c, lambda {
+    started_short_survey.where('metadata @> hstore(:key, :value)', key: 'group_c', value: 'true')
+  }
 
   def baseline_survey?
     survey_title&.strip == 'SMILE Survey - Baseline'
@@ -456,6 +474,16 @@ class SurveyResponse < ApplicationRecord
     }
   end
 
+  def self.progress_stats(country_name)
+    {
+      'Started Short Survey': started_short_survey.where(country: country_name).size,
+      'Completed Main Block': completed_main_block.where(country: country_name).size,
+      'Completed Group A': completed_group_a.where(country: country_name).size,
+      'Completed Group B': completed_group_b.where(country: country_name).size,
+      'Completed Group C': completed_group_c.where(country: country_name).size
+    }
+  end
+
   def qualtrics_metadata
     url = URI("https://#{Rails.application.credentials.config[:QUALTRICS_BASE_URL]}/surveys/#{survey_uuid}/responses/#{response_uuid}")
     http = Net::HTTP.new(url.host, url.port)
@@ -493,6 +521,14 @@ class SurveyResponse < ApplicationRecord
     self.gender_identity = values['Gender_Identity']
     self.sexual_orientation = values['Sexual_Orientation']
     self.sexual_attraction = values['QID35']&.sort&.join(',') if values['QID35'].present?
+    update_block_completion(values)
+  end
+
+  def update_block_completion(values)
+    assign_attributes(short_survey: values['QID549'].present?,
+                      group_a: values['QID548'].present? || values['QID553'].present?,
+                      group_b: values['QID551'].present? || values['QID547'].present?,
+                      group_c: values['QID552'].present? || values['QID554'].present?)
   end
 
   def parse_gender(labels)
