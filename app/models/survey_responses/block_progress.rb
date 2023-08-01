@@ -3,6 +3,7 @@ module SurveyResponses
     def progress(country)
       {
         'Started Short Survey': started_stats(country),
+        'Completed SOGI Block': sogi_block_stats(country),
         'Completed Main Block': main_block_stats(country),
         'Completed Group A': group_a_stats(country),
         'Completed Group B': group_b_stats(country),
@@ -20,6 +21,12 @@ module SurveyResponses
       started = SurveyResponse.started_short_survey.where(country: country)
       eligible_started = started.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
       [started.size, eligible_started.size]
+    end
+
+    def sogi_block_stats(country)
+      sogi_block = SurveyResponse.completed_sogi_block.where(country: country)
+      eligible_sogi_block = sogi_block.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+      [sogi_block.size, eligible_sogi_block.size]
     end
 
     def main_block_stats(country)

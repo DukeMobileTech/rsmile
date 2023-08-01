@@ -42,6 +42,9 @@ class SurveyResponse < ApplicationRecord
     short_surveys.where(duplicate: false)
                  .where.not(participant_id: Participant.excluded.pluck(:id))
   }
+  scope :completed_sogi_block, lambda {
+    started_short_survey.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ['blank'])
+  }
   scope :completed_main_block, lambda {
     started_short_survey.where('metadata @> hstore(:key, :value)', key: 'short_survey', value: 'true')
   }
