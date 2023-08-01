@@ -219,13 +219,11 @@ class SurveyResponse < ApplicationRecord
   end
 
   def attraction_eligible?
-    attraction_eligibility == 'eligible' &&
-      ['no group', 'ineligible', 'blank'].include?(sgm_group)
+    attraction_eligibility == 'eligible' && INELIGIBLE_SGM_GROUPS.include?(sgm_group)
   end
 
   def attraction_ineligible?
-    attraction_eligibility == 'ineligible' &&
-      ['no group', 'ineligible', 'blank'].exclude?(sgm_group)
+    attraction_eligibility == 'ineligible' && INELIGIBLE_SGM_GROUPS.exclude?(sgm_group)
   end
 
   def sgm_group_mismatch?
@@ -382,19 +380,15 @@ class SurveyResponse < ApplicationRecord
     final_sources
   end
 
-  def self.ineligible_sgm_groups
-    ['blank', 'ineligible', 'no group']
-  end
-
   def self.survey_sources(country_name)
     source_count = {}
     cr = baselines.where(country: country_name)
     eligible = cr.where(survey_complete: true)
                  .where(duplicate: false)
-                 .where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+                 .where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
     ineligible = cr.where(survey_complete: false)
                    .or(cr.where(duplicate: true))
-                   .or(cr.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups))
+                   .or(cr.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS))
     derived_eligible = []
     cr.each do |response|
       derived_eligible << response if response.attraction_eligible?
@@ -440,7 +434,7 @@ class SurveyResponse < ApplicationRecord
     responses = baselines.where(country: country_name)
     partials = responses.where(survey_complete: false)
     completed = responses.where(survey_complete: true)
-    all_eligible = completed.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    all_eligible = completed.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
     eligible = []
     duplicates = []
     excluded = []
@@ -456,7 +450,7 @@ class SurveyResponse < ApplicationRecord
         duplicates += part_resp[1..]
       end
     end
-    ineligible = completed.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    ineligible = completed.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
     derived = []
     ineligible.each do |response|
       derived << response if response.attraction_eligible?
@@ -474,44 +468,8 @@ class SurveyResponse < ApplicationRecord
     }
   end
 
-  def self.started_stats(country_name)
-    started = started_short_survey.where(country: country_name)
-    eligible_started = started.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
-    [started.size, eligible_started.size]
-  end
-
-  def self.main_block_stats(country_name)
-    main_block = completed_main_block.where(country: country_name)
-    eligible_main_block = main_block.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
-    [main_block.size, eligible_main_block.size]
-  end
-
-  def self.group_a_stats(country_name)
-    group_a = completed_group_a.where(country: country_name)
-    eligible_group_a = group_a.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
-    [group_a.size, eligible_group_a.size]
-  end
-
-  def self.group_b_stats(country_name)
-    group_b = completed_group_b.where(country: country_name)
-    eligible_group_b = group_b.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
-    [group_b.size, eligible_group_b.size]
-  end
-
-  def self.group_c_stats(country_name)
-    group_c = completed_group_c.where(country: country_name)
-    eligible_group_c = group_c.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
-    [group_c.size, eligible_group_c.size]
-  end
-
   def self.progress_stats(country_name)
-    {
-      'Started Short Survey': started_stats(country_name),
-      'Completed Main Block': main_block_stats(country_name),
-      'Completed Group A': group_a_stats(country_name),
-      'Completed Group B': group_b_stats(country_name),
-      'Completed Group C': group_c_stats(country_name)
-    }
+    SurveyResponses::BlockProgress.new.progress(country_name)
   end
 
   def qualtrics_metadata

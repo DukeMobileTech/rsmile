@@ -64,7 +64,7 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
       input :country, as: :select, collection: %w[Brazil Kenya Vietnam]
       input :survey_complete
       input :duplicate
-      input :sgm_group, as: :select, collection: Participant.all_sgm_groups
+      input :sgm_group, as: :select, collection: Participant::ALL_SGM_GROUPS
       input :language, as: :select, collection: %w[en sw vi pt-BR]
       input :source, as: :select, collection: %w[0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18]
     end

@@ -126,14 +126,14 @@ class Participant < ApplicationRecord
 
     Participant.includes(:survey_responses)
                .where(include: true)
-               .where.not(sgm_group: ineligible_sgm_groups)
+               .where.not(sgm_group: INELIGIBLE_SGM_GROUPS)
                .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
                .where(survey_responses: { survey_complete: true })
   end
 
   def self.ineligible_participants
     Participant.where(include: true)
-               .where(sgm_group: ineligible_sgm_groups)
+               .where(sgm_group: INELIGIBLE_SGM_GROUPS)
   end
 
   def self.survey_titles
@@ -168,24 +168,10 @@ class Participant < ApplicationRecord
     stats
   end
 
-  def self.all_sgm_groups
-    ['non-binary person', 'transgender woman', 'transgender man', 'woman attracted to women',
-     'man attracted to men', 'multi-attracted woman', 'multi-attracted man', 'no group', 'ineligible', 'blank']
-  end
-
-  def self.eligible_sgm_groups
-    ['woman attracted to women', 'man attracted to men', 'multi-attracted woman',
-     'multi-attracted man', 'non-binary person', 'transgender woman', 'transgender man']
-  end
-
-  def self.ineligible_sgm_groups
-    ['blank', 'ineligible', 'no group']
-  end
-
   def self.eligible_sgm_stats(kountry)
     stats = {}
     participants = eligible_participants.where(country: kountry)
-    eligible_sgm_groups.each do |group|
+    ELIGIBLE_SGM_GROUPS.each do |group|
       stats[group] = participants.count { |participant| participant.sgm_group == group }
     end
     stats
@@ -194,7 +180,7 @@ class Participant < ApplicationRecord
   def self.ineligible_sgm_stats(kountry)
     stats = {}
     participants = ineligible_participants.where(country: kountry)
-    ineligible_sgm_groups.each do |group|
+    INELIGIBLE_SGM_GROUPS.each do |group|
       stats[group] = participants.count { |participant| participant.sgm_group == group }
     end
     stats
@@ -236,7 +222,7 @@ class Participant < ApplicationRecord
     Groupdate.week_start = :monday
     weeks = SortedSet.new
     stats = {}
-    countries.each do |country|
+    COUNTRIES.each do |country|
       country_stats = {}
       participants = eligible_participants.where(country: country).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
       participants.each do |week, count|
@@ -287,25 +273,17 @@ class Participant < ApplicationRecord
   end
 
   def self.enrollment
-    EnrollmentLogbook.new.file
+    Participants::EnrollmentLogbook.new.file
   end
 
   def self.participant_level
-    ParticipantLevelData.new.file
-  end
-
-  def self.colors
-    %w[9C6ACB 6DD865 85B2C9 559F93]
-  end
-
-  def self.countries
-    %w[Vietnam Kenya Brazil]
+    Participants::ParticipantLevelData.new.file
   end
 
   def self.enrolled_eligible_participants
     Participant.includes(:survey_responses)
                .where(include: true)
-               .where.not(sgm_group: ineligible_sgm_groups)
+               .where.not(sgm_group: INELIGIBLE_SGM_GROUPS)
   end
 
   def ip_addresses
