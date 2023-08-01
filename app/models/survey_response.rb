@@ -474,13 +474,43 @@ class SurveyResponse < ApplicationRecord
     }
   end
 
+  def self.started_stats(country_name)
+    started = started_short_survey.where(country: country_name)
+    eligible_started = started.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    [started.size, eligible_started.size]
+  end
+
+  def self.main_block_stats(country_name)
+    main_block = completed_main_block.where(country: country_name)
+    eligible_main_block = main_block.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    [main_block.size, eligible_main_block.size]
+  end
+
+  def self.group_a_stats(country_name)
+    group_a = completed_group_a.where(country: country_name)
+    eligible_group_a = group_a.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    [group_a.size, eligible_group_a.size]
+  end
+
+  def self.group_b_stats(country_name)
+    group_b = completed_group_b.where(country: country_name)
+    eligible_group_b = group_b.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    [group_b.size, eligible_group_b.size]
+  end
+
+  def self.group_c_stats(country_name)
+    group_c = completed_group_c.where(country: country_name)
+    eligible_group_c = group_c.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+    [group_c.size, eligible_group_c.size]
+  end
+
   def self.progress_stats(country_name)
     {
-      'Started Short Survey': started_short_survey.where(country: country_name).size,
-      'Completed Main Block': completed_main_block.where(country: country_name).size,
-      'Completed Group A': completed_group_a.where(country: country_name).size,
-      'Completed Group B': completed_group_b.where(country: country_name).size,
-      'Completed Group C': completed_group_c.where(country: country_name).size
+      'Started Short Survey': started_stats(country_name),
+      'Completed Main Block': main_block_stats(country_name),
+      'Completed Group A': group_a_stats(country_name),
+      'Completed Group B': group_b_stats(country_name),
+      'Completed Group C': group_c_stats(country_name)
     }
   end
 

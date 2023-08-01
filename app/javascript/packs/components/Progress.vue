@@ -6,20 +6,29 @@
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>Survey Block</th>
-              <th>Participant Count</th>
-              <th>Block Progress</th> 
+              <th>Block</th>
+              <th>Participants</th>
+              <th>Progress</th>
+              <th>Eligible</th>
+              <th>Progress</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(value, key, index) in surveys" :key="index">
               <td>{{key}}</td>
-              <td>{{value}}</td>
-              <td>{{((value / surveys['Started Short Survey']) * 100).toFixed(1)}} %</td> 
+              <td>{{value[0]}}</td>
+              <td>{{((value[0] / surveys['Started Short Survey'][0]) * 100).toFixed(1)}} %</td> 
+              <td>{{value[1]}}</td>
+              <td>{{((value[1] / surveys['Started Short Survey'][0]) * 100).toFixed(1)}} %</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <p><strong>Caveats</strong></p>
+      <ul>
+        <li>Participants/Eligible columns are based on the number of participants who have started the short baseline survey (original long survey participants are not included).</li>
+        <li>Progress is based on the number of participants who have completed that block versus those who started the survey.</li>
+      </ul>
     </div>
   </div>
 </template>
