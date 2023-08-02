@@ -59,6 +59,24 @@ export default {
     loaded: false,
     chartData: {},
     chartOptions: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          },
+          gridLines: {
+            display: true
+          }
+        }],
+        xAxes: [ {
+          gridLines: {
+            display: true
+          }
+        }]
+      },
+      legend: {
+        display: true
+      },
       responsive: true,
       maintainAspectRatio: false
     },
@@ -88,15 +106,15 @@ export default {
         }
         this.surveys = response.data;
         this.chartData = {
-          labels: ['Started Short Survey', 'Completed SOGI Block', 'Completed Main Block', 'Completed Group A', 'Completed Group B', 'Completed Group C'],
+          labels: ['Started Short Survey', 'Completed SOGI Block', 'Completed Main Block', 'Completed Group A', 'Completed Group B', 'Completed Group C', 'Completed 1 Group', 'Completed 2 Groups', 'Completed 3 Groups'],
           datasets: [
             { label: 'All Participants',
               backgroundColor: 'rgba(246, 19, 4, 0.7)',
-              data: [this.surveys['Started Short Survey'][0], this.surveys['Completed SOGI Block'][0], this.surveys['Completed Main Block'][0], this.surveys['Completed Group A'][0], this.surveys['Completed Group B'][0], this.surveys['Completed Group C'][0]],
+              data: [this.surveys['Started Short Survey'][0], this.surveys['Completed SOGI Block'][0], this.surveys['Completed Main Block'][0], this.surveys['Completed Group A'][0], this.surveys['Completed Group B'][0], this.surveys['Completed Group C'][0], this.surveys['Completed 1 Group'][0], this.surveys['Completed 2 Groups'][0], this.surveys['Completed 3 Groups'][0]],
             },
             { label: 'Eligible Participants',
               backgroundColor: 'rgba(87, 0, 228, 0.6)',
-              data: [this.surveys['Started Short Survey'][1], this.surveys['Completed SOGI Block'][1], this.surveys['Completed Main Block'][1], this.surveys['Completed Group A'][1], this.surveys['Completed Group B'][1], this.surveys['Completed Group C'][1]],
+              data: [this.surveys['Started Short Survey'][1], this.surveys['Completed SOGI Block'][1], this.surveys['Completed Main Block'][1], this.surveys['Completed Group A'][1], this.surveys['Completed Group B'][1], this.surveys['Completed Group C'][1], this.surveys['Completed 1 Group'][1], this.surveys['Completed 2 Groups'][1], this.surveys['Completed 3 Groups'][1]],
             }
           ],
         };

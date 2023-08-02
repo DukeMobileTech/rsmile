@@ -31,7 +31,7 @@ class SurveyResponse < ApplicationRecord
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
                  :gender_identity, :sexual_orientation, :intersex,
                  :sexual_attraction, :attraction_eligibility, :attraction_sgm_group,
-                 :short_survey, :group_a, :group_b, :group_c
+                 :short_survey, :group_a, :group_b, :group_c, :groups_done
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
@@ -506,6 +506,7 @@ class SurveyResponse < ApplicationRecord
                       group_a: values['QID548'].present? || values['QID553'].present?,
                       group_b: values['QID551'].present? || values['QID547'].present?,
                       group_c: values['QID552'].present? || values['QID554'].present?)
+    assign_attributes(groups_done: [group_a, group_b, group_c].count(true))
   end
 
   def parse_gender(labels)

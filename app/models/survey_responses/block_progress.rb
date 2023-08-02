@@ -1,5 +1,6 @@
 module SurveyResponses
   class BlockProgress
+    # rubocop:disable Metrics/MethodLength
     def progress(country)
       {
         'Started Short Survey': started_stats(country),
@@ -7,7 +8,10 @@ module SurveyResponses
         'Completed Main Block': main_block_stats(country),
         'Completed Group A': group_a_stats(country),
         'Completed Group B': group_b_stats(country),
-        'Completed Group C': group_c_stats(country)
+        'Completed Group C': group_c_stats(country),
+        'Completed 1 Group': groups_done(country, 1),
+        'Completed 2 Groups': groups_done(country, 2),
+        'Completed 3 Groups': groups_done(country, 3)
       }
     end
 
@@ -51,6 +55,22 @@ module SurveyResponses
       group_c = SurveyResponse.completed_group_c.where(country: country)
       eligible_group_c = group_c.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
       [group_c.size, eligible_group_c.size]
+    end
+
+    def groups_done(country, number)
+      array = case number
+              when 1
+                %w[1 2 3]
+              when 2
+                %w[2 3]
+              when 3
+                ['3']
+              end
+      groups = SurveyResponse.started_short_survey
+                             .where('(metadata -> :key) IN (:values)', key: 'groups_done', values: array)
+                             .where(country: country)
+      eligible_groups = groups.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
+      [groups.size, eligible_groups.size]
     end
   end
 end
