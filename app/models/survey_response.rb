@@ -57,6 +57,34 @@ class SurveyResponse < ApplicationRecord
   scope :completed_group_c, lambda {
     started_short_survey.where('metadata @> hstore(:key, :value)', key: 'group_c', value: 'true')
   }
+  scope :duplicate_baselines, -> { baselines.where(duplicate: true) }
+  scope :excluded_baselines, -> { baselines.where(participant_id: Participant.excluded.select(:id)) }
+  # An eligible baseline survey is one that is:
+  # 1. Not a duplicate
+  # 2. Belongs to a participant who is not excluded
+  # 3. Belongs to a participant who is not in an ineligible SGM group
+  scope :eligible_baselines, lambda {
+    baselines.where(duplicate: false)
+             .where.not(participant_id: Participant.excluded.pluck(:id))
+             .where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
+  }
+  # An eligible baseline survey is one that is:
+  # 1. Not a duplicate
+  # 2. Belongs to a participant who:
+  #   1. is not excluded
+  #   2. is in an ineligible SGM group
+  #   3. is in an eligible attraction SGM group
+  scope :attraction_eligible_baselines, lambda {
+    baselines.where(duplicate: false)
+             .where.not(participant_id: Participant.excluded.pluck(:id))
+             .where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
+             .where('metadata @> hstore(:key, :value)', key: 'attraction_eligibility', value: 'eligible')
+  }
+  scope :ineligible_baselines, lambda {
+    baselines.where(duplicate: false)
+             .where.not(participant_id: Participant.excluded.pluck(:id))
+             .where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
+  }
 
   def baseline_survey?
     survey_title&.strip == 'SMILE Survey - Baseline'
@@ -329,17 +357,9 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
-  def self.eligible_baselines(kountry)
-    ids = Participant.eligible_participants.where(country: kountry).pluck(:id)
-    SurveyResponse.where(participant_id: ids)
-                  .where(survey_title: 'SMILE Survey - Baseline')
-                  .where(survey_complete: true)
-                  .where(duplicate: false)
-  end
-
   def self.sources_timeline(kountry)
     Groupdate.week_start = :monday
-    responses = eligible_baselines(kountry)
+    responses = eligible_baselines.where(country: kountry)
     sources = {}
     weeks = SortedSet.new
     25.times do |num|
@@ -434,41 +454,7 @@ class SurveyResponse < ApplicationRecord
   end
 
   def self.baseline_stats(country_name)
-    responses = baselines.where(country: country_name)
-    partials = responses.where(survey_complete: false)
-    completed = responses.where(survey_complete: true)
-    all_eligible = completed.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
-    eligible = []
-    duplicates = []
-    excluded = []
-    all_eligible.group_by(&:participant).each do |participant, part_resp|
-      if participant.blank? || participant.include == false
-        excluded += part_resp
-        next
-      end
-      if part_resp.size == 1
-        eligible += part_resp
-      else
-        eligible << part_resp[0]
-        duplicates += part_resp[1..]
-      end
-    end
-    ineligible = completed.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
-    derived = []
-    ineligible.each do |response|
-      derived << response if response.attraction_eligible?
-    end
-
-    {
-      All: responses.size,
-      Completed: completed.size,
-      Partials: partials.size,
-      Eligible: eligible.size,
-      Ineligible: ineligible.size,
-      Derived: derived.size,
-      Duplicates: duplicates.size,
-      Excluded: excluded.size
-    }
+    SurveyResponses::Baseline.new.stats(country_name)
   end
 
   def self.progress_stats(country_name)
