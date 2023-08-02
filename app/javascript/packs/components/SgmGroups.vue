@@ -1,24 +1,35 @@
 <template>
   <div :key="'sgm-group'">
     <h5>SGM Groups</h5>
-    <div v-if="loading" class="loading">Loading...</div>
-    <div v-else class="row">
+    <div class="row">
       <div class="col">
         <p>Eligible</p>
-        <ProgressTable :data-obj="sgmGroups" />
+        <div v-if="loadingEligible" class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
+        </div>
+        <ProgressTable v-else :data-obj="sgmGroups" />
       </div>
       <div class="col">
-        <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
+        <div v-if="loadingEligible" class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
+        </div>
+        <PieChart v-else :chartdata="chartData" :options="chartOptions"></PieChart>
       </div>
     </div>
     <div class="row mt-3 border-top">
       <div class="col pt-1">
         <p>Ineligible</p>
-        <IneligibleTable :data-obj="ineligibleSgmGroups" />
+        <div v-if="loadingIneligible" class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
+        </div>
+        <IneligibleTable v-else :data-obj="ineligibleSgmGroups" />
       </div>
       <div class="col pt-1">
         <p>Blanks</p>
-        <CountryTable :data-obj="blankStats" :first-header="'Survey Progress'" :second-header="'Count'" />
+        <div v-if="loadingBlank" class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
+        </div>
+        <CountryTable v-else :data-obj="blankStats" :first-header="'Survey Progress'" :second-header="'Count'" />
       </div>
     </div>
   </div>
@@ -35,7 +46,9 @@ export default {
   name: 'SgmGroups',
 
   data: () => ({
-    loading: false,
+    loadingEligible: false,
+    loadingBlank: false,
+    loadingIneligible: false,
     chartOptions: {
         legend: {
           display: true
@@ -78,7 +91,7 @@ export default {
     },
 
     fetchEligibleSgmData() {
-      this.loading = true;
+      this.loadingEligible = true;
       axios.get(`${this.$basePrefix}participants/eligible_sgm_stats`, { params: {country: this.countryName } })
       .then(response => {
         if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
@@ -106,27 +119,31 @@ export default {
             data: counts,
           }],
         };
-        this.loading = false;
+        this.loadingEligible = false;
       });
     },
 
     fetchBlankStats() {
+      this.loadingBlank = true;
       axios.get(`${this.$basePrefix}participants/blank_stats`, { params: { country: this.countryName } })
       .then(response => {
         if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
           window.location.reload();
         }
         this.blankStats = response.data;
+        this.loadingBlank = false;
       });
     },
 
     fetchIneligibleSgmData() {
+      this.loadingIneligible = true;
       axios.get(`${this.$basePrefix}participants/ineligible_sgm_stats`, { params: {country: this.countryName } })
       .then(response => {
         if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
           window.location.reload();
         }
         this.ineligibleSgmGroups = response.data;
+        this.loadingIneligible = false;
       });
     },
   },

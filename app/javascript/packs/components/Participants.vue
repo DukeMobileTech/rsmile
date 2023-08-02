@@ -5,6 +5,9 @@
     </div>
     <div class="card-body">
       <LineChart v-if="loaded" :chartdata="chartData" :options="chartOptions" />
+      <div v-else class="text-center">
+        <b-spinner type="grow" variant="primary"></b-spinner>
+      </div>
     </div>
   </div>
 </template>

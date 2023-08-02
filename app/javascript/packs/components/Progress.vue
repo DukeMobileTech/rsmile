@@ -37,6 +37,9 @@
         <BarChart :chartdata="chartData" :options="chartOptions"></BarChart>
       </div>
     </div>
+    <div v-else class="text-center">
+      <b-spinner type="grow" variant="primary"></b-spinner>
+    </div>
   </div>
 </template>
 
@@ -84,7 +87,6 @@ export default {
           window.location.reload();
         }
         this.surveys = response.data;
-        this.loaded = true;
         this.chartData = {
           labels: ['Started Short Survey', 'Completed SOGI Block', 'Completed Main Block', 'Completed Group A', 'Completed Group B', 'Completed Group C'],
           datasets: [
@@ -97,7 +99,8 @@ export default {
               data: [this.surveys['Started Short Survey'][1], this.surveys['Completed SOGI Block'][1], this.surveys['Completed Main Block'][1], this.surveys['Completed Group A'][1], this.surveys['Completed Group B'][1], this.surveys['Completed Group C'][1]],
             }
           ],
-        }
+        };
+        this.loaded = true;
       });
     },
   },

@@ -1,8 +1,11 @@
 <template>
-    <div :key="'group-by-date'">
-      <h5>Participant Recruitment Timeline</h5>
-      <LineChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></LineChart>
+  <div :key="'group-by-date'">
+    <h5>Participant Recruitment Timeline</h5>
+    <LineChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></LineChart>
+    <div v-else class="text-center">
+      <b-spinner type="grow" variant="primary"></b-spinner>
     </div>
+  </div>
 </template>
 
 <script>

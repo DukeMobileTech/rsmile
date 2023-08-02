@@ -4,6 +4,9 @@
     <div v-if="loaded" class="row">
       <CountryTable :data-obj="surveyBaselines" :first-header="'Status'" :second-header="'Count'" />
     </div>
+    <div v-else class="text-center">
+      <b-spinner type="grow" variant="primary"></b-spinner>
+    </div>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div :key="'study-source'">
-      <h5>How did you hear about this study?</h5>
+    <h5>How did you hear about this study?</h5>
     <div v-if="loaded">
       <div class="row mb-4">
         <p>Eligible participants chart</p>
@@ -53,6 +53,9 @@
       <div class="row">
         <SourcesTimeline :country-name="countryName" />
       </div>
+    </div>
+    <div v-else class="text-center">
+      <b-spinner type="grow" variant="primary"></b-spinner>
     </div>
   </div>
 </template>
