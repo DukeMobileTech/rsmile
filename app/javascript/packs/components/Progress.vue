@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h5>Short Survey Block Progress</h5>
+    <h5>Baseline Survey Block Progress</h5>
     <div v-if="loaded" class="row">
       <div class="col-sm-6">
         <div class="table-responsive">
@@ -18,19 +18,20 @@
               <tr v-for="(value, key, index) in surveys" :key="index">
                 <td>{{key}}</td>
                 <td>{{value[0]}}</td>
-                <td>{{((value[0] / surveys['Started Short Survey'][0]) * 100).toFixed(1)}} %</td>
+                <td>{{((value[0] / surveys['Started Survey'][0]) * 100).toFixed(1)}} %</td>
                 <td>{{value[1]}}</td>
-                <td>{{((value[1] / surveys['Started Short Survey'][0]) * 100).toFixed(1)}} %</td>
+                <td>{{((value[1] / surveys['Started Survey'][0]) * 100).toFixed(1)}} %</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p><strong>Caveats</strong></p>
         <ul>
-          <li>Participants/Eligible columns are based on the number of participants who have started the short baseline survey (original long survey participants are not included).</li>
+          <li>Participants/Eligible columns are based on the number of participants who have started both the short and long baseline surveys.</li>
           <li>Progress is based on the number of participants who have completed that block versus those who started the survey.</li>
           <li>Participants column includes both eligible and ineligible participants.</li>
           <li>Duplicate surveys are excluded.</li>
+          <li>For those participants who did the original long survey, the main block, groups a, b, and c are deemed completed if the entire survey is completed.</li>
         </ul>
       </div>
       <div class="col-sm-6">
@@ -106,15 +107,15 @@ export default {
         }
         this.surveys = response.data;
         this.chartData = {
-          labels: ['Started Short Survey', 'Completed SOGI Block', 'Completed Main Block', 'Completed Group A', 'Completed Group B', 'Completed Group C', 'Completed 1 Group', 'Completed 2 Groups', 'Completed 3 Groups'],
+          labels: ['Started Survey', 'Completed SOGI Block', 'Completed Main Block', 'Completed Group A', 'Completed Group B', 'Completed Group C', 'Completed 1 Group', 'Completed 2 Groups', 'Completed 3 Groups'],
           datasets: [
             { label: 'All Participants',
               backgroundColor: 'rgba(246, 19, 4, 0.7)',
-              data: [this.surveys['Started Short Survey'][0], this.surveys['Completed SOGI Block'][0], this.surveys['Completed Main Block'][0], this.surveys['Completed Group A'][0], this.surveys['Completed Group B'][0], this.surveys['Completed Group C'][0], this.surveys['Completed 1 Group'][0], this.surveys['Completed 2 Groups'][0], this.surveys['Completed 3 Groups'][0]],
+              data: [this.surveys['Started Survey'][0], this.surveys['Completed SOGI Block'][0], this.surveys['Completed Main Block'][0], this.surveys['Completed Group A'][0], this.surveys['Completed Group B'][0], this.surveys['Completed Group C'][0], this.surveys['Completed 1 Group'][0], this.surveys['Completed 2 Groups'][0], this.surveys['Completed 3 Groups'][0]],
             },
             { label: 'Eligible Participants',
               backgroundColor: 'rgba(87, 0, 228, 0.6)',
-              data: [this.surveys['Started Short Survey'][1], this.surveys['Completed SOGI Block'][1], this.surveys['Completed Main Block'][1], this.surveys['Completed Group A'][1], this.surveys['Completed Group B'][1], this.surveys['Completed Group C'][1], this.surveys['Completed 1 Group'][1], this.surveys['Completed 2 Groups'][1], this.surveys['Completed 3 Groups'][1]],
+              data: [this.surveys['Started Survey'][1], this.surveys['Completed SOGI Block'][1], this.surveys['Completed Main Block'][1], this.surveys['Completed Group A'][1], this.surveys['Completed Group B'][1], this.surveys['Completed Group C'][1], this.surveys['Completed 1 Group'][1], this.surveys['Completed 2 Groups'][1], this.surveys['Completed 3 Groups'][1]],
             }
           ],
         };

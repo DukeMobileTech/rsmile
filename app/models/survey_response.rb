@@ -31,31 +31,33 @@ class SurveyResponse < ApplicationRecord
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
                  :gender_identity, :sexual_orientation, :intersex,
                  :sexual_attraction, :attraction_eligibility, :attraction_sgm_group,
-                 :short_survey, :group_a, :group_b, :group_c, :groups_done
+                 :main_block, :group_a, :group_b, :group_c, :groups_done
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
   scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
   scope :safety_plans, -> { where(survey_title: 'Safety Planning') }
-  scope :short_surveys, -> { where(survey_uuid: Rails.application.credentials.config[:SHORT_SURVEY_ID]) }
-  scope :started_short_survey, lambda {
-    short_surveys.where(duplicate: false)
-                 .where.not(participant_id: Participant.excluded.pluck(:id))
+  # An included baseline survey is one that is:
+  # 1. Not a duplicate
+  # 2. Belongs to a participant who is not excluded
+  scope :included_baselines, lambda {
+    baselines.where(duplicate: false)
+             .where.not(participant_id: Participant.excluded.pluck(:id))
   }
   scope :completed_sogi_block, lambda {
-    started_short_survey.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ['blank'])
+    included_baselines.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ['blank'])
   }
   scope :completed_main_block, lambda {
-    started_short_survey.where('metadata @> hstore(:key, :value)', key: 'short_survey', value: 'true')
+    included_baselines.where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
   }
   scope :completed_group_a, lambda {
-    started_short_survey.where('metadata @> hstore(:key, :value)', key: 'group_a', value: 'true')
+    included_baselines.where('metadata @> hstore(:key, :value)', key: 'group_a', value: 'true')
   }
   scope :completed_group_b, lambda {
-    started_short_survey.where('metadata @> hstore(:key, :value)', key: 'group_b', value: 'true')
+    included_baselines.where('metadata @> hstore(:key, :value)', key: 'group_b', value: 'true')
   }
   scope :completed_group_c, lambda {
-    started_short_survey.where('metadata @> hstore(:key, :value)', key: 'group_c', value: 'true')
+    included_baselines.where('metadata @> hstore(:key, :value)', key: 'group_c', value: 'true')
   }
   scope :duplicate_baselines, -> { baselines.where(duplicate: true) }
   scope :excluded_baselines, -> { baselines.where(participant_id: Participant.excluded.select(:id)) }
@@ -64,9 +66,7 @@ class SurveyResponse < ApplicationRecord
   # 2. Belongs to a participant who is not excluded
   # 3. Belongs to a participant who is not in an ineligible SGM group
   scope :eligible_baselines, lambda {
-    baselines.where(duplicate: false)
-             .where.not(participant_id: Participant.excluded.pluck(:id))
-             .where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
+    included_baselines.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
   }
   # An eligible baseline survey is one that is:
   # 1. Not a duplicate
@@ -75,19 +75,23 @@ class SurveyResponse < ApplicationRecord
   #   2. is in an ineligible SGM group
   #   3. is in an eligible attraction SGM group
   scope :attraction_eligible_baselines, lambda {
-    baselines.where(duplicate: false)
-             .where.not(participant_id: Participant.excluded.pluck(:id))
-             .where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
+    included_baselines.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
              .where('metadata @> hstore(:key, :value)', key: 'attraction_eligibility', value: 'eligible')
   }
   scope :ineligible_baselines, lambda {
-    baselines.where(duplicate: false)
-             .where.not(participant_id: Participant.excluded.pluck(:id))
-             .where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
+    included_baselines.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
   }
 
   def baseline_survey?
     survey_title&.strip == 'SMILE Survey - Baseline'
+  end
+
+  def short_survey?
+    survey_uuid == Rails.application.credentials.config[:SHORT_SURVEY_ID]
+  end
+
+  def long_survey?
+    survey_uuid == Rails.application.credentials.config[:LONG_SURVEY_ID]
   end
 
   def source_label
@@ -498,15 +502,21 @@ class SurveyResponse < ApplicationRecord
     self.gender_identity = values['Gender_Identity']
     self.sexual_orientation = values['Sexual_Orientation']
     self.sexual_attraction = values['QID35']&.sort&.join(',') if values['QID35'].present?
-    update_block_completion(values)
+    update_block_completion(values) if short_survey?
+    update_long_completion if long_survey?
+    assign_attributes(groups_done: [group_a, group_b, group_c].count(true))
   end
 
   def update_block_completion(values)
-    assign_attributes(short_survey: values['QID549'].present?,
+    assign_attributes(main_block: values['QID549'].present?,
                       group_a: values['QID548'].present? || values['QID553'].present?,
                       group_b: values['QID551'].present? || values['QID547'].present?,
                       group_c: values['QID552'].present? || values['QID554'].present?)
-    assign_attributes(groups_done: [group_a, group_b, group_c].count(true))
+  end
+
+  def update_long_completion
+    assign_attributes(main_block: survey_complete, group_a: survey_complete,
+                      group_b: survey_complete, group_c: survey_complete)
   end
 
   def parse_gender(labels)

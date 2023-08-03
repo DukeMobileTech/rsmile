@@ -3,7 +3,7 @@ module SurveyResponses
     # rubocop:disable Metrics/MethodLength
     def progress(country)
       {
-        'Started Short Survey': started_stats(country),
+        'Started Survey': started_stats(country),
         'Completed SOGI Block': sogi_block_stats(country),
         'Completed Main Block': main_block_stats(country),
         'Completed Group A': group_a_stats(country),
@@ -22,7 +22,7 @@ module SurveyResponses
     end
 
     def started_stats(country)
-      started = SurveyResponse.started_short_survey.where(country: country)
+      started = SurveyResponse.included_baselines.where(country: country)
       eligible_started = started.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
       [started.size, eligible_started.size]
     end
@@ -66,7 +66,7 @@ module SurveyResponses
               when 3
                 ['3']
               end
-      groups = SurveyResponse.started_short_survey
+      groups = SurveyResponse.included_baselines
                              .where('(metadata -> :key) IN (:values)', key: 'groups_done', values: array)
                              .where(country: country)
       eligible_groups = groups.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: ineligible_sgm_groups)
