@@ -31,7 +31,7 @@ class SurveyResponse < ApplicationRecord
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
                  :gender_identity, :sexual_orientation, :intersex,
                  :sexual_attraction, :attraction_eligibility, :attraction_sgm_group,
-                 :main_block, :group_a, :group_b, :group_c, :groups_done
+                 :main_block, :group_a, :group_b, :group_c, :groups_done, :survey_counter
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
@@ -484,9 +484,8 @@ class SurveyResponse < ApplicationRecord
   end
 
   def set_metadata(values, labels)
-    self.progress = values['progress'].to_s
-    self.duration = values['duration'].to_s
-    self.ip_address = values['ipAddress']
+    assign_attributes(progress: values['progress'].to_s, duration: values['duration'].to_s,
+                      ip_address: values['ipAddress'], survey_counter: values['Survey_Counter'])
     qid471 = labels['QID471']
     self.age = qid471 if age.blank? && qid471.present?
     parse_gender(labels)
@@ -499,24 +498,33 @@ class SurveyResponse < ApplicationRecord
     if self[:sgm_group].blank?
       self.sgm_group = values['SGM_Group'].present? ? values['SGM_Group']&.downcase : 'blank'
     end
-    self.gender_identity = values['Gender_Identity']
-    self.sexual_orientation = values['Sexual_Orientation']
-    self.sexual_attraction = values['QID35']&.sort&.join(',') if values['QID35'].present?
+    assign_attributes(gender_identity: values['Gender_Identity'], sexual_orientation: values['Sexual_Orientation'],
+                      sexual_attraction: values['QID35']&.sort&.join(','))
     update_block_completion(values) if short_survey?
     update_long_completion if long_survey?
     assign_attributes(groups_done: [group_a, group_b, group_c].count(true))
   end
 
   def update_block_completion(values)
-    assign_attributes(main_block: values['QID549'].present?,
-                      group_a: values['QID548'].present? || values['QID553'].present?,
-                      group_b: values['QID551'].present? || values['QID547'].present?,
-                      group_c: values['QID552'].present? || values['QID554'].present?)
+    assign_attributes(main_block: values['QID549'].present?, group_a: group_a_complete?(values),
+                      group_b: group_b_complete?(values), group_c: group_c_complete?(values))
   end
 
   def update_long_completion
     assign_attributes(main_block: survey_complete, group_a: survey_complete,
                       group_b: survey_complete, group_c: survey_complete)
+  end
+
+  def group_a_complete?(values)
+    values['QID548'].present? || values['QID553'].present? || values['QID272'].present?
+  end
+
+  def group_b_complete?(values)
+    values['QID551'].present? || values['QID547'].present? || values['QID150'].present?
+  end
+
+  def group_c_complete?(values)
+    values['QID552'].present? || values['QID554'].present? || values['QID143'].present?
   end
 
   def parse_gender(labels)
