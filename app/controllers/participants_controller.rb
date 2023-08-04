@@ -4,11 +4,11 @@ class ParticipantsController < ApplicationController
   end
 
   def eligible_sgm_stats
-    render json: Participant.eligible_sgm_stats(params[:country])
+    render json: Participants::Sgm.new.eligible_stats(params[:country])
   end
 
   def ineligible_sgm_stats
-    render json: Participant.ineligible_sgm_stats(params[:country])
+    render json: Participants::Sgm.new.ineligible_stats(params[:country])
   end
 
   def grouped
@@ -16,7 +16,7 @@ class ParticipantsController < ApplicationController
   end
 
   def blank_stats
-    render json: Participant.blank_stats(params[:country])
+    render json: Participants::Sgm.new.blank_stats(params[:country])
   end
 
   def weekly_participants

@@ -19,7 +19,7 @@ require 'sorted_set'
 #  duplicate       :boolean          default(FALSE)
 #
 class SurveyResponse < ApplicationRecord
-  belongs_to :participant, optional: true
+  belongs_to :participant, optional: true, inverse_of: :survey_responses
   validates :response_uuid, presence: true, uniqueness: true
 
   before_save { self.country = ActionView::Base.full_sanitizer.sanitize country }

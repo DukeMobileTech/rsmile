@@ -6,11 +6,11 @@
     <h5>{{countryName}}</h5>
     <b-card no-body class="mb-5">
       <b-tabs card justified content-class="mt-3 mb-5">
-        <b-tab lazy title="Recruitment Sources">
-          <StudySource :country-name="countryName"></StudySource>
-        </b-tab>
         <b-tab lazy title="SGM Groups">
           <SgmGroups :country-name="countryName"></SgmGroups>
+        </b-tab>
+        <b-tab lazy title="Recruitment Sources">
+          <StudySource :country-name="countryName"></StudySource>
         </b-tab>
         <b-tab lazy title="Recruitment Timeline">
           <ParticipantsOverTime :country-name="countryName"></ParticipantsOverTime>

@@ -1,15 +1,23 @@
 <template>
   <div :key="'sgm-group'">
-    <h5>SGM Groups</h5>
+    <h5>Recruitment Per SGM Group</h5>
     <div class="row">
-      <div class="col">
-        <p>Eligible</p>
+      <div class="col-sm-6">
+        <p>Eligible Groups</p>
         <div v-if="loadingEligible" class="text-center">
           <b-spinner type="grow" variant="primary"></b-spinner>
         </div>
         <ProgressTable v-else :data-obj="sgmGroups" />
+        <div class="mt-3 mb-3">
+          <p><strong>Caveats</strong></p>
+          <div>The recruited column only counts participants who:</div>
+          <ul>
+            <li>Completed the original long survey in its entirety.</li>
+            <li>Completed the main block of the short survey.</li>
+          </ul>
+        </div>
       </div>
-      <div class="col">
+      <div class="col-sm-6">
         <div v-if="loadingEligible" class="text-center">
           <b-spinner type="grow" variant="primary"></b-spinner>
         </div>
@@ -18,14 +26,14 @@
     </div>
     <div class="row mt-3 border-top">
       <div class="col pt-1">
-        <p>Ineligible</p>
+        <p>Ineligible Groups</p>
         <div v-if="loadingIneligible" class="text-center">
           <b-spinner type="grow" variant="primary"></b-spinner>
         </div>
         <IneligibleTable v-else :data-obj="ineligibleSgmGroups" />
       </div>
       <div class="col pt-1">
-        <p>Blanks</p>
+        <p>Blank Group</p>
         <div v-if="loadingBlank" class="text-center">
           <b-spinner type="grow" variant="primary"></b-spinner>
         </div>

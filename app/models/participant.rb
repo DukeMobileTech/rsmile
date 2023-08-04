@@ -26,10 +26,13 @@ require 'sorted_set'
 #  include                  :boolean          default(TRUE)
 #
 class Participant < ApplicationRecord
-  has_many :survey_responses, dependent: :destroy
+  has_many :survey_responses, dependent: :destroy, inverse_of: :participant
+
   validates :email, presence: true, uniqueness: true
   validates :phone_number, :country, presence: true
+
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
+
   before_save :assign_identifiers
   before_save :enforce_unique_code
   before_save { self.email = email&.downcase&.strip }
@@ -37,7 +40,16 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
+
   scope :excluded, -> { where(include: false) }
+  scope :eligible, -> { where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS) }
+  scope :eligible_completed_main_block, lambda {
+    joins(:survey_responses)
+      .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+      .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
+  }
+  scope :ineligible, -> { where(include: true).where(sgm_group: INELIGIBLE_SGM_GROUPS) }
+  scope :blanks, -> { where(include: true).where(sgm_group: 'blank') }
 
   def consents
     survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
@@ -131,11 +143,6 @@ class Participant < ApplicationRecord
                .where(survey_responses: { survey_complete: true })
   end
 
-  def self.ineligible_participants
-    Participant.where(include: true)
-               .where(sgm_group: INELIGIBLE_SGM_GROUPS)
-  end
-
   def self.survey_titles
     ['SMILE Contact Info Form - Baseline', 'SMILE Consent', 'SMILE Survey - Baseline',
      'Safety Planning']
@@ -166,41 +173,6 @@ class Participant < ApplicationRecord
       end
     end
     stats
-  end
-
-  def self.eligible_sgm_stats(kountry)
-    stats = {}
-    participants = eligible_participants.where(country: kountry)
-    ELIGIBLE_SGM_GROUPS.each do |group|
-      stats[group] = participants.count { |participant| participant.sgm_group == group }
-    end
-    stats
-  end
-
-  def self.ineligible_sgm_stats(kountry)
-    stats = {}
-    participants = ineligible_participants.where(country: kountry)
-    INELIGIBLE_SGM_GROUPS.each do |group|
-      stats[group] = participants.count { |participant| participant.sgm_group == group }
-    end
-    stats
-  end
-
-  def self.blank_stats(kountry)
-    no_baseline = []
-    baseline_started = []
-    participants = Participant.where(include: true)
-                              .where(country: kountry)
-                              .where(sgm_group: 'blank')
-    participants.each do |part|
-      if !part.contacts.empty? & part.baselines.empty?
-        no_baseline << part
-      elsif !part.baselines.empty?
-        baseline_started << part
-      end
-    end
-    { 'Contact Info completed but Baseline not started': no_baseline.size,
-      'Baseline started but SOGI not completed': baseline_started.size }
   end
 
   def self.weekly_statistics(kountry)
