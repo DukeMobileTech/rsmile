@@ -1,6 +1,6 @@
 class ParticipantsController < ApplicationController
   def index
-    render json: Participant.summary_stats
+    render json: Participants::Summary.new.stats
   end
 
   def eligible_sgm_stats

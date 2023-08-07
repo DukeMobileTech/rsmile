@@ -76,7 +76,7 @@ class SurveyResponse < ApplicationRecord
   #   3. is in an eligible attraction SGM group
   scope :attraction_eligible_baselines, lambda {
     included_baselines.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
-             .where('metadata @> hstore(:key, :value)', key: 'attraction_eligibility', value: 'eligible')
+                      .where('metadata @> hstore(:key, :value)', key: 'attraction_eligibility', value: 'eligible')
   }
   scope :ineligible_baselines, lambda {
     included_baselines.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)

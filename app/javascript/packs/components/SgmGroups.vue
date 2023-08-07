@@ -10,10 +10,13 @@
         <ProgressTable v-else :data-obj="sgmGroups" />
         <div class="mt-3 mb-3">
           <p><strong>Caveats</strong></p>
-          <div>The recruited column only counts participants who:</div>
+          <div>The recruited column only counts participants who are 
+            <strong>eligible</strong> and <strong>completed</strong> the baseline survey.
+          </div>
+          <div>This means:</div>
           <ul>
-            <li>Completed the original long survey in its entirety.</li>
-            <li>Completed the main block of the short survey.</li>
+            <li>Completing the original long survey in its entirety.</li>
+            <li>Completing at the least the main block of the short survey.</li>
           </ul>
         </div>
       </div>

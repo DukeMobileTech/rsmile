@@ -1,10 +1,47 @@
 <template>
   <div class="card mb-5">
     <div class="card-header">
-      <h5 class="card-title">SMILE Recruitment Timeline</h5>
+      <h6 class="card-title">Summary</h6>
     </div>
     <div class="card-body">
-      <LineChart v-if="loaded" :chartdata="chartData" :options="chartOptions" />
+      <div v-if="loaded" class="table-responsive">
+        <table class="table card-table table-hover">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>Recruited</th>
+              <th>Eligible</th>
+              <th>Ineligible</th>
+              <th>Derived</th>
+              <th>Excluded</th>
+              <th>Contactable</th>
+              <th>Accepted</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(data, country, index) in summary" :key="country">
+              <td class="link-primary" @click="showCountry(country)">{{country}}</td>
+              <td>{{data['recruited']}}</td>
+              <td>{{data['eligible']}}</td>
+              <td>{{data['ineligible']}}</td>
+              <td>{{data['derived']}}</td>
+              <td>{{data['excluded']}}</td>
+              <td>{{data['contactable']}}</td>
+              <td>{{data['accepted']}}</td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td><strong>{{total['recruited']}}</strong></td>
+              <td><strong>{{total['eligible']}}</strong></td>
+              <td><strong>{{total['ineligible']}}</strong></td>
+              <td><strong>{{total['derived']}}</strong></td>
+              <td><strong>{{total['excluded']}}</strong></td>
+              <td><strong>{{total['contactable']}}</strong></td>
+              <td><strong>{{total['accepted']}}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div v-else class="text-center">
         <b-spinner type="grow" variant="primary"></b-spinner>
       </div>
@@ -13,136 +50,64 @@
 </template>
 
 <script>
-import axios from 'axios';
-import LineChart from './charts/LineChart';
+  import axios from 'axios';
 
   export default {
     name: 'Participants',
 
     data: () => ({
+      summary: {},
       loaded: false,
-      chartOptions: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            },
-            gridLines: {
-              display: true
-            }
-          }],
-          xAxes: [ {
-            gridLines: {
-              display: false
-            }
-          }]
-        },
-        legend: {
-          display: true
-        },
-        responsive: true,
-        maintainAspectRatio: false
+      total: {
+        recruited: 0,
+        eligible: 0,
+        ineligible: 0,
+        derived: 0,
+        excluded: 0,
+        contactable: 0,
+        accepted: 0,
       },
-      chartData: {},
-      colors: {
-        'Kenya': '#006600',
-        'Kenya (cumulative)': '#000000',
-        'Vietnam': '#DA251D',
-        'Vietnam (cumulative)': '#FFCD00',
-        'Brazil': '#0C87D1',
-        'Brazil (cumulative)': '#002776',
-        'All': '#732982',
-      }
     }),
 
-    components: {
-      LineChart,
+    created: function () {
+      this.fetchSummary();
     },
 
-    mounted: function () {
-      this.fetchData();
-    },
-
-    methods: {
-      fetchData() {
-        this.loaded = false;
-        axios.get(`${this.$basePrefix}participants/weekly_participants`)
-        .then(response => {
+   methods: {
+     fetchSummary () {
+       this.loaded = false;
+       axios.get(`${this.$basePrefix}participants`)
+       .then(response => {
           if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
             window.location.reload();
           }
-          let datasets = [];
-          let countries = Object.keys(response.data);
-          let dates = [];
-          Object.values(response.data)[0].forEach((weeklyStats) => {
-            dates.push(Object.keys(weeklyStats)[0]);
-          });
-          let allWeeklyCounts = {};
-          countries.forEach((country) => {
-            let weeklyCounts = [];
-            let cumulativeCounts = [];
-            let total = 0;
-            response.data[country].forEach((countryData) => {
-              let count = Object.values(countryData)[0];
-              total += count;
-              weeklyCounts.push(count);
-              cumulativeCounts.push(total);
-              let date = Object.keys(countryData)[0];
-              if (allWeeklyCounts[date]) {
-                allWeeklyCounts[date] += count;
-              } else {
-                allWeeklyCounts[date] = count;
-              }
-            });
-            let color = this.colors[country];
-            datasets.push({
-              label: country,
-              fill: false,
-              borderWidth: 1,
-              borderColor: color,
-              backgroundColor: color,
-              data: weeklyCounts,
-            });
-            let cumulativeColor = this.colors[country + " (cumulative)"];
-            datasets.push({
-              label: country + " (cumulative)",
-              fill: false,
-              borderWidth: 1,
-              borderColor: cumulativeColor,
-              backgroundColor: cumulativeColor,
-              data: cumulativeCounts,
-            });
-          });
-          let allCumulativeCounts = [];
-          let cumulativeTotal = 0;
-          Object.values(response.data)[0].forEach((weeklyStats) => {
-            let week = Object.keys(weeklyStats)[0];
-            cumulativeTotal += allWeeklyCounts[week];
-            allCumulativeCounts.push(cumulativeTotal);
-          });
-          let allColor = this.colors['All'];
-            datasets.push({
-              label: 'SMILE (cumulative)',
-              fill: false,
-              borderWidth: 1,
-              borderColor: allColor,
-              backgroundColor: allColor,
-              data: allCumulativeCounts,
-            });
-          this.chartData = {
-            labels: dates,
-            datasets: datasets,
-          };
+          this.summary = response.data;
+          this.calculateTotals();
           this.loaded = true;
-        });
-      },
-    },
+       });
+     },
+     showCountry(country) {
+        // $parent is Home.vue which emits it to its parent App.vue which is listening for it
+        this.$parent.$emit("countryname", country);
+     },
+     calculateTotals() {
+       for (let country in this.summary) {
+         this.total.recruited += this.summary[country]['recruited'];
+         this.total.eligible += this.summary[country]['eligible'];
+         this.total.ineligible += this.summary[country]['ineligible'];
+         this.total.derived += this.summary[country]['derived'];
+         this.total.excluded += this.summary[country]['excluded'];
+         this.total.contactable += this.summary[country]['contactable'];
+         this.total.accepted += this.summary[country]['accepted'];
+       }
+     },
+   },
   }
 </script>
 
 <style scoped>
-h5 {
-  font-size: 2em;
-  text-align: center;
-}
+  h6 {
+    font-size: 1.5em;
+    text-align: center;
+  }
 </style>

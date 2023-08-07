@@ -44,12 +44,18 @@ class Participant < ApplicationRecord
   scope :excluded, -> { where(include: false) }
   scope :eligible, -> { where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS) }
   scope :eligible_completed_main_block, lambda {
-    joins(:survey_responses)
-      .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
-      .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
+    eligible.joins(:survey_responses)
+            .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+            .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
   }
   scope :ineligible, -> { where(include: true).where(sgm_group: INELIGIBLE_SGM_GROUPS) }
   scope :blanks, -> { where(include: true).where(sgm_group: 'blank') }
+  scope :derived, lambda {
+    ineligible.joins(:survey_responses)
+              .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+              .where(survey_responses: { duplicate: false })
+              .where('metadata @> hstore(:key, :value)', key: 'attraction_sgm_group', value: 'eligible')
+  }
 
   def consents
     survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
@@ -141,38 +147,6 @@ class Participant < ApplicationRecord
                .where.not(sgm_group: INELIGIBLE_SGM_GROUPS)
                .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
                .where(survey_responses: { survey_complete: true })
-  end
-
-  def self.survey_titles
-    ['SMILE Contact Info Form - Baseline', 'SMILE Consent', 'SMILE Survey - Baseline',
-     'Safety Planning']
-  end
-
-  def self.summary_stats
-    stats = {}
-    surveys = SurveyResponse.all.includes([:participant])
-    eligible_participants.group_by(&:country).each do |country, participants|
-      country_surveys = surveys.select { |s| s.country == country }
-      stats[country] = { participants: participants.size }
-      survey_titles.each do |title|
-        title_surveys = country_surveys.select { |s| s.survey_title == title }
-        if title == 'SMILE Survey - Baseline'
-          # For baseline only count eligible and completed surveys
-          title_surveys = country_surveys.select { |s| s.survey_title == title && s.eligible && s.survey_complete }
-        end
-        nils = title_surveys.select { |ts| ts.participant_id.nil? } # Surveys not attached to participants
-        part_ids = title_surveys.pluck(:participant_id).uniq # Remove duplicates
-        survey_count = if nils.size > 0
-                         (part_ids.size - 1) + nils.size # Count surveys without participants as unique
-                       else
-                         part_ids.size
-                       end
-        country_stats = stats[country]
-        country_stats[title] = survey_count
-        stats[country] = country_stats
-      end
-    end
-    stats
   end
 
   def self.weekly_statistics(kountry)
