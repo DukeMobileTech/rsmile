@@ -5,7 +5,7 @@
     </div>
     <div class="card-body">
       <div v-if="loaded" class="table-responsive">
-        <table class="table card-table table-hover">
+        <table class="table card-table table-hover mb-3">
           <thead>
             <tr>
               <th>Country</th>
@@ -41,6 +41,7 @@
             </tr>
           </tbody>
         </table>
+        <Definitions />
       </div>
       <div v-else class="text-center">
         <b-spinner type="grow" variant="primary"></b-spinner>
@@ -51,6 +52,7 @@
 
 <script>
   import axios from 'axios';
+  import Definitions from './Definitions';
 
   export default {
     name: 'Participants',
@@ -69,6 +71,10 @@
       },
     }),
 
+    components: {
+      Definitions,
+    },
+  
     created: function () {
       this.fetchSummary();
     },

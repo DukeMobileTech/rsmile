@@ -46,6 +46,7 @@ class Participant < ApplicationRecord
   scope :eligible_completed_main_block, lambda {
     eligible.joins(:survey_responses)
             .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+            .where(survey_responses: { duplicate: false })
             .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
   }
   scope :ineligible, -> { where(include: true).where(sgm_group: INELIGIBLE_SGM_GROUPS) }
@@ -55,6 +56,13 @@ class Participant < ApplicationRecord
               .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
               .where(survey_responses: { duplicate: false })
               .where('metadata @> hstore(:key, :value)', key: 'attraction_sgm_group', value: 'eligible')
+  }
+  scope :contactable, lambda {
+    eligible_completed_main_block
+      .joins(:survey_responses)
+      .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+      .where(survey_responses: { duplicate: false })
+      .where('metadata @> hstore(:key, :value)', key: 'can_contact', value: 'true')
   }
 
   def consents

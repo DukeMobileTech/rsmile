@@ -9,7 +9,9 @@
           <button v-on:click="linkToAdmin" class="btn btn-outline-info" >Admin</button>
         </div>
         <div class="nav-item">
-          <button v-on:click="handleLogout" class="btn btn-danger" >Sign Out</button>
+          <button v-on:click="handleLogout" class="btn btn-danger" >
+            <b-icon icon="power"></b-icon> Sign Out
+          </button>
         </div>
       </div>
     </nav>

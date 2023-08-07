@@ -7,10 +7,11 @@
 
 import Vue from 'vue'
 import App from '../app.vue'
-import { BootstrapVue } from 'bootstrap-vue'
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import "bootstrap/dist/css/bootstrap.css"
 
 Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 
 let prefix = "/";
 if (process.env.NODE_ENV !== 'development') {

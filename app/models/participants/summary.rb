@@ -9,7 +9,7 @@ module Participants
           ineligible: Participant.ineligible.where(country: country).size,
           derived: Participant.derived.where(country: country).size,
           excluded: Participant.excluded.where(country: country).size,
-          contactable: nil,
+          contactable: Participant.contactable.where(country: country).size,
           accepted: Participant.eligible_completed_main_block.where(country: country).size
         }
       end

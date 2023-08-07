@@ -29,7 +29,7 @@ class SurveyResponse < ApplicationRecord
 
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender,
-                 :gender_identity, :sexual_orientation, :intersex,
+                 :gender_identity, :sexual_orientation, :intersex, :can_contact,
                  :sexual_attraction, :attraction_eligibility, :attraction_sgm_group,
                  :main_block, :group_a, :group_b, :group_c, :groups_done, :survey_counter
 
@@ -498,6 +498,7 @@ class SurveyResponse < ApplicationRecord
     if self[:sgm_group].blank?
       self.sgm_group = values['SGM_Group'].present? ? values['SGM_Group']&.downcase : 'blank'
     end
+    self.can_contact = contactable?(values)
     assign_attributes(gender_identity: values['Gender_Identity'], sexual_orientation: values['Sexual_Orientation'],
                       sexual_attraction: values['QID35']&.sort&.join(','))
     update_block_completion(values) if short_survey?
@@ -525,6 +526,12 @@ class SurveyResponse < ApplicationRecord
 
   def group_c_complete?(values)
     values['QID552'].present? || values['QID554'].present? || values['QID143'].present?
+  end
+
+  def contactable?(values)
+    (values['QID407'].present? && values['QID407'] == 1) ||
+      (values['QID557'].present? && values['QID557'] == 1) ||
+      (values['QID540'].present? && values['QID540'] == 1)
   end
 
   def parse_gender(labels)
