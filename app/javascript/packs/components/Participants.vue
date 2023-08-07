@@ -22,22 +22,22 @@
             <tr v-for="(data, country, index) in summary" :key="country">
               <td class="link-primary" @click="showCountry(country)">{{country}}</td>
               <td>{{data['recruited']}}</td>
-              <td>{{data['eligible']}}</td>
+              <td class="text-success">{{data['eligible']}}</td>
               <td>{{data['ineligible']}}</td>
               <td>{{data['derived']}}</td>
-              <td>{{data['excluded']}}</td>
+              <td class="text-danger">{{data['excluded']}}</td>
               <td>{{data['contactable']}}</td>
-              <td>{{data['accepted']}}</td>
+              <td class="text-success">{{data['accepted']}}</td>
             </tr>
             <tr>
               <td><strong>Total</strong></td>
               <td><strong>{{total['recruited']}}</strong></td>
-              <td><strong>{{total['eligible']}}</strong></td>
+              <td class="text-success"><strong>{{total['eligible']}}</strong></td>
               <td><strong>{{total['ineligible']}}</strong></td>
               <td><strong>{{total['derived']}}</strong></td>
-              <td><strong>{{total['excluded']}}</strong></td>
+              <td class="text-danger"><strong>{{total['excluded']}}</strong></td>
               <td><strong>{{total['contactable']}}</strong></td>
-              <td><strong>{{total['accepted']}}</strong></td>
+              <td class="text-success"><strong>{{total['accepted']}}</strong></td>
             </tr>
           </tbody>
         </table>

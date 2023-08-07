@@ -49,7 +49,9 @@ ActiveAdmin.register Participant do
 
   index do
     selectable_column
-    column :id
+    column :id do |participant|
+      link_to participant.id, admin_participant_path(participant.id)
+    end
     column :email
     column :phone_number
     column :country
@@ -83,6 +85,47 @@ ActiveAdmin.register Participant do
     column :created_at
     column :updated_at
     actions
+  end
+
+  show do
+    attributes_table do
+      row :id
+      row :email
+      row :phone_number
+      row :country
+      row :self_generated_id
+      row :code
+      row :sgm_group
+      row :verified
+      row :verification_code
+      row :include
+      row :created_at
+      row :updated_at
+      row 'Contact Method' do |participant|
+        participant.contact_method
+      end
+      row 'Consent' do |participant|
+        ul do
+          participant.consents.each do |consent|
+            li { link_to consent.id.to_s, admin_survey_response_path(consent.id) }
+          end
+        end
+      end
+      row 'Contact Info' do |participant|
+        ul do
+          participant.contacts.each do |contact|
+            li { link_to contact.id.to_s, admin_survey_response_path(contact.id) }
+          end
+        end
+      end
+      row 'Baseline' do |participant|
+        ul do
+          participant.baselines.each do |baseline|
+            li { link_to baseline.id, admin_survey_response_path(baseline.id) }
+          end
+        end
+      end
+    end
   end
 
   form do |f|
