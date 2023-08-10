@@ -1,6 +1,7 @@
 # == Route Map
 #
 require 'sidekiq/web'
+# rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   namespace :admin do
     get '/signup/:invite_code' => 'invites#new_invite', as: 'redeem_invitation'
@@ -42,14 +43,13 @@ Rails.application.routes.draw do
       get '/grouped' => 'participants#grouped'
       get '/blank_stats' => 'participants#blank_stats'
       get '/weekly_participants' => 'participants#weekly_participants'
+      get '/sources' => 'participants#sources'
+      get '/timeline' => 'participants#timeline'
     end
   end
   resources :survey_responses, only: [] do
     collection do
-      get '/sources' => 'survey_responses#sources'
-      get '/consents' => 'survey_responses#consents'
       get '/baselines' => 'survey_responses#baselines'
-      get '/sources_timeline' => 'survey_responses#sources_timeline'
       get '/progress' => 'survey_responses#progress'
     end
   end

@@ -5,8 +5,9 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
   permit_params :response_uuid, :participant_id, :country, :survey_complete, :eligible, :sgm_group, :source, :language, :duplicate
   preserve_default_filters!
   filter :participant, collection: -> { Participant.where(id: SurveyResponse.baselines.pluck(:participant_id).uniq) }
-  remove_filter :survey_uuid
   remove_filter :survey_title
+  remove_filter :eligible
+  remove_filter :consented
 
   index row_class: ->(elem) { elem.mismatch_class if elem.sgm_group_mismatch? } do
     column :id

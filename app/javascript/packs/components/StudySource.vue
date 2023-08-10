@@ -1,61 +1,65 @@
 <template>
   <div :key="'study-source'">
-    <h5>How did you hear about this study?</h5>
-    <div v-if="loaded">
-      <div class="row mb-4">
-        <p>Eligible participants chart</p>
-        <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
-      </div>
-      <div class="row">
-        <p>All participants table</p>
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>Source</th>
-                <th onmouseover='this.style.textDecoration="underline"'
-                    onmouseout='this.style.textDecoration="none"'
-                    class="text-info"
-                    title="Participants whose responses to the orientation questions place them in one of the eligible sgm groups.">
-                    Eligible
-                </th>
-                <th onmouseover='this.style.textDecoration="underline"'
-                    onmouseout='this.style.textDecoration="none"'
-                    class="text-info"
-                    title="Participants whose responses to the attraction questions place them in one of the eligible sgm groups although their orientation responses disqualify them.">
-                    Derived
-                </th>
-                <th onmouseover='this.style.textDecoration="underline"'
-                    onmouseout='this.style.textDecoration="none"'
-                    class="text-info"
-                    title="Participants whose responses to the orientation questions disqualify them from the eligible sgm groups. Includes duplicates and partials.">
-                    Ineligible
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(value, key, index) in surveySources" :key="key">
-                <td>{{namedSource(key)}}</td>
-                <td>{{value['eligible']}}</td>
-                <td>{{value['derived']}}</td>
-                <td>{{value['ineligible']}}</td>
-              </tr>
-              <tr>
-                <td><strong>Total</strong></td>
-                <td><strong>{{eligibleTotal}}</strong></td>
-                <td><strong>{{derivedTotal}}</strong></td>
-                <td><strong>{{ineligibleTotal}}</strong></td>
-              </tr>
-            </tbody>
-          </table>
+    <h5>Where participants heard about the SMILE Study</h5>
+    <div class="card mb-5">
+      <div v-if="loaded">
+        <div class="row mb-4">
+          <p>Eligible participants who completed the main block of the short survey 
+            or completed the original long survey in its entirety.
+          </p>
+          <PieChart :chartdata="chartData" :options="chartOptions"></PieChart>
+        </div>
+        <div class="row">
+          <p>Sources for all participants</p>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th onmouseover='this.style.textDecoration="underline"'
+                      onmouseout='this.style.textDecoration="none"'
+                      class="text-info"
+                      title="Participants who completed the main block of the short survey or the long survey in its entirety and whose responses to the gender identity questions place them in one of the eligible sgm groups.">
+                      Eligible & Completed
+                  </th>
+                  <th onmouseover='this.style.textDecoration="underline"'
+                      onmouseout='this.style.textDecoration="none"'
+                      class="text-info"
+                      title="Participants whose responses to the sexual orientation questions place them in one of the eligible sgm groups although their gender identity responses disqualify them. Includes any participant who completed the SOGI section.">
+                      Derived
+                  </th>
+                  <th onmouseover='this.style.textDecoration="underline"'
+                      onmouseout='this.style.textDecoration="none"'
+                      class="text-info"
+                      title="Participants whose responses to the gender identity questions disqualify them from the eligible sgm groups. Includes any participant who completed the SOGI section.">
+                      Ineligible
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(value, key, index) in surveySources" :key="key">
+                  <td>{{namedSource(key)}}</td>
+                  <td>{{value['eligible']}}</td>
+                  <td>{{value['derived']}}</td>
+                  <td>{{value['ineligible']}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Total</strong></td>
+                  <td><strong>{{eligibleTotal}}</strong></td>
+                  <td><strong>{{derivedTotal}}</strong></td>
+                  <td><strong>{{ineligibleTotal}}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <SourcesTimeline :country-name="countryName" />
+      <div v-else class="text-center">
+        <b-spinner type="grow" variant="primary"></b-spinner>
       </div>
     </div>
-    <div v-else class="text-center">
-      <b-spinner type="grow" variant="primary"></b-spinner>
+    <div class="row">
+      <SourcesTimeline :country-name="countryName" />
     </div>
   </div>
 </template>
@@ -165,19 +169,23 @@ import SourcesTimeline from './SourcesTimeline';
 
       fetchData() {
         this.loaded = false;
-        axios.get(`${this.$basePrefix}survey_responses/sources`, { params: {country: this.countryName } })
+        axios.get(`${this.$basePrefix}participants/sources`, { params: {country: this.countryName } })
         .then(response => {
           if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
             window.location.reload();
           }
           this.surveySources = response.data;
+          console.log(this.surveySources);
           let sources = Object.keys(this.surveySources);
+          console.log(sources);
           let sourceNames = [];
           this.eligibleTotal = 0;
           this.ineligibleTotal = 0;
           this.derivedTotal = 0;
           sources.forEach((source) => {
-            sourceNames.push(this.namedSource(source));
+            if (this.surveySources[source]['eligible'] > 0) {
+              sourceNames.push(this.namedSource(source));
+            }
             this.eligibleTotal += this.surveySources[source]['eligible'];
             this.ineligibleTotal += this.surveySources[source]['ineligible'];
             this.derivedTotal += this.surveySources[source]['derived'];
@@ -185,7 +193,9 @@ import SourcesTimeline from './SourcesTimeline';
           let counts = [];
           sources.forEach((source) => {
             let count = this.surveySources[source]['eligible'];
-            counts.push(count);
+            if (count > 0) {
+              counts.push(count);
+            }
           });
           this.chartData = {
             labels: sourceNames,

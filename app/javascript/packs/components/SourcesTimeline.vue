@@ -1,7 +1,7 @@
 <template>
-  <div v-if="loaded" :key="'source-table'">
-    <h5>Eligible participants recruited by source per week</h5>
-    <div class="table-responsive">
+  <div class="card mb-5" :key="'source-table'">
+    <h5>Eligible participants recruited by source per week - completed the main block of the short survey or the long survey in its entirety</h5>
+    <div v-if="loaded" class="table-responsive">
       <table class="table table-hover">
         <thead>
           <tr>
@@ -18,6 +18,9 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div v-else class="text-center">
+      <b-spinner type="grow" variant="primary"></b-spinner>
     </div>
   </div>
 </template>
@@ -54,7 +57,7 @@ export default {
     },
     fetchWeeklySourceData() {
       this.loaded = false;
-      axios.get(`${this.$basePrefix}survey_responses/sources_timeline`, { params: {country: this.countryName } })
+      axios.get(`${this.$basePrefix}participants/timeline`, { params: {country: this.countryName } })
           .then(response => {
             if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
               window.location.reload();
