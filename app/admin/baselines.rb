@@ -34,7 +34,7 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
     column :survey_uuid
     column :email, &:email
     column :phone, &:phone_number
-    column :self_gen_id, &:self_generated_id
+    column :self_gen_id, &:participant_self_gen_id
     column :country
     column :language
     column :id

@@ -28,10 +28,11 @@ class SurveyResponse < ApplicationRecord
   after_save :assign_participant_sgm_group
 
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
-                 :birth_year, :age, :progress, :race, :ethnicity, :gender,
+                 :birth_year, :age, :progress, :race, :ethnicity, :gender, :referee_code,
                  :gender_identity, :sexual_orientation, :intersex, :can_contact,
                  :sexual_attraction, :attraction_eligibility, :attraction_sgm_group,
-                 :main_block, :group_a, :group_b, :group_c, :groups_done, :survey_counter
+                 :main_block, :group_a, :group_b, :group_c, :groups_done, :survey_counter,
+                 :self_generated_id
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
@@ -123,7 +124,7 @@ class SurveyResponse < ApplicationRecord
     participant&.phone_number
   end
 
-  def self_generated_id
+  def participant_self_gen_id
     participant&.self_generated_id
   end
 
@@ -261,6 +262,10 @@ class SurveyResponse < ApplicationRecord
     attraction_eligibility == 'ineligible' && INELIGIBLE_SGM_GROUPS.exclude?(sgm_group)
   end
 
+  def mobilizer_quota_exceeded?
+    false
+  end
+
   def sgm_group_mismatch?
     attraction_eligible? || attraction_ineligible?
   end
@@ -396,26 +401,38 @@ class SurveyResponse < ApplicationRecord
   end
 
   def set_metadata(values, labels)
-    assign_attributes(progress: values['progress'].to_s, duration: values['duration'].to_s,
-                      ip_address: values['ipAddress'], survey_counter: values['Survey_Counter'])
-    qid471 = labels['QID471']
-    self.age = qid471 if age.blank? && qid471.present?
+    response_progress(values)
+    update_age(labels)
     parse_gender(labels)
-    kountry = self[:country]
-    kountry = values['Country'] if kountry.blank?
-    self.country = kountry
-    parse_race_ethnicity(kountry, values)
-    qid19 = labels['QID19']
-    self.intersex = qid19 if qid19.present?
-    if self[:sgm_group].blank?
-      self.sgm_group = values['SGM_Group'].present? ? values['SGM_Group']&.downcase : 'blank'
-    end
-    self.can_contact = contactable?(values)
-    assign_attributes(gender_identity: values['Gender_Identity'], sexual_orientation: values['Sexual_Orientation'],
-                      sexual_attraction: values['QID35']&.sort&.join(','))
-    update_block_completion(values) if short_survey?
-    update_long_completion if long_survey?
-    assign_attributes(groups_done: [group_a, group_b, group_c].count(true))
+    update_location(values)
+    parse_race_ethnicity(self[:country], values)
+    contactable(values)
+    update_sogi(values, labels)
+    group_completion(values)
+  end
+
+  def response_progress(values)
+    assign_attributes(progress: values['progress'].to_s, duration: values['duration'].to_s,
+                      ip_address: values['ipAddress'], survey_counter: values['Survey_Counter'],
+                      survey_complete: values['finished'])
+  end
+
+  def update_age(labels)
+    self.age = labels['QID471'] if age.blank? && labels['QID471'].present?
+  end
+
+  def update_location(values)
+    assign_attributes(country: self[:country].presence || values['Country'],
+                      referee_code: values['QID556_1_TEXT']&.downcase&.strip,
+                      self_generated_id: values['SELF_GENERATED_ID'])
+  end
+
+  def update_sogi(values, labels)
+    assign_attributes(gender_identity: values['Gender_Identity'],
+                      sexual_orientation: values['Sexual_Orientation'],
+                      sexual_attraction: values['QID35']&.sort&.join(','),
+                      sgm_group: values['SGM_Group'].present? ? values['SGM_Group']&.downcase : 'blank',
+                      intersex: labels['QID19'])
   end
 
   def update_block_completion(values)
@@ -440,36 +457,52 @@ class SurveyResponse < ApplicationRecord
     values['QID552'].present? || values['QID554'].present? || values['QID143'].present?
   end
 
-  def contactable?(values)
-    (values['QID407'].present? && values['QID407'] == 1) ||
-      (values['QID557'].present? && values['QID557'] == 1) ||
-      (values['QID540'].present? && values['QID540'] == 1)
+  def group_completion(values)
+    update_block_completion(values) if short_survey?
+    update_long_completion if long_survey?
+    assign_attributes(groups_done: [group_a, group_b, group_c].count(true))
+  end
+
+  def contactable(values)
+    self.can_contact = (values['QID407'].present? && values['QID407'] == 1) ||
+                       (values['QID557'].present? && values['QID557'] == 1) ||
+                       (values['QID540'].present? && values['QID540'] == 1)
   end
 
   def parse_gender(labels)
     qid21 = labels['QID21']
     qid21 = qid21.split('(').first.strip if qid21.present? && qid21.include?('(')
     qid21 = labels['QID20']&.join('|') if qid21.blank?
-    qid21 = 'Man' if qid21&.downcase&.include?('transgender man')
-    qid21 = 'Woman' if qid21&.downcase&.include?('transgender woman')
-    qid21 = 'Unknown' if qid21&.downcase&.include?('non-binary person')
-    self.gender = qid21
+    self.gender = assign_gender(qid21&.downcase)
+  end
+
+  def assign_gender(qid21)
+    if qid21&.include?('transgender man')
+      'Man'
+    elsif qid21&.include?('transgender woman')
+      'Woman'
+    elsif qid21&.include?('non-binary person')
+      'Unknown'
+    end
   end
 
   def parse_race_ethnicity(kountry, values)
     case kountry
     when 'Kenya'
-      self.race = 'Black'
-      self.ethnicity = 'Not Hispanic or Latino'
+      assign_race_ethnicity('Black', 'Not Hispanic or Latino')
     when 'Vietnam'
-      self.race = 'Asian'
-      self.ethnicity = 'Not Hispanic or Latino'
+      assign_race_ethnicity('Asian', 'Not Hispanic or Latino')
     when 'Brazil'
-      self.race = brazil_race(values['QID45'])
-      self.ethnicity = 'Hispanic or Latino'
+      assign_race_ethnicity(brazil_race(values['QID45']), 'Hispanic or Latino')
     end
   end
 
+  def assign_race_ethnicity(race, ethnicity)
+    self.race = race
+    self.ethnicity = ethnicity
+  end
+
+  # rubocop:disable Metrics/MethodLength
   def brazil_race(value)
     case value
     when 'Branco'
