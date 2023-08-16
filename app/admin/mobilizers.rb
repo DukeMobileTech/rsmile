@@ -1,6 +1,6 @@
 ActiveAdmin.register SurveyResponse, as: 'Mobilizer' do
   menu priority: 5
-  config.per_page = [50, 100, 250, 500, 1000]
+  config.per_page = [50, 100, 250, 500, 1000, 5000]
   actions :all, except: %i[new edit destroy]
   preserve_default_filters!
   filter :participant, collection: -> { Participant.where(id: SurveyResponse.baselines.pluck(:participant_id).uniq) }

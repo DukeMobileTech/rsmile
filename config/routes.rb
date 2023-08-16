@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     collection do
       get '/baselines' => 'survey_responses#baselines'
       get '/progress' => 'survey_responses#progress'
+      get '/mobilizers' => 'survey_responses#mobilizers'
     end
   end
 end

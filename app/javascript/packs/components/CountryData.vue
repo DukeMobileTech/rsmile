@@ -21,6 +21,9 @@
         <b-tab lazy title="Baseline Blocks Progress">
           <Progress :country-name="countryName"></Progress>
         </b-tab>
+        <b-tab v-if="countryName == 'Kenya'" lazy title="Mobilizer Recruitment">
+          <Mobilizers :country-name="countryName"></Mobilizers>
+        </b-tab>
       </b-tabs>
     </b-card>
   </div>
@@ -32,6 +35,7 @@ import StudySource from './StudySource';
 import SgmGroups from './SgmGroups';
 import Baselines from './Baselines';
 import Progress from './Progress';
+import Mobilizers from './Mobilizers';
 
 export default {
   name: 'CountryData',
@@ -45,7 +49,8 @@ export default {
     StudySource,
     SgmGroups,
     Baselines,
-    Progress
+    Progress,
+    Mobilizers
   },
 
   methods: {

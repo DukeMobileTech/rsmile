@@ -6,4 +6,8 @@ class SurveyResponsesController < ApplicationController
   def progress
     render json: SurveyResponse.progress_stats(params[:country])
   end
+
+  def mobilizers
+    render json: SurveyResponses::Mobilizer.new.stats(params[:country])
+  end
 end
