@@ -2,8 +2,8 @@ module SurveyResponses
   class Mobilizer
     def stats(country)
       mobilizers = SurveyResponse.baselines.where(country: country)
-                                 .where('metadata ? :key', key: 'referee_code')
-      codes = mobilizers.map(&:referee_code).uniq.sort
+                                 .where('metadata ? :key', key: 'mobilizer_code')
+      codes = mobilizers.map(&:mobilizer_code).uniq.sort
       data = []
       codes.each do |code|
         data << mobilizer_data(code, mobilizers)
@@ -15,7 +15,7 @@ module SurveyResponses
 
     def mobilizer_baselines(mobilizers, code)
       mobilizers.where('metadata @> hstore(:key, :value)',
-                       key: 'referee_code', value: code)
+                       key: 'mobilizer_code', value: code)
     end
 
     def mobilizer_data(code, mobilizers)

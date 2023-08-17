@@ -1,7 +1,8 @@
 ActiveAdmin.register SurveyResponse, as: 'Mobilizer' do
   menu priority: 5
   config.per_page = [50, 100, 250, 500, 1000, 5000]
-  actions :all, except: %i[new edit destroy]
+  actions :all, except: %i[new destroy]
+  permit_params :mobilizer_code
   preserve_default_filters!
   filter :participant, collection: -> { Participant.where(id: SurveyResponse.baselines.pluck(:participant_id).uniq) }
   remove_filter :survey_title
@@ -16,6 +17,7 @@ ActiveAdmin.register SurveyResponse, as: 'Mobilizer' do
     end
     column 'Response', :response_uuid
     column 'Mobilizer', :referee_code, sortable: "metadata->'referee_code'"
+    column 'Mobilizer', :mobilizer_code, sortable: "metadata->'mobilizer_code'"
     column :participant, sortable: 'participant_id'
     column :duplicate
     column :self_generated_id, sortable: "metadata->'self_generated_id'"
@@ -42,6 +44,7 @@ ActiveAdmin.register SurveyResponse, as: 'Mobilizer' do
     column :id
     column :response_uuid
     column :referee_code
+    column :mobilizer_code
     column :survey_complete
     column :progress
     column :duration
@@ -57,6 +60,17 @@ ActiveAdmin.register SurveyResponse, as: 'Mobilizer' do
     column :ip_address
     column :created_at
     column :updated_at
+  end
+
+  form do |f|
+    f.semantic_errors
+    f.inputs do
+      input :mobilizer_code, input_html: { value: f.object.referee_code }
+    end
+    f.actions do
+      f.action :submit, label: 'Update Mobilizer Code'
+      f.cancel_link
+    end
   end
 
   controller do

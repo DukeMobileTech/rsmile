@@ -32,7 +32,7 @@ class SurveyResponse < ApplicationRecord
                  :gender_identity, :sexual_orientation, :intersex, :can_contact,
                  :sexual_attraction, :attraction_eligibility, :attraction_sgm_group,
                  :main_block, :group_a, :group_b, :group_c, :groups_done, :survey_counter,
-                 :self_generated_id
+                 :self_generated_id, :mobilizer_code
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
@@ -425,6 +425,7 @@ class SurveyResponse < ApplicationRecord
     assign_attributes(country: self[:country].presence || values['Country'],
                       referee_code: values['QID556_1_TEXT']&.downcase&.strip,
                       self_generated_id: values['SELF_GENERATED_ID'])
+    self.mobilizer_code = values['QID556_1_TEXT']&.downcase&.strip if mobilizer_code.blank?
   end
 
   def update_sogi(values, labels)
