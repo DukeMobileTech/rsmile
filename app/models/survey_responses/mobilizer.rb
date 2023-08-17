@@ -27,7 +27,8 @@ module SurveyResponses
         duplicate_count: baselines.where(duplicate: true).size,
         participant_count: participant_ids.size,
         average_participant_baselines: average_baselines_per_mobilizer_participant(baselines, participant_ids),
-        average_duration: average_duration(baselines)
+        average_duration: average_duration(baselines),
+        ip_address_count: mobilizer_ip_addresses(baselines, code).size,
       }
     end
 
@@ -43,6 +44,12 @@ module SurveyResponses
       durations = baselines.map { |baseline| baseline&.duration&.to_i }.compact
       avg = (durations.sum / durations.size.to_f)
       (avg / 60).ceil
+    end
+
+    def mobilizer_ip_addresses(baselines, code)
+      baselines.where('metadata @> hstore(:key, :value)',
+                       key: 'mobilizer_code', value: code)
+                .map(&:ip_address).compact.uniq
     end
   end
 end

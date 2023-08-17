@@ -12,6 +12,7 @@
               <th>Participants</th>
               <th>Avg Participant Baselines</th>
               <th>Avg Duration (minutes)</th>
+              <th># Ip Addresses</th>
             </tr>
           </thead>
           <tbody>
@@ -25,6 +26,9 @@
               </td>
               <td v-bind:style=" { backgroundColor: mobilizer.average_duration < 10 ? 'red' : 'green' }">
                 {{ mobilizer.average_duration }}
+              </td>
+              <td v-bind:style=" { backgroundColor: mobilizer.ip_address_count < mobilizer.participant_count ? 'red' : 'green' }">
+                {{ mobilizer.ip_address_count }}
               </td>
             </tr>
           </tbody>
