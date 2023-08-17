@@ -1,26 +1,28 @@
 module SurveyResponses
   class Mobilizer
     def stats(country)
-      mobilizers = SurveyResponse.baselines.where(country: country)
-                                 .where('metadata ? :key', key: 'mobilizer_code')
-      codes = mobilizers.map(&:mobilizer_code).uniq.sort
+      baselines = SurveyResponse.baselines.where(country: country)
+                                .where('metadata ? :key', key: 'mobilizer_code')
+      codes = baselines.map(&:mobilizer_code).uniq.sort
       data = []
       codes.each do |code|
-        data << mobilizer_data(code, mobilizers)
+        data << mobilizer_data(code, baselines)
       end
       data
     end
 
     private
 
-    def mobilizer_baselines(mobilizers, code)
-      mobilizers.where('metadata @> hstore(:key, :value)',
-                       key: 'mobilizer_code', value: code)
+    def mobilizer_baselines(baselines, code)
+      baselines.where('metadata @> hstore(:key, :value)',
+                      key: 'mobilizer_code', value: code)
     end
 
-    def mobilizer_data(code, mobilizers)
-      baselines = mobilizer_baselines(mobilizers, code)
+    # rubocop:disable Metrics/MethodLength
+    def mobilizer_data(code, survey_responses)
+      baselines = mobilizer_baselines(survey_responses, code)
       participant_ids = baselines.pluck(:participant_id).compact.uniq
+      accepted_baselines = mobilizer_accepted_baselines(baselines)
       {
         code: code,
         survey_count: baselines.size,
@@ -29,6 +31,8 @@ module SurveyResponses
         average_participant_baselines: average_baselines_per_mobilizer_participant(baselines, participant_ids),
         average_duration: average_duration(baselines),
         ip_address_count: mobilizer_ip_addresses(baselines, code).size,
+        accepted_participant_count: accepted_baselines.size,
+        average_groups_done: average_groups_done(accepted_baselines)
       }
     end
 
@@ -48,8 +52,23 @@ module SurveyResponses
 
     def mobilizer_ip_addresses(baselines, code)
       baselines.where('metadata @> hstore(:key, :value)',
-                       key: 'mobilizer_code', value: code)
-                .map(&:ip_address).compact.uniq
+                      key: 'mobilizer_code', value: code)
+               .map(&:ip_address).compact.uniq
+    end
+
+    def mobilizer_accepted_baselines(baselines)
+      baselines.where(duplicate: false)
+               .where.not(participant_id: Participant.excluded.pluck(:id) + [nil])
+               .where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: Participant::ELIGIBLE_SGM_GROUPS)
+               .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
+    end
+
+    def average_groups_done(baselines)
+      counts = []
+      baselines.each do |baseline|
+        counts << baseline.groups_done.to_i
+      end
+      counts.empty? ? 0 : (counts.sum / counts.size.to_f).round(2)
     end
   end
 end

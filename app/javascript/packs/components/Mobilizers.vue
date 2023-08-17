@@ -13,6 +13,8 @@
               <th>Avg Participant Baselines</th>
               <th>Avg Duration (minutes)</th>
               <th># Ip Addresses</th>
+              <th># Accepted Participants</th>
+              <th>Avg Groups Done</th>
             </tr>
           </thead>
           <tbody>
@@ -30,6 +32,8 @@
               <td v-bind:style=" { backgroundColor: mobilizer.ip_address_count < mobilizer.participant_count ? 'red' : 'green' }">
                 {{ mobilizer.ip_address_count }}
               </td>
+              <td>{{ mobilizer.accepted_participant_count }}</td>
+              <td>{{ mobilizer.average_groups_done }}</td>
             </tr>
           </tbody>
         </table>
