@@ -26,7 +26,8 @@ module SurveyResponses
         survey_count: baselines.size,
         duplicate_count: baselines.where(duplicate: true).size,
         participant_count: participant_ids.size,
-        average_participant_baselines: average_baselines_per_mobilizer_participant(baselines, participant_ids)
+        average_participant_baselines: average_baselines_per_mobilizer_participant(baselines, participant_ids),
+        average_duration: average_duration(baselines)
       }
     end
 
@@ -36,6 +37,12 @@ module SurveyResponses
         counts << baselines.where(participant_id: participant_id).size
       end
       (counts.sum / counts.size.to_f).round(2)
+    end
+
+    def average_duration(baselines)
+      durations = baselines.map { |baseline| baseline&.duration&.to_i }.compact
+      avg = (durations.sum / durations.size.to_f)
+      (avg / 60).ceil
     end
   end
 end

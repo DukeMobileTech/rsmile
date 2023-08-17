@@ -10,7 +10,8 @@
               <th>Baselines</th>
               <th>Duplicates</th>
               <th>Participants</th>
-              <th>Average Participant Baselines</th>
+              <th>Avg Participant Baselines</th>
+              <th>Avg Duration (minutes)</th>
             </tr>
           </thead>
           <tbody>
@@ -21,6 +22,9 @@
               <td>{{ mobilizer.participant_count }}</td>
               <td v-bind:style=" { backgroundColor: mobilizer.average_participant_baselines > 1.09 ? 'red' : 'green' }">
                 {{ mobilizer.average_participant_baselines }}
+              </td>
+              <td v-bind:style=" { backgroundColor: mobilizer.average_duration < 10 ? 'red' : 'green' }">
+                {{ mobilizer.average_duration }}
               </td>
             </tr>
           </tbody>
