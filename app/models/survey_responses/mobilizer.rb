@@ -19,6 +19,7 @@ module SurveyResponses
     end
 
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def mobilizer_data(code, survey_responses)
       baselines = mobilizer_baselines(survey_responses, code)
       participant_ids = baselines.pluck(:participant_id).compact.uniq
@@ -28,6 +29,7 @@ module SurveyResponses
         survey_count: baselines.size,
         duplicate_count: baselines.where(duplicate: true).size,
         participant_count: participant_ids.size,
+        participant_count_with_duplicates: participant_count_with_duplicates(baselines, participant_ids),
         average_participant_baselines: average_baselines_per_mobilizer_participant(baselines, participant_ids),
         average_duration: average_duration(baselines),
         ip_address_count: mobilizer_ip_addresses(baselines, code).size,
@@ -38,12 +40,21 @@ module SurveyResponses
       }
     end
 
+    def participant_count_with_duplicates(baselines, participant_ids)
+      count = 0
+      participant_ids.each do |participant_id|
+        count += 1 if baselines.where(participant_id: participant_id).size > 1
+      end
+      count
+    end
+
     def average_baselines_per_mobilizer_participant(baselines, participant_ids)
       counts = []
       participant_ids.each do |participant_id|
-        counts << baselines.where(participant_id: participant_id).size
+        dups = baselines.where(participant_id: participant_id)
+        counts << dups.size if dups.size > 1
       end
-      (counts.sum / counts.size.to_f).round(2)
+      counts.empty? ? 0 : (counts.sum / counts.size.to_f).round(2)
     end
 
     def average_duration(baselines)

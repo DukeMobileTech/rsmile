@@ -10,7 +10,8 @@
               <th>Baselines</th>
               <th>Duplicates</th>
               <th>Participants</th>
-              <th>Avg Participant Baselines</th>
+              <th>Participants w/ Duplicates</th>
+              <th>Avg # Dups for Participant w/ Dups</th>
               <th>Avg Duration (minutes)</th>
               <th># Ip Addresses</th>
               <th># Accepted Participants</th>
@@ -25,6 +26,9 @@
               <td>{{ mobilizer.survey_count }}</td>
               <td>{{ mobilizer.duplicate_count }}</td>
               <td>{{ mobilizer.participant_count }}</td>
+              <td v-bind:style=" { color: mobilizer.participant_count_with_duplicates > 0 ? 'red' : 'black' }">
+                {{ mobilizer.participant_count_with_duplicates }}
+              </td>
               <td v-bind:style=" { color: mobilizer.average_participant_baselines > 1.09 ? 'red' : 'black' }">
                 {{ mobilizer.average_participant_baselines }}
               </td>
