@@ -32,7 +32,9 @@ module SurveyResponses
         average_duration: average_duration(baselines),
         ip_address_count: mobilizer_ip_addresses(baselines, code).size,
         accepted_participant_count: accepted_baselines.size,
-        average_groups_done: average_groups_done(accepted_baselines)
+        group_a_count: group_count(baselines, 'group_a'),
+        group_b_count: group_count(baselines, 'group_b'),
+        group_c_count: group_count(baselines, 'group_c')
       }
     end
 
@@ -46,6 +48,7 @@ module SurveyResponses
 
     def average_duration(baselines)
       durations = baselines.map { |baseline| baseline&.duration&.to_i }.compact
+      durations = durations.map { |duration| [duration, 9000].min } # Cap at 150 minutes
       avg = (durations.sum / durations.size.to_f)
       (avg / 60).ceil
     end
@@ -63,12 +66,9 @@ module SurveyResponses
                .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
     end
 
-    def average_groups_done(baselines)
-      counts = []
-      baselines.each do |baseline|
-        counts << baseline.groups_done.to_i
-      end
-      counts.empty? ? 0 : (counts.sum / counts.size.to_f).round(2)
+    def group_count(baselines, group)
+      baselines.where('metadata @> hstore(:key, :value)',
+                      key: group, value: 'true').size
     end
   end
 end

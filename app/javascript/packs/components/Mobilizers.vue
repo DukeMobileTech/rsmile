@@ -14,7 +14,9 @@
               <th>Avg Duration (minutes)</th>
               <th># Ip Addresses</th>
               <th># Accepted Participants</th>
-              <th>Avg Groups Done</th>
+              <th># Group A</th>
+              <th># Group B</th>
+              <th># Group C</th>
             </tr>
           </thead>
           <tbody>
@@ -23,17 +25,32 @@
               <td>{{ mobilizer.survey_count }}</td>
               <td>{{ mobilizer.duplicate_count }}</td>
               <td>{{ mobilizer.participant_count }}</td>
-              <td v-bind:style=" { backgroundColor: mobilizer.average_participant_baselines > 1.09 ? 'red' : 'green' }">
+              <td v-bind:style=" { color: mobilizer.average_participant_baselines > 1.09 ? 'red' : 'black' }">
                 {{ mobilizer.average_participant_baselines }}
               </td>
-              <td v-bind:style=" { backgroundColor: mobilizer.average_duration < 10 ? 'red' : 'green' }">
+              <td v-bind:style=" { color: mobilizer.average_duration < 10 ? 'red' : 'black' }">
                 {{ mobilizer.average_duration }}
               </td>
-              <td v-bind:style=" { backgroundColor: mobilizer.ip_address_count < mobilizer.participant_count ? 'red' : 'green' }">
+              <td v-bind:style=" { color: mobilizer.ip_address_count < mobilizer.participant_count ? 'red' : 'black' }">
                 {{ mobilizer.ip_address_count }}
               </td>
               <td>{{ mobilizer.accepted_participant_count }}</td>
-              <td>{{ mobilizer.average_groups_done }}</td>
+              <td>{{ mobilizer.group_a_count }}</td>
+              <td>{{ mobilizer.group_b_count }}</td>
+              <td>{{ mobilizer.group_c_count }}</td>
+            </tr>
+            <tr v-bind:style=" { 'font-weight': 'bold' }">
+              <td>Totals</td>
+              <td>{{ mobilizers.reduce((a, b) => a + b.survey_count, 0) }}</td>
+              <td>{{ mobilizers.reduce((a, b) => a + b.duplicate_count, 0) }}</td>
+              <td>{{ mobilizers.reduce((a, b) => a + b.participant_count, 0) }}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>{{ mobilizers.reduce((a, b) => a + b.accepted_participant_count, 0) }}</td>
+              <td></td>
+              <td></td>
+              <td></td>
             </tr>
           </tbody>
         </table>

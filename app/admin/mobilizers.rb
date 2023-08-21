@@ -16,7 +16,7 @@ ActiveAdmin.register SurveyResponse, as: 'Mobilizer' do
       link_to elem.id, admin_survey_response_path(elem)
     end
     column 'Response', :response_uuid
-    column 'Mobilizer', :referee_code, sortable: "metadata->'referee_code'"
+    column 'Referer', :referee_code, sortable: "metadata->'referee_code'"
     column 'Mobilizer', :mobilizer_code, sortable: "metadata->'mobilizer_code'"
     column :participant, sortable: 'participant_id'
     column :duplicate
