@@ -52,7 +52,7 @@ export default {
               mobilizer.average_baselines_for_participants_with_duplicates >= 2 ? 'danger' : null,
             ip_address_count: mobilizer.ip_address_count < mobilizer.participant_count ? 'danger' : null,
             participant_count_with_duplicates: mobilizer.participant_count_with_duplicates > 0 ? 'danger' : null,
-            accepted_participant_count: mobilizer.accepted_participant_count > 20 ? 'warning' : null
+            accepted_participant_count: this.getColor(mobilizer.accepted_participant_count)
           }
         };
       });
@@ -71,6 +71,15 @@ export default {
     this.fetchData();
   },
   methods: {
+    getColor(count) {
+      if (count == 0) {
+        return 'danger'
+      } else if (count > 20) {
+        return 'warning'
+      } else {
+        return null
+      }
+    },
     fetchData() {
       this.loaded = false;
       axios.get(`${this.$basePrefix}survey_responses/mobilizers`, { params: {country: this.countryName } })
