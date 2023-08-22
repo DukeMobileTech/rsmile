@@ -26,11 +26,11 @@ module SurveyResponses
       accepted_baselines = mobilizer_accepted_baselines(baselines)
       {
         code: code,
-        survey_count: baselines.size,
+        baseline_count: baselines.size,
         duplicate_count: baselines.where(duplicate: true).size,
         participant_count: participant_ids.size,
         participant_count_with_duplicates: participant_count_with_duplicates(baselines, participant_ids),
-        average_participant_baselines: average_baselines_per_mobilizer_participant(baselines, participant_ids),
+        average_baselines_for_participants_with_duplicates: average_baselines_per_mobilizer_participant(baselines, participant_ids),
         average_duration: average_duration(baselines),
         ip_address_count: mobilizer_ip_addresses(baselines, code).size,
         accepted_participant_count: accepted_baselines.size,

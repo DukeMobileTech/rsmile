@@ -2,63 +2,10 @@
   <div>
     <h5>Mobilizer Recruitment</h5>
     <div v-if="loaded">
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Baselines</th>
-              <th>Duplicates</th>
-              <th>Participants</th>
-              <th>Participants w/ Duplicates</th>
-              <th>Avg # Dups for Participant w/ Dups</th>
-              <th>Avg Duration (minutes)</th>
-              <th># Ip Addresses</th>
-              <th># Accepted Participants</th>
-              <th># Group A</th>
-              <th># Group B</th>
-              <th># Group C</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="mobilizer in mobilizers" :key="mobilizer.code">
-              <td>{{ mobilizer.code }}</td>
-              <td>{{ mobilizer.survey_count }}</td>
-              <td>{{ mobilizer.duplicate_count }}</td>
-              <td>{{ mobilizer.participant_count }}</td>
-              <td v-bind:style=" { color: mobilizer.participant_count_with_duplicates > 0 ? 'red' : 'black' }">
-                {{ mobilizer.participant_count_with_duplicates }}
-              </td>
-              <td v-bind:style=" { color: mobilizer.average_participant_baselines > 1.09 ? 'red' : 'black' }">
-                {{ mobilizer.average_participant_baselines }}
-              </td>
-              <td v-bind:style=" { color: mobilizer.average_duration < 10 ? 'red' : 'black' }">
-                {{ mobilizer.average_duration }}
-              </td>
-              <td v-bind:style=" { color: mobilizer.ip_address_count < mobilizer.participant_count ? 'red' : 'black' }">
-                {{ mobilizer.ip_address_count }}
-              </td>
-              <td>{{ mobilizer.accepted_participant_count }}</td>
-              <td>{{ mobilizer.group_a_count }}</td>
-              <td>{{ mobilizer.group_b_count }}</td>
-              <td>{{ mobilizer.group_c_count }}</td>
-            </tr>
-            <tr v-bind:style=" { 'font-weight': 'bold' }">
-              <td>Totals</td>
-              <td>{{ mobilizers.reduce((a, b) => a + b.survey_count, 0) }}</td>
-              <td>{{ mobilizers.reduce((a, b) => a + b.duplicate_count, 0) }}</td>
-              <td>{{ mobilizers.reduce((a, b) => a + b.participant_count, 0) }}</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>{{ mobilizers.reduce((a, b) => a + b.accepted_participant_count, 0) }}</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <b-table sticky-header="500px" responsive
+        label-sort-asc="" label-sort-desc="" label-sort-clear=""
+        :items="compMobilizers" :fields="fields">
+      </b-table>
     </div>
     <div v-else class="text-center">
       <b-spinner type="grow" variant="primary"></b-spinner>
@@ -77,7 +24,47 @@ export default {
     return {
       loaded: false,
       mobilizers: [],
+      sortBy: 'code',
+      fields: [
+        {key: 'code', label: 'ID', sortable: true, stickyColumn: true, variant: 'info'},
+        {key: 'baseline_count', label: 'Baselines', sortable: true},
+        {key: 'duplicate_count', label: 'Duplicates', sortable: true},
+        {key: 'participant_count', label: 'Participants', sortable: true},
+        {key: 'participant_count_with_duplicates', label: 'Parts w/ Dups', sortable: true},
+        {key: 'average_baselines_for_participants_with_duplicates', label: 'Avg Dups / Parts w/ Dups', sortable: true},
+        {key: 'average_duration', label: 'Avg Duration (minutes)', sortable: true},
+        {key: 'ip_address_count', label: 'Ip Addresses', sortable: true},
+        {key: 'accepted_participant_count', label: 'Accepted Participants', sortable: true},
+        {key: 'group_a_count', label: 'Group A', sortable: true},
+        {key: 'group_b_count', label: 'Group B', sortable: true},
+        {key: 'group_c_count', label: 'Group C', sortable: true},
+      ]
     };
+  },
+  computed: {
+    compMobilizers() {
+      let items = this.mobilizers.map(mobilizer => {
+        return {
+          ...mobilizer,
+          _cellVariants: {
+            average_duration: mobilizer.average_duration < 10 ? 'danger' : null, 
+            average_baselines_for_participants_with_duplicates: 
+              mobilizer.average_baselines_for_participants_with_duplicates >= 2 ? 'danger' : null,
+            ip_address_count: mobilizer.ip_address_count < mobilizer.participant_count ? 'danger' : null,
+            participant_count_with_duplicates: mobilizer.participant_count_with_duplicates > 0 ? 'danger' : null,
+          }
+        };
+      });
+      items.push({
+        code: 'Totals',
+        baseline_count: items.reduce((a, b) => a + b.baseline_count, 0),
+        duplicate_count: items.reduce((a, b) => a + b.duplicate_count, 0),
+        participant_count: items.reduce((a, b) => a + b.participant_count, 0),
+        accepted_participant_count: items.reduce((a, b) => a + b.accepted_participant_count, 0),
+        _rowVariant: 'info',
+      });
+      return items;
+    }
   },
   mounted: function () {
     this.fetchData();
