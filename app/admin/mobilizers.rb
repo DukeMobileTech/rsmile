@@ -65,7 +65,7 @@ ActiveAdmin.register SurveyResponse, as: 'Mobilizer' do
   form do |f|
     f.semantic_errors
     f.inputs do
-      input :mobilizer_code, input_html: { value: f.object.referee_code }
+      input :mobilizer_code, input_html: { value: f.object.mobilizer_code.presence || f.object.referee_code }
     end
     f.actions do
       f.action :submit, label: 'Update Mobilizer Code'

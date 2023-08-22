@@ -52,6 +52,7 @@ export default {
               mobilizer.average_baselines_for_participants_with_duplicates >= 2 ? 'danger' : null,
             ip_address_count: mobilizer.ip_address_count < mobilizer.participant_count ? 'danger' : null,
             participant_count_with_duplicates: mobilizer.participant_count_with_duplicates > 0 ? 'danger' : null,
+            accepted_participant_count: mobilizer.accepted_participant_count > 20 ? 'warning' : null
           }
         };
       });
