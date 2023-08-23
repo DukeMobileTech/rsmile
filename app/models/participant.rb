@@ -315,7 +315,8 @@ class Participant < ApplicationRecord
   end
 
   def assign_sgm_group
-    baseline = baselines.where(duplicate: false).first
+    filter_duplicate_baselines
+    reload
     return if baseline.nil? || baseline.sgm_group == sgm_group
 
     self.sgm_group = baseline.sgm_group
@@ -323,13 +324,12 @@ class Participant < ApplicationRecord
   end
 
   def filter_duplicate_baselines
-    accepted = baselines.where(duplicate: false)
-    return if accepted.size <= 1
+    return if baselines.empty?
 
     accepted = baselines.where(survey_complete: true).first
     if accepted
       duplicates = baselines.where.not(id: accepted.id)
-      accepted.update(duplicate: false)
+      update_non_duplicate(accepted)
       update_duplicates(duplicates)
     else
       filter_duplicate_baselines_by_progress
@@ -346,20 +346,25 @@ class Participant < ApplicationRecord
 
   def filter_duplicate_baselines_by_progress
     accepted = most_progress
-    return unless accepted
-
+    accepted = baselines.first if accepted.nil?
     duplicates = baselines.where.not(id: accepted.id)
-    accepted.update(duplicate: false)
+    update_non_duplicate(accepted)
     update_duplicates(duplicates)
   end
 
+  private
+
   def update_duplicates(duplicates)
-    duplicates.each do |duplicate|
-      duplicate.update(duplicate: true)
-    end
+    # rubocop:disable Rails::SkipsModelValidations
+    duplicates.update_all(duplicate: true)
+    # rubocop:enable Rails::SkipsModelValidations
   end
 
-  private
+  def update_non_duplicate(accepted)
+    # rubocop:disable Rails::SkipsModelValidations
+    accepted.update_column(:duplicate, false)
+    # rubocop:enable Rails::SkipsModelValidations
+  end
 
   def assign_identifiers
     self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if code.blank?
