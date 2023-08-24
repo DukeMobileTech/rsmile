@@ -38,6 +38,7 @@ export default {
         {key: 'group_a_count', label: 'Group A', sortable: true},
         {key: 'group_b_count', label: 'Group B', sortable: true},
         {key: 'group_c_count', label: 'Group C', sortable: true},
+        {key: 'self_gen_id_count', label: 'Self Gen IDs', sortable: true}
       ]
     };
   },

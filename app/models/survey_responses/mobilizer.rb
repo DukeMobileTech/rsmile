@@ -36,7 +36,8 @@ module SurveyResponses
         accepted_participant_count: accepted_baselines.size,
         group_a_count: group_count(baselines, 'group_a'),
         group_b_count: group_count(baselines, 'group_b'),
-        group_c_count: group_count(baselines, 'group_c')
+        group_c_count: group_count(baselines, 'group_c'),
+        self_gen_id_count: self_gen_id_count(baselines)
       }
     end
 
@@ -80,6 +81,10 @@ module SurveyResponses
     def group_count(baselines, group)
       baselines.where('metadata @> hstore(:key, :value)',
                       key: group, value: 'true').size
+    end
+
+    def self_gen_id_count(baselines)
+      baselines.map { |baseline| baseline&.self_generated_id&.gsub(/\s+/, '')&.downcase }.compact.uniq.size
     end
   end
 end
