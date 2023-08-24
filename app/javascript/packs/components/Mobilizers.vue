@@ -38,6 +38,8 @@ export default {
         {key: 'group_a_count', label: 'Group A', sortable: true},
         {key: 'group_b_count', label: 'Group B', sortable: true},
         {key: 'group_c_count', label: 'Group C', sortable: true},
+        {key: 'self_gen_id_count', label: 'Self Gen IDs', sortable: true},
+        {key: 'sgm_groups', label: 'SGM Groups', sortable: true},
       ]
     };
   },
@@ -52,7 +54,8 @@ export default {
               mobilizer.average_baselines_for_participants_with_duplicates >= 2 ? 'danger' : null,
             ip_address_count: mobilizer.ip_address_count < mobilizer.participant_count ? 'danger' : null,
             participant_count_with_duplicates: mobilizer.participant_count_with_duplicates > 0 ? 'danger' : null,
-            accepted_participant_count: this.getColor(mobilizer.accepted_participant_count)
+            accepted_participant_count: this.getColor(mobilizer.accepted_participant_count),
+            self_gen_id_count: mobilizer.self_gen_id_count != mobilizer.participant_count ? 'danger' : null
           }
         };
       });

@@ -7,4 +7,16 @@ class ApplicationRecord < ActiveRecord::Base
   ELIGIBLE_SGM_GROUPS = ALL_SGM_GROUPS - INELIGIBLE_SGM_GROUPS
   COUNTRIES = %w[Brazil Kenya Vietnam].freeze
   COLORS = %w[9C6ACB 6DD865 85B2C9 559F93].freeze
+  SGM_CODES = {
+    'non-binary person' => 'NBP',
+    'transgender woman' => 'TW',
+    'transgender man' => 'TM',
+    'woman attracted to women' => 'WAW',
+    'man attracted to men' => 'MAM',
+    'multi-attracted woman' => 'MUAW',
+    'multi-attracted man' => 'MUAM',
+    'no group' => 'NG',
+    'ineligible' => 'IN',
+    'blank' => 'BL'
+  }.freeze
 end
