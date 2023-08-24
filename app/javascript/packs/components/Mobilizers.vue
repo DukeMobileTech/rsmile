@@ -1,8 +1,7 @@
 <template>
   <div>
-    <h5>Mobilizer Recruitment</h5>
     <div v-if="loaded">
-      <b-table sticky-header="500px" responsive
+      <b-table sticky-header="600px" responsive striped hover
         label-sort-asc="" label-sort-desc="" label-sort-clear=""
         :items="compMobilizers" :fields="fields">
       </b-table>
@@ -26,20 +25,21 @@ export default {
       mobilizers: [],
       sortBy: 'code',
       fields: [
-        {key: 'code', label: 'ID', sortable: true, stickyColumn: true, variant: 'info'},
+        {key: 'code', label: 'Mobilizer Code', sortable: true, stickyColumn: true, variant: 'info'},
         {key: 'baseline_count', label: 'Baselines', sortable: true},
         {key: 'duplicate_count', label: 'Duplicates', sortable: true},
-        {key: 'participant_count', label: 'Participants', sortable: true},
+        {key: 'participant_count', label: 'All Participants', sortable: true},
         {key: 'participant_count_with_duplicates', label: 'Parts w/ Dups', sortable: true},
         {key: 'average_baselines_for_participants_with_duplicates', label: 'Avg Dups / Parts w/ Dups', sortable: true},
         {key: 'average_duration', label: 'Avg Duration (minutes)', sortable: true},
         {key: 'ip_address_count', label: 'Ip Addresses', sortable: true},
-        {key: 'accepted_participant_count', label: 'Accepted Participants', sortable: true},
         {key: 'group_a_count', label: 'Group A', sortable: true},
         {key: 'group_b_count', label: 'Group B', sortable: true},
         {key: 'group_c_count', label: 'Group C', sortable: true},
         {key: 'self_gen_id_count', label: 'Self Gen IDs', sortable: true},
         {key: 'sgm_groups', label: 'SGM Groups', sortable: true},
+        {key: 'eligible_participant_count', label: 'Eligible Participants', sortable: true},
+        {key: 'completed_participant_count', label: 'Participants With Completed Baselines', sortable: true},
       ]
     };
   },
@@ -54,7 +54,7 @@ export default {
               mobilizer.average_baselines_for_participants_with_duplicates >= 2 ? 'danger' : null,
             ip_address_count: mobilizer.ip_address_count < mobilizer.participant_count ? 'danger' : null,
             participant_count_with_duplicates: mobilizer.participant_count_with_duplicates > 0 ? 'danger' : null,
-            accepted_participant_count: this.getColor(mobilizer.accepted_participant_count),
+            completed_participant_count: this.getColor(mobilizer.completed_participant_count),
             self_gen_id_count: mobilizer.self_gen_id_count != mobilizer.participant_count ? 'danger' : null
           }
         };
@@ -64,7 +64,8 @@ export default {
         baseline_count: items.reduce((a, b) => a + b.baseline_count, 0),
         duplicate_count: items.reduce((a, b) => a + b.duplicate_count, 0),
         participant_count: items.reduce((a, b) => a + b.participant_count, 0),
-        accepted_participant_count: items.reduce((a, b) => a + b.accepted_participant_count, 0),
+        eligible_participant_count: items.reduce((a, b) => a + b.eligible_participant_count, 0),
+        completed_participant_count: items.reduce((a, b) => a + b.completed_participant_count, 0),
         _rowVariant: 'info',
       });
       return items;
