@@ -15,6 +15,8 @@ module SurveyResponses
         Derived: derived(country).size
       }
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     def surveys(country)
       SurveyResponse.baselines.where(country: country)
