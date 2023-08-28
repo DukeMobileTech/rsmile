@@ -3,7 +3,7 @@ module SurveyResponses
     def stats(country)
       baselines = SurveyResponse.baselines.where(country: country)
                                 .where('metadata ? :key', key: 'mobilizer_code')
-      codes = baselines.map(&:mobilizer_code).uniq.sort
+      codes = baselines.map(&:mobilizer_code).compact_blank.uniq.sort
       data = []
       codes.each do |code|
         data << mobilizer_data(code, baselines)
