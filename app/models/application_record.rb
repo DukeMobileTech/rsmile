@@ -19,4 +19,31 @@ class ApplicationRecord < ActiveRecord::Base
     'ineligible' => 'IN',
     'blank' => 'BL'
   }.freeze
+  SOURCES = {
+    '0' => 'Not indicated',
+    '1' => 'Radio advertisement',
+    '2' => 'TV advertisement',
+    '3' => 'Podcast',
+    '4' => 'Billboard / sign / poster / pamphlet / newspaper advertisement',
+    '5' => 'Newspaper article / magazine article / newsletter',
+    '6' => 'Social media advertisement',
+    '7' => 'Social media post / discussion',
+    '8' => 'Friend / family member / acquaintance',
+    '9' => 'Local organization',
+    '10' => 'Local organization or peer educator',
+    '11' => 'Other',
+    '12' => 'VTC Team CBO',
+    '13' => 'FTM Vietnam Organization',
+    '14' => 'CSAGA',
+    '15' => 'BE+ Clun in University of Social Sciences and Humanities (HCMUSSH)',
+    '16' => 'Event Club in Van Lang University',
+    '17' => 'Club in Can Tho University',
+    '18' => 'RMIT University Vietnam',
+    '19' => 'YKAP Vietnam',
+    '20' => 'Song Tre Son La',
+    '21' => 'The Leader House An Giang',
+    '22' => 'Vuot Music Video',
+    '23' => 'Motive Agency',
+    '24' => 'Social work Club from University of Labour and Social Affairs 2'
+  }.freeze
 end

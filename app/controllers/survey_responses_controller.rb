@@ -10,4 +10,8 @@ class SurveyResponsesController < ApplicationController
   def mobilizers
     render json: SurveyResponses::Mobilizer.new.stats(params[:country])
   end
+
+  def agencies
+    render json: SurveyResponses::Agency.new.stats(params[:country])
+  end
 end

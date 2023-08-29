@@ -83,6 +83,9 @@ class SurveyResponse < ApplicationRecord
   scope :ineligible_baselines, lambda {
     included_baselines.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
   }
+  scope :eligible_completed_main_block, lambda {
+    completed_main_block.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
+  }
 
   def baseline_survey?
     survey_title&.strip == 'SMILE Survey - Baseline'
@@ -105,11 +108,7 @@ class SurveyResponse < ApplicationRecord
   end
 
   def country
-    if read_attribute(:country).blank?
-      participant&.country
-    else
-      read_attribute(:country)
-    end
+    (read_attribute(:country).presence || participant&.country)
   end
 
   def country=(str)
@@ -194,9 +193,9 @@ class SurveyResponse < ApplicationRecord
       elsif attractions.size == 1
         attr_val = attractions.first.strip
         case gender_identity
-        when '1','10'
+        when '1', '10'
           self.attraction_sgm_group = female_attraction_grouping(attr_val)
-        when '2','11'
+        when '2', '11'
           self.attraction_sgm_group = male_attraction_grouping(attr_val)
         end
       elsif attractions.size > 1
@@ -212,13 +211,13 @@ class SurveyResponse < ApplicationRecord
     case value
     when '1'
       'woman attracted to women'
-    when '2','4','5','6'
+    when '2', '4', '5', '6'
       'multi-attracted woman'
     when '3'
       'ineligible'
     when '8'
       'asexual'
-    when '7','88'
+    when '7', '88'
       'no group'
     end
   end
@@ -227,26 +226,26 @@ class SurveyResponse < ApplicationRecord
     case value
     when '1'
       'ineligible'
-    when '2','4','5','6'
+    when '2', '4', '5', '6'
       'multi-attracted man'
     when '3'
       'man attracted to men'
     when '8'
       'asexual'
-    when '7','88'
+    when '7', '88'
       'no group'
     end
   end
 
   def attraction_grouping_2(attractions)
     case gender_identity
-    when '1','10'
+    when '1', '10'
       if attractions.size == 2 && attractions.include?('3') && attractions.include?('4')
         self.attraction_sgm_group = 'ineligible'
       elsif attractions.any? { |a| %w[1 2].include?(a.strip) } && attractions.any? { |a| %w[3 4 5 6 7].include?(a.strip) }
         self.attraction_sgm_group = 'multi-attracted woman'
       end
-    when '2','11'
+    when '2', '11'
       if attractions.size == 2 && attractions.include?('1') && attractions.include?('2')
         self.attraction_sgm_group = 'ineligible'
       elsif attractions.any? { |a| %w[3 4].include?(a.strip) } && attractions.any? { |a| %w[1 2 5 6 7].include?(a.strip) }
@@ -283,28 +282,28 @@ class SurveyResponse < ApplicationRecord
     self.attraction_eligibility = 'ineligible'
     attractions = sexual_attraction&.split(',')
     case gender_identity
-    when '1','10'
+    when '1', '10'
       self.attraction_eligibility = 'eligible' if attractions&.any? { |a| %w[1 2 4 5 6 7 8].include?(a) }
-    when '2','11'
+    when '2', '11'
       self.attraction_eligibility = 'eligible' if attractions&.any? { |a| %w[2 3 4 5 6 7 8].include?(a) }
-    when '4','12','5','13','6','14'
+    when '4', '12', '5', '13', '6', '14'
       self.attraction_eligibility = 'eligible'
     end
   end
 
   def gender_identity_label
     case gender_identity
-    when '1','10'
+    when '1', '10'
       'Woman'
-    when '2','11'
+    when '2', '11'
       'Man'
     when '3'
       'Agender'
-    when '4','12'
+    when '4', '12'
       'Non-binary Person'
-    when '5','13'
+    when '5', '13'
       'Transgender Woman'
-    when '6','14'
+    when '6', '14'
       'Transgender Man'
     when '8'
       'Questioning Person'
@@ -317,19 +316,19 @@ class SurveyResponse < ApplicationRecord
 
   def sexual_orientation_label
     case sexual_orientation
-    when '1','9','16'
+    when '1', '9', '16'
       'Lesbian / Gay'
-    when '3','10','17'
+    when '3', '10', '17'
       'Bisexual / Pansexual'
-    when '4','11'
+    when '4', '11'
       'Queer'
-    when '5','12'
+    when '5', '12'
       'Questioning'
-    when '6','13','18'
+    when '6', '13', '18'
       'Asexual'
-    when '7','14','19'
+    when '7', '14', '19'
       'Heterosexual / Straight'
-    when '8','15'
+    when '8', '15'
       'Another Sexual Orientation'
     when '20'
       'Decline to answer'
