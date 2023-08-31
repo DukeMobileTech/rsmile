@@ -468,6 +468,7 @@ class SurveyResponse < ApplicationRecord
       'Unknown'
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def network_class
     octet = ip_address&.split('.')&.first&.to_i

@@ -127,7 +127,7 @@ export default {
     fetchData() {
       this.loaded = false;
       axios
-        .get(`${this.$basePrefix}participants/sources`, {
+        .get(`${this.$basePrefix}survey_responses/sources`, {
           params: { country: this.countryName },
         })
         .then((response) => {

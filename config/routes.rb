@@ -43,8 +43,6 @@ Rails.application.routes.draw do
       get '/grouped' => 'participants#grouped'
       get '/blank_stats' => 'participants#blank_stats'
       get '/weekly_participants' => 'participants#weekly_participants'
-      get '/sources' => 'participants#sources'
-      get '/timeline' => 'participants#timeline'
     end
   end
   resources :survey_responses, only: [] do
@@ -53,6 +51,9 @@ Rails.application.routes.draw do
       get '/progress' => 'survey_responses#progress'
       get '/mobilizers' => 'survey_responses#mobilizers'
       get '/agencies' => 'survey_responses#agencies'
+      get '/sources' => 'survey_responses#sources'
+      get '/timeline' => 'survey_responses#timeline'
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

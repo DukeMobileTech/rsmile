@@ -14,4 +14,12 @@ class SurveyResponsesController < ApplicationController
   def agencies
     render json: SurveyResponses::Agency.new.stats(params[:country])
   end
+
+  def sources
+    render json: SurveyResponses::Source.new.stats(params[:country])
+  end
+
+  def timeline
+    render json: SurveyResponses::Source.new.timeline(params[:country])
+  end
 end

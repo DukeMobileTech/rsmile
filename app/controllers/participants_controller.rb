@@ -22,12 +22,4 @@ class ParticipantsController < ApplicationController
   def weekly_participants
     render json: Participant.weekly_participants
   end
-
-  def sources
-    render json: Participants::Source.new.stats(params[:country])
-  end
-
-  def timeline
-    render json: Participants::Source.new.timeline(params[:country])
-  end
 end
