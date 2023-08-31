@@ -45,6 +45,8 @@ Vue.prototype.$SOURCES = {
   22: 'Vuot Music Video',
   23: 'Motive Agency',
   24: 'Social work Club from University of Labour and Social Affairs 2',
+  25: 'Influencers',
+  26: 'Instagram',
 };
 
 Vue.prototype.$SGM_LABELS = {

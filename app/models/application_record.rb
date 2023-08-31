@@ -44,6 +44,8 @@ class ApplicationRecord < ActiveRecord::Base
     '21' => 'The Leader House An Giang',
     '22' => 'Vuot Music Video',
     '23' => 'Motive Agency',
-    '24' => 'Social work Club from University of Labour and Social Affairs 2'
+    '24' => 'Social work Club from University of Labour and Social Affairs 2',
+    '25' => 'Influencers',
+    '26' => 'Instagram'
   }.freeze
 end

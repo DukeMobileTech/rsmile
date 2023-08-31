@@ -102,7 +102,7 @@ class SurveyResponse < ApplicationRecord
   def source_label
     names = []
     source&.split(',')&.each do |s|
-      names << SurveyResponse.named_source(s.strip)
+      names << SOURCES[s.strip]
     end
     names.join(' | ')
   end
@@ -126,63 +126,6 @@ class SurveyResponse < ApplicationRecord
 
   def participant_self_gen_id
     participant&.self_generated_id
-  end
-
-  def self.named_source(num)
-    case num
-    when '0'
-      'Not Indicated'
-    when '1'
-      'Radio advertisement'
-    when '2'
-      'TV advertisement'
-    when '3'
-      'Podcast'
-    when '4'
-      'Billboard / sign / poster / pamphlet / newspaper advertisement'
-    when '5'
-      'Newspaper article / magazine article / newsletter'
-    when '6'
-      'Social media advertisement'
-    when '7'
-      'Social media post / discussion'
-    when '8'
-      'From a friend / family member / acquaintance'
-    when '9'
-      'From a local organization'
-    when '10'
-      'From a local organization or peer educator'
-    when '11'
-      'Other'
-    when '12'
-      'From VTC Team CBO'
-    when '13'
-      'From FTM Vietnam Organization'
-    when '14'
-      'From CSAGA'
-    when '15'
-      'From BE+ Clun in University of Social Sciences and Humanities (HCMUSSH)'
-    when '16'
-      'From Event Club in Van Lang University'
-    when '17'
-      'From a Club in Can Tho University'
-    when '18'
-      'From RMIT University Vietnam'
-    when '19'
-      'From YKAP Vietnam'
-    when '20'
-      'From Song Tre Son La'
-    when '21'
-      'From The Leader House An Giang'
-    when '22'
-      'From Vuot Music Video'
-    when '23'
-      'From Motive Agency'
-    when '24'
-      'From Social work Club from University of Labour and Social Affairs 2'
-    else
-      num
-    end
   end
 
   def set_attraction_sgm_group
