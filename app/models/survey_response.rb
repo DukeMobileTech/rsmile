@@ -325,17 +325,17 @@ class SurveyResponse < ApplicationRecord
     SurveyResponses::BlockProgress.new.progress(country_name)
   end
 
-  def qualtrics_metadata
+  def fetch_qualtrics_data
     url = URI("https://#{Rails.application.credentials.config[:QUALTRICS_BASE_URL]}/surveys/#{survey_uuid}/responses/#{response_uuid}")
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new(url)
-    request['Content-Type'] = 'application/json'
-    request['X-API-TOKEN'] = Rails.application.credentials.config[:QUALTRICS_TOKEN]
+    http = create_http(url)
+    request = create_get_request(url)
     response = http.request(request)
     return if response.code != '200'
 
+    parse_response(response)
+  end
+
+  def parse_response(response)
     json_body = JSON.parse(response.body.force_encoding('ISO-8859-1').encode('UTF-8'))
     set_metadata(json_body['result']['values'], json_body['result']['labels'])
     set_attraction_eligibility
@@ -348,6 +348,7 @@ class SurveyResponse < ApplicationRecord
     update_age(labels)
     parse_gender(labels)
     update_location(values)
+    recruitment(values)
     parse_race_ethnicity(self[:country], values)
     contactable(values)
     update_sogi(values, labels)
@@ -366,8 +367,12 @@ class SurveyResponse < ApplicationRecord
 
   def update_location(values)
     assign_attributes(country: self[:country].presence || values['Country'],
-                      referee_code: values['QID556_1_TEXT']&.downcase&.strip,
-                      self_generated_id: values['SELF_GENERATED_ID'])
+                      self_generated_id: values['SELF_GENERATED_ID'],
+                      source: values['QID446']&.join(','))
+  end
+
+  def recruitment(values)
+    self.referee_code = values['QID556_1_TEXT']&.downcase&.strip
     self.mobilizer_code = values['QID556_1_TEXT']&.downcase&.strip if mobilizer_code.blank?
   end
 
@@ -512,5 +517,19 @@ class SurveyResponse < ApplicationRecord
     return unless baseline_survey?
 
     SurveyMetadataJob.perform_later(id) if saved_change_to_survey_complete? && survey_complete
+  end
+
+  def create_http(url)
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http
+  end
+
+  def create_get_request(url)
+    request = Net::HTTP::Get.new(url)
+    request['Content-Type'] = 'application/json'
+    request['X-API-TOKEN'] = Rails.application.credentials.config[:QUALTRICS_TOKEN]
+    request
   end
 end
