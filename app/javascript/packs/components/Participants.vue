@@ -31,7 +31,13 @@
               <td class="text-danger">{{ data['excluded'] }}</td>
               <td>{{ data['contactable'] }}</td>
               <td class="text-success">{{ data['accepted'] }}</td>
-              <td>{{ ((data['accepted'] / 3500) * 100).toFixed(2) }} %</td>
+              <td
+                v-bind:style="{
+                  backgroundColor: getColor((data['accepted'] / 3500) * 100),
+                }"
+              >
+                {{ ((data['accepted'] / 3500) * 100).toFixed(2) }} %
+              </td>
             </tr>
             <tr>
               <td><strong>Total</strong></td>
@@ -56,8 +62,8 @@
               <td class="text-success">
                 <strong>{{ total['accepted'] }}</strong>
               </td>
-              <td>
-                <strong>{{ progress() }}</strong>
+              <td v-bind:style="{ backgroundColor: getColor(progress()) }">
+                <strong>{{ progress().toFixed(2) + ' %' }}</strong>
               </td>
             </tr>
           </tbody>
@@ -131,7 +137,16 @@ export default {
       }
     },
     progress() {
-      return ((this.total.accepted / 10000) * 100).toFixed(2) + ' %';
+      return (this.total.accepted / 10000) * 100;
+    },
+    getColor(progress) {
+      if (progress < 33.0) {
+        return '#f5c6cb';
+      } else if (progress >= 33.0 && progress < 66.0) {
+        return '#ffeeba';
+      } else {
+        return '#c3e6cb';
+      }
     },
   },
 };
