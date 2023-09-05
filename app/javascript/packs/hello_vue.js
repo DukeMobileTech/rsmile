@@ -59,6 +59,17 @@ Vue.prototype.$SGM_LABELS = {
   'multi-attracted man': 'Multi-Attracted Men',
 };
 
+Vue.prototype.$COLORS = {
+  Kenya: '#006600',
+  'Kenya (cumulative)': '#000000',
+  Vietnam: '#DA251D',
+  'Vietnam (cumulative)': '#FFCD00',
+  Brazil: '#0C87D1',
+  'Brazil (cumulative)': '#002776',
+  All: '#732982',
+  Target: '#FF7F00',
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const app = new Vue({
     render: (h) => h(App),

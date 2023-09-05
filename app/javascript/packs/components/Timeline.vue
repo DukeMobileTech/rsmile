@@ -48,16 +48,6 @@ export default {
       maintainAspectRatio: false,
     },
     chartData: {},
-    colors: {
-      Kenya: '#006600',
-      'Kenya (cumulative)': '#000000',
-      Vietnam: '#DA251D',
-      'Vietnam (cumulative)': '#FFCD00',
-      Brazil: '#0C87D1',
-      'Brazil (cumulative)': '#002776',
-      All: '#732982',
-      Target: '#FF7F00',
-    },
   }),
 
   components: {
@@ -88,8 +78,8 @@ export default {
             response,
             allWeeklyCounts
           );
-          let allColor = this.colors['All'];
-          let targetColor = this.colors['Target'];
+          let allColor = this.$COLORS['All'];
+          let targetColor = this.$COLORS['Target'];
           datasets.push({
             label: 'SMILE (cumulative)',
             fill: false,
@@ -138,7 +128,7 @@ export default {
             allWeeklyCounts[date] = count;
           }
         });
-        let color = this.colors[country];
+        let color = this.$COLORS[country];
         datasets.push({
           label: country,
           fill: false,
@@ -147,7 +137,7 @@ export default {
           backgroundColor: color,
           data: weeklyCounts,
         });
-        let cumulativeColor = this.colors[country + ' (cumulative)'];
+        let cumulativeColor = this.$COLORS[country + ' (cumulative)'];
         datasets.push({
           label: country + ' (cumulative)',
           fill: false,

@@ -15,9 +15,7 @@
           <StudySource :country-name="countryName"></StudySource>
         </b-tab>
         <b-tab lazy title="Recruitment Timeline">
-          <ParticipantsOverTime
-            :country-name="countryName"
-          ></ParticipantsOverTime>
+          <CountryTimeline :country-name="countryName"></CountryTimeline>
         </b-tab>
         <b-tab lazy title="Baseline Surveys">
           <Baselines :country-name="countryName"></Baselines>
@@ -37,7 +35,7 @@
 </template>
 
 <script>
-import ParticipantsOverTime from './ParticipantsOverTime';
+import CountryTimeline from './CountryTimeline';
 import StudySource from './StudySource';
 import SgmGroups from './SgmGroups';
 import Baselines from './Baselines';
@@ -53,7 +51,7 @@ export default {
   },
 
   components: {
-    ParticipantsOverTime,
+    CountryTimeline,
     StudySource,
     SgmGroups,
     Baselines,
