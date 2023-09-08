@@ -701,3 +701,72 @@ Q13.3: &relationship_status
   <<: *relationship_status
 6_Q14.5:
   <<: *satisfaction
+Q16.1:
+  <<: *satisfaction
+Q16.3:
+  <<: *yes_no
+Q16.6:
+  <<: *yes_no
+Q44.2: &agreement
+  1: 'strongly agree'
+  2: 'somewhat agree'
+  3: 'neither agree nor disagree'
+  4: 'somewhat disagree'
+  5: 'strongly disagree'
+Q44.3: &affirmation_her
+  1: 'affirm and support'
+  2: 'accept her as she is'
+  3: 'spend less time with her'
+  4: 'publicly distance themselves from her'
+  5: 'try to change her'
+Q44.4: &affirmation_him
+  1: 'affirm and support'
+  2: 'accept him as he is'
+  3: 'spend less time with him'
+  4: 'publicly distance themselves from him'
+  5: 'try to change him'
+Q44.5: &yes_no_dont_know
+  <<: *yes_no
+  3: "Don't know"
+Q44.6:
+  <<: *yes_no_dont_know
+Q44.8:
+  <<: *agreement
+Q44.9:
+  <<: *agreement
+Q44.10:
+  <<: *agreement
+Q44.11:
+  <<: *agreement
+Q44.12: &comfort
+  1: 'very comfortable'
+  2: 'somewhat comfortable'
+  3: 'neither comfortable nor uncomfortable'
+  4: 'somewhat uncomfortable'
+  5: 'very uncomfortable'
+Q44.13:
+  <<: *agreement
+Q44.14: &affirmation_them
+  1: 'affirm and support'
+  2: 'accept them as they are'
+  3: 'spend less time with them'
+  4: 'publicly distance themselves from them'
+  5: 'try to change them'
+Q44.15:
+  <<: *yes_no_dont_know
+Q44.16:
+  <<: *yes_no_dont_know
+Q44.18:
+  <<: *agreement
+Q44.19:
+  <<: *agreement
+Q44.20:
+  <<: *agreement
+Q44.21:
+  <<: *agreement
+Q44.22:
+  <<: *comfort
+EndA1:
+  <<: *continue_finish
+EndA2:
+  <<: *continue_finish
