@@ -770,3 +770,106 @@ EndA1:
   <<: *continue_finish
 EndA2:
   <<: *continue_finish
+Q18.3:
+  1: 'all of them know each other'
+  2: 'most of them know each other'
+  3: 'some of them know each other'
+  4: 'a few of them know each other'
+  5: 'none of them know each other'
+Q21.2: &spin_degree
+  1: 'not at all'
+  2: 'a little bit'
+  3: 'somewhat'
+  4: 'very much'
+  5: 'extremely'
+Q21.3:
+  <<: *spin_degree
+Q21.4:
+  <<: *spin_degree
+Q325: &sgm_agree
+  1: 'disagree strongly'
+  2: 'disagree'
+  3: 'somewhat disagree'
+  4: 'somewhat agree'
+  5: 'agree'
+  6: 'strongly agree'
+Q326:
+  <<: *sgm_agree
+Q327:
+  <<: *sgm_agree
+Q328:
+  <<: *sgm_agree
+Q329:
+  <<: *sgm_agree
+Q330:
+  <<: *sgm_agree
+Q331:
+  <<: *sgm_agree
+Q332:
+  <<: *sgm_agree
+Q333:
+  <<: *sgm_agree
+Q334:
+  <<: *sgm_agree
+Q335:
+  <<: *sgm_agree
+Q336:
+  <<: *sgm_agree
+Q306:
+  <<: *sgm_agree
+Q307:
+  <<: *sgm_agree
+Q308:
+  <<: *sgm_agree
+Q309:
+  <<: *sgm_agree
+Q310:
+  <<: *sgm_agree
+Q311:
+  <<: *sgm_agree
+Q312:
+  <<: *sgm_agree
+Q313:
+  <<: *sgm_agree
+Q314:
+  <<: *sgm_agree
+Q315:
+  <<: *sgm_agree
+Q316:
+  <<: *sgm_agree
+Q317:
+  <<: *sgm_agree
+Q318:
+  <<: *sgm_agree
+Q319:
+  <<: *sgm_agree
+Q320:
+  <<: *sgm_agree
+Q321:
+  <<: *sgm_agree
+Q322:
+  <<: *sgm_agree
+Q37.1_1: &support_degree
+  1: 'never'
+  2: 'rarely'
+  3: 'sometimes'
+  4: 'usually'
+  5: 'always'
+Q37.2_1:
+  <<: *support_degree
+Q37.3_1:
+  <<: *support_degree
+Q37.4_1:
+  <<: *support_degree
+Q37.5_1:
+  <<: *support_degree
+Q37.6_1:
+  <<: *support_degree
+Q37.6:
+  1: 'hardly ever or never'
+  2: 'some of the time'
+  3: 'often'
+EndB1:
+  <<: *continue_finish
+EndB2:
+  <<: *continue_finish
