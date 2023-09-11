@@ -766,10 +766,11 @@ Q44.21:
   <<: *agreement
 Q44.22:
   <<: *comfort
-EndA1:
-  <<: *continue_finish
+EndA1: &end_group
+  4: 'continue'
+  5: 'finish'
 EndA2:
-  <<: *continue_finish
+  <<: *end_group
 Q18.3:
   1: 'all of them know each other'
   2: 'most of them know each other'
@@ -870,6 +871,229 @@ Q37.6:
   2: 'some of the time'
   3: 'often'
 EndB1:
-  <<: *continue_finish
+  <<: *end_group
 EndB2:
-  <<: *continue_finish
+  <<: *end_group
+Q17.8: &ladder
+  1: '1 - Best off'
+  2: '2'
+  3: '3'
+  4: '4'
+  5: '5'
+  6: '6'
+  7: '7'
+  8: '8'
+  9: '9'
+  10: '10 - Worst off'
+  88: "Don't know"
+  77: 'Refuse'
+Q17.9:
+  <<: *ladder
+Q17.10:
+  <<: *ladder
+Q23.2: &pcl_degree
+  1: 'not at all'
+  2: 'a little bit'
+  3: 'moderately'
+  4: 'quite a bit'
+  5: 'extremely'
+Q23.3:
+  <<: *pcl_degree
+Q23.4:
+  <<: *pcl_degree
+Q23.5:
+  <<: *pcl_degree
+Q23.6:
+  <<: *pcl_degree
+Q23.7:
+  <<: *pcl_degree
+Q23.9:
+  <<: *pcl_degree
+Q23.10:
+  <<: *pcl_degree
+Q23.11:
+  <<: *pcl_degree
+Q23.12:
+  <<: *pcl_degree
+Q23.13:
+  <<: *pcl_degree
+Q23.14:
+  <<: *pcl_degree
+Q23.16:
+  <<: *pcl_degree
+Q23.17:
+  <<: *pcl_degree
+Q23.18:
+  <<: *pcl_degree
+Q23.19:
+  <<: *pcl_degree
+Q23.20:
+  <<: *pcl_degree
+1_Q25.1: &assist_frequency
+  1: 'never'
+  2: 'once or twice'
+  3: 'monthly'
+  4: 'weekly'
+  5: 'daily or almost daily'
+2_Q25.1:
+  <<: *assist_frequency
+3_Q25.1:
+  <<: *assist_frequency
+4_Q25.1:
+  <<: *assist_frequency
+5_Q25.1:
+  <<: *assist_frequency
+6_Q25.1:
+  <<: *assist_frequency
+7_Q25.1:
+  <<: *assist_frequency
+8_Q25.1:
+  <<: *assist_frequency
+9_Q25.1:
+  <<: *assist_frequency
+10_Q25.1:
+  <<: *assist_frequency
+11_Q25.1:
+  <<: *assist_frequency
+12_Q25.1:
+  <<: *assist_frequency
+13_Q25.1:
+  <<: *assist_frequency
+1_Q25.2:
+  <<: *assist_frequency
+2_Q25.2:
+  <<: *assist_frequency
+3_Q25.2:
+  <<: *assist_frequency
+4_Q25.2:
+  <<: *assist_frequency
+5_Q25.2:
+  <<: *assist_frequency
+6_Q25.2:
+  <<: *assist_frequency
+7_Q25.2:
+  <<: *assist_frequency
+8_Q25.2:
+  <<: *assist_frequency
+9_Q25.2:
+  <<: *assist_frequency
+10_Q25.2:
+  <<: *assist_frequency
+11_Q25.2:
+  <<: *assist_frequency
+12_Q25.2:
+  <<: *assist_frequency
+13_Q25.2:
+  <<: *assist_frequency
+1_Q25.3:
+  <<: *assist_frequency
+2_Q25.3:
+  <<: *assist_frequency
+3_Q25.3:
+  <<: *assist_frequency
+4_Q25.3:
+  <<: *assist_frequency
+5_Q25.3:
+  <<: *assist_frequency
+6_Q25.3:
+  <<: *assist_frequency
+7_Q25.3:
+  <<: *assist_frequency
+8_Q25.3:
+  <<: *assist_frequency
+9_Q25.3:
+  <<: *assist_frequency
+10_Q25.3:
+  <<: *assist_frequency
+11_Q25.3:
+  <<: *assist_frequency
+12_Q25.3:
+  <<: *assist_frequency
+13_Q25.3:
+  <<: *assist_frequency
+1_Q25.4:
+  <<: *assist_frequency
+2_Q25.4:
+  <<: *assist_frequency
+3_Q25.4:
+  <<: *assist_frequency
+4_Q25.4:
+  <<: *assist_frequency
+5_Q25.4:
+  <<: *assist_frequency
+6_Q25.4:
+  <<: *assist_frequency
+7_Q25.4:
+  <<: *assist_frequency
+8_Q25.4:
+  <<: *assist_frequency
+9_Q25.4:
+  <<: *assist_frequency
+10_Q25.4:
+  <<: *assist_frequency
+11_Q25.4:
+  <<: *assist_frequency
+12_Q25.4:
+  <<: *assist_frequency
+13_Q25.4:
+  <<: *assist_frequency
+1_Q25.5: &assist_concerns
+  1: 'no, never'
+  2: 'yes, but not vin the past 3 months'
+  3: 'yes, in the past 3 months'
+2_Q25.5:
+  <<: *assist_concerns
+3_Q25.5:
+  <<: *assist_concerns
+4_Q25.5:
+  <<: *assist_concerns
+5_Q25.5:
+  <<: *assist_concerns
+6_Q25.5:
+  <<: *assist_concerns
+7_Q25.5:
+  <<: *assist_concerns
+8_Q25.5:
+  <<: *assist_concerns
+9_Q25.5:
+  <<: *assist_concerns
+10_Q25.5:
+  <<: *assist_concerns
+11_Q25.5:
+  <<: *assist_concerns
+12_Q25.5:
+  <<: *assist_concerns
+13_Q25.5:
+  <<: *assist_concerns
+1_Q25.6:
+  <<: *assist_concerns
+2_Q25.6:
+  <<: *assist_concerns
+3_Q25.6:
+  <<: *assist_concerns
+4_Q25.6:
+  <<: *assist_concerns
+5_Q25.6:
+  <<: *assist_concerns
+6_Q25.6:
+  <<: *assist_concerns
+7_Q25.6:
+  <<: *assist_concerns
+8_Q25.6:
+  <<: *assist_concerns
+9_Q25.6:
+  <<: *assist_concerns
+10_Q25.6:
+  <<: *assist_concerns
+11_Q25.6:
+  <<: *assist_concerns
+12_Q25.6:
+  <<: *assist_concerns
+13_Q25.6:
+  <<: *assist_concerns
+Q26.1:
+  <<: *assist_concerns
+EndC1:
+  <<: *end_group
+EndC2:
+  <<: *end_group
