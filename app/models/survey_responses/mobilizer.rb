@@ -3,7 +3,7 @@ module SurveyResponses
     def stats(country)
       baselines = SurveyResponse.baselines.where(country: country)
                                 .where('metadata ? :key', key: 'mobilizer_code')
-      codes = baselines.map(&:mobilizer_code).uniq.sort
+      codes = baselines.map(&:mobilizer_code).compact_blank.uniq.sort
       data = []
       codes.each do |code|
         data << mobilizer_data(code, baselines)
@@ -23,7 +23,8 @@ module SurveyResponses
     def mobilizer_data(code, survey_responses)
       baselines = mobilizer_baselines(survey_responses, code)
       participant_ids = baselines.pluck(:participant_id).compact.uniq
-      accepted_baselines = mobilizer_accepted_baselines(baselines)
+      eligible_baselines = mobilizer_eligible_baselines(baselines)
+      completed_baselines = mobilizer_completed_baselines(baselines)
       {
         code: code,
         baseline_count: baselines.size,
@@ -33,13 +34,17 @@ module SurveyResponses
         average_baselines_for_participants_with_duplicates: average_baselines_per_mobilizer_participant(baselines, participant_ids),
         average_duration: average_duration(baselines),
         ip_address_count: mobilizer_ip_addresses(baselines, code).size,
-        accepted_participant_count: accepted_baselines.size,
         group_a_count: group_count(baselines, 'group_a'),
         group_b_count: group_count(baselines, 'group_b'),
         group_c_count: group_count(baselines, 'group_c'),
-        self_gen_id_count: self_gen_id_count(baselines)
+        self_gen_id_count: self_gen_id_count(baselines),
+        sgm_groups: sgm_groups(baselines).join(', '),
+        eligible_participant_count: eligible_baselines.size,
+        completed_participant_count: completed_baselines.size
       }
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     def participant_count_with_duplicates(baselines, participant_ids)
       count = 0
@@ -71,10 +76,15 @@ module SurveyResponses
                .map(&:ip_address).compact.uniq
     end
 
-    def mobilizer_accepted_baselines(baselines)
+    def mobilizer_eligible_baselines(baselines)
       baselines.where(duplicate: false)
                .where.not(participant_id: Participant.excluded.pluck(:id) + [nil])
                .where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: Participant::ELIGIBLE_SGM_GROUPS)
+    end
+
+    def mobilizer_completed_baselines(baselines)
+      baselines.where(duplicate: false)
+               .where.not(participant_id: Participant.excluded.pluck(:id) + [nil])
                .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
     end
 
@@ -85,6 +95,11 @@ module SurveyResponses
 
     def self_gen_id_count(baselines)
       baselines.map { |baseline| baseline&.self_generated_id&.gsub(/\s+/, '')&.downcase }.compact.uniq.size
+    end
+
+    def sgm_groups(baselines)
+      groups = baselines.map { |baseline| baseline&.sgm_group }.compact.sort
+      groups.uniq.map { |group| "#{SurveyResponse::SGM_CODES[group]} - #{groups.count(group)}" }
     end
   end
 end

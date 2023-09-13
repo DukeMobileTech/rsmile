@@ -1,9 +1,11 @@
 <template>
   <div>
     <div>
-      <button type="button" class="btn btn-outline-secondary" @click="goBack">Back</button>
+      <button type="button" class="btn btn-outline-secondary" @click="goBack">
+        Back
+      </button>
     </div>
-    <h5>{{countryName}}</h5>
+    <h5>{{ countryName }}</h5>
     <b-card no-body class="mb-5">
       <b-tabs card justified content-class="mt-3 mb-5">
         <b-tab lazy title="SGM Groups">
@@ -13,7 +15,7 @@
           <StudySource :country-name="countryName"></StudySource>
         </b-tab>
         <b-tab lazy title="Recruitment Timeline">
-          <ParticipantsOverTime :country-name="countryName"></ParticipantsOverTime>
+          <CountryTimeline :country-name="countryName"></CountryTimeline>
         </b-tab>
         <b-tab lazy title="Baseline Surveys">
           <Baselines :country-name="countryName"></Baselines>
@@ -24,41 +26,46 @@
         <b-tab v-if="countryName == 'Kenya'" lazy title="Mobilizer Recruitment">
           <Mobilizers :country-name="countryName"></Mobilizers>
         </b-tab>
+        <b-tab v-if="countryName == 'Vietnam'" lazy title="Agency Recruitment">
+          <Agencies :country-name="countryName"></Agencies>
+        </b-tab>
       </b-tabs>
     </b-card>
   </div>
 </template>
 
 <script>
-import ParticipantsOverTime from './ParticipantsOverTime';
+import CountryTimeline from './CountryTimeline';
 import StudySource from './StudySource';
 import SgmGroups from './SgmGroups';
 import Baselines from './Baselines';
 import Progress from './Progress';
 import Mobilizers from './Mobilizers';
+import Agencies from './Agencies';
 
 export default {
   name: 'CountryData',
 
   props: {
-    countryName: String
+    countryName: String,
   },
 
   components: {
-    ParticipantsOverTime,
+    CountryTimeline,
     StudySource,
     SgmGroups,
     Baselines,
     Progress,
-    Mobilizers
+    Mobilizers,
+    Agencies,
   },
 
   methods: {
     goBack() {
-      this.$emit("countryname", null);
+      this.$emit('countryname', null);
     },
   },
-}
+};
 </script>
 
 <style scoped>

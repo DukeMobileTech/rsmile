@@ -26,6 +26,7 @@ class SurveyResponse < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   after_create { SurveyMetadataJob.set(wait: 15.days).perform_later(id) if baseline_survey? }
   after_save :assign_participant_sgm_group
+  after_save :fetch_metadata
 
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender, :referee_code,
@@ -82,6 +83,9 @@ class SurveyResponse < ApplicationRecord
   scope :ineligible_baselines, lambda {
     included_baselines.where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
   }
+  scope :eligible_completed_main_block, lambda {
+    completed_main_block.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
+  }
 
   def baseline_survey?
     survey_title&.strip == 'SMILE Survey - Baseline'
@@ -98,17 +102,13 @@ class SurveyResponse < ApplicationRecord
   def source_label
     names = []
     source&.split(',')&.each do |s|
-      names << SurveyResponse.named_source(s.strip)
+      names << SOURCES[s.strip]
     end
     names.join(' | ')
   end
 
   def country
-    if read_attribute(:country).blank?
-      participant&.country
-    else
-      read_attribute(:country)
-    end
+    (read_attribute(:country).presence || participant&.country)
   end
 
   def country=(str)
@@ -128,63 +128,6 @@ class SurveyResponse < ApplicationRecord
     participant&.self_generated_id
   end
 
-  def self.named_source(num)
-    case num
-    when '0'
-      'Not Indicated'
-    when '1'
-      'Radio advertisement'
-    when '2'
-      'TV advertisement'
-    when '3'
-      'Podcast'
-    when '4'
-      'Billboard / sign / poster / pamphlet / newspaper advertisement'
-    when '5'
-      'Newspaper article / magazine article / newsletter'
-    when '6'
-      'Social media advertisement'
-    when '7'
-      'Social media post / discussion'
-    when '8'
-      'From a friend / family member / acquaintance'
-    when '9'
-      'From a local organization'
-    when '10'
-      'From a local organization or peer educator'
-    when '11'
-      'Other'
-    when '12'
-      'From VTC Team CBO'
-    when '13'
-      'From FTM Vietnam Organization'
-    when '14'
-      'From CSAGA'
-    when '15'
-      'From BE+ Clun in University of Social Sciences and Humanities (HCMUSSH)'
-    when '16'
-      'From Event Club in Van Lang University'
-    when '17'
-      'From a Club in Can Tho University'
-    when '18'
-      'From RMIT University Vietnam'
-    when '19'
-      'From YKAP Vietnam'
-    when '20'
-      'From Song Tre Son La'
-    when '21'
-      'From The Leader House An Giang'
-    when '22'
-      'From Vuot Music Video'
-    when '23'
-      'From Motive Agency'
-    when '24'
-      'From Social work Club from University of Labour and Social Affairs 2'
-    else
-      num
-    end
-  end
-
   def set_attraction_sgm_group
     if attraction_eligible?
       attractions = sexual_attraction&.split(',')
@@ -193,9 +136,9 @@ class SurveyResponse < ApplicationRecord
       elsif attractions.size == 1
         attr_val = attractions.first.strip
         case gender_identity
-        when '1','10'
+        when '1', '10'
           self.attraction_sgm_group = female_attraction_grouping(attr_val)
-        when '2','11'
+        when '2', '11'
           self.attraction_sgm_group = male_attraction_grouping(attr_val)
         end
       elsif attractions.size > 1
@@ -211,13 +154,13 @@ class SurveyResponse < ApplicationRecord
     case value
     when '1'
       'woman attracted to women'
-    when '2','4','5','6'
+    when '2', '4', '5', '6'
       'multi-attracted woman'
     when '3'
       'ineligible'
     when '8'
       'asexual'
-    when '7','88'
+    when '7', '88'
       'no group'
     end
   end
@@ -226,26 +169,26 @@ class SurveyResponse < ApplicationRecord
     case value
     when '1'
       'ineligible'
-    when '2','4','5','6'
+    when '2', '4', '5', '6'
       'multi-attracted man'
     when '3'
       'man attracted to men'
     when '8'
       'asexual'
-    when '7','88'
+    when '7', '88'
       'no group'
     end
   end
 
   def attraction_grouping_2(attractions)
     case gender_identity
-    when '1','10'
+    when '1', '10'
       if attractions.size == 2 && attractions.include?('3') && attractions.include?('4')
         self.attraction_sgm_group = 'ineligible'
       elsif attractions.any? { |a| %w[1 2].include?(a.strip) } && attractions.any? { |a| %w[3 4 5 6 7].include?(a.strip) }
         self.attraction_sgm_group = 'multi-attracted woman'
       end
-    when '2','11'
+    when '2', '11'
       if attractions.size == 2 && attractions.include?('1') && attractions.include?('2')
         self.attraction_sgm_group = 'ineligible'
       elsif attractions.any? { |a| %w[3 4].include?(a.strip) } && attractions.any? { |a| %w[1 2 5 6 7].include?(a.strip) }
@@ -282,28 +225,28 @@ class SurveyResponse < ApplicationRecord
     self.attraction_eligibility = 'ineligible'
     attractions = sexual_attraction&.split(',')
     case gender_identity
-    when '1','10'
+    when '1', '10'
       self.attraction_eligibility = 'eligible' if attractions&.any? { |a| %w[1 2 4 5 6 7 8].include?(a) }
-    when '2','11'
+    when '2', '11'
       self.attraction_eligibility = 'eligible' if attractions&.any? { |a| %w[2 3 4 5 6 7 8].include?(a) }
-    when '4','12','5','13','6','14'
+    when '4', '12', '5', '13', '6', '14'
       self.attraction_eligibility = 'eligible'
     end
   end
 
   def gender_identity_label
     case gender_identity
-    when '1','10'
+    when '1', '10'
       'Woman'
-    when '2','11'
+    when '2', '11'
       'Man'
     when '3'
       'Agender'
-    when '4','12'
+    when '4', '12'
       'Non-binary Person'
-    when '5','13'
+    when '5', '13'
       'Transgender Woman'
-    when '6','14'
+    when '6', '14'
       'Transgender Man'
     when '8'
       'Questioning Person'
@@ -316,19 +259,19 @@ class SurveyResponse < ApplicationRecord
 
   def sexual_orientation_label
     case sexual_orientation
-    when '1','9','16'
+    when '1', '9', '16'
       'Lesbian / Gay'
-    when '3','10','17'
+    when '3', '10', '17'
       'Bisexual / Pansexual'
-    when '4','11'
+    when '4', '11'
       'Queer'
-    when '5','12'
+    when '5', '12'
       'Questioning'
-    when '6','13','18'
+    when '6', '13', '18'
       'Asexual'
-    when '7','14','19'
+    when '7', '14', '19'
       'Heterosexual / Straight'
-    when '8','15'
+    when '8', '15'
       'Another Sexual Orientation'
     when '20'
       'Decline to answer'
@@ -382,17 +325,17 @@ class SurveyResponse < ApplicationRecord
     SurveyResponses::BlockProgress.new.progress(country_name)
   end
 
-  def qualtrics_metadata
+  def fetch_qualtrics_data
     url = URI("https://#{Rails.application.credentials.config[:QUALTRICS_BASE_URL]}/surveys/#{survey_uuid}/responses/#{response_uuid}")
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new(url)
-    request['Content-Type'] = 'application/json'
-    request['X-API-TOKEN'] = Rails.application.credentials.config[:QUALTRICS_TOKEN]
+    http = create_http(url)
+    request = create_get_request(url)
     response = http.request(request)
     return if response.code != '200'
 
+    parse_response(response)
+  end
+
+  def parse_response(response)
     json_body = JSON.parse(response.body.force_encoding('ISO-8859-1').encode('UTF-8'))
     set_metadata(json_body['result']['values'], json_body['result']['labels'])
     set_attraction_eligibility
@@ -405,6 +348,7 @@ class SurveyResponse < ApplicationRecord
     update_age(labels)
     parse_gender(labels)
     update_location(values)
+    recruitment(values)
     parse_race_ethnicity(self[:country], values)
     contactable(values)
     update_sogi(values, labels)
@@ -423,8 +367,12 @@ class SurveyResponse < ApplicationRecord
 
   def update_location(values)
     assign_attributes(country: self[:country].presence || values['Country'],
-                      referee_code: values['QID556_1_TEXT']&.downcase&.strip,
-                      self_generated_id: values['SELF_GENERATED_ID'])
+                      self_generated_id: values['SELF_GENERATED_ID'],
+                      source: values['QID446']&.join(','))
+  end
+
+  def recruitment(values)
+    self.referee_code = values['QID556_1_TEXT']&.downcase&.strip
     self.mobilizer_code = values['QID556_1_TEXT']&.downcase&.strip if mobilizer_code.blank?
   end
 
@@ -520,6 +468,7 @@ class SurveyResponse < ApplicationRecord
       'Unknown'
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def network_class
     octet = ip_address&.split('.')&.first&.to_i
@@ -563,5 +512,25 @@ class SurveyResponse < ApplicationRecord
     return if participant.blank? || !baseline_survey?
 
     participant.assign_sgm_group
+  end
+
+  def fetch_metadata
+    return unless baseline_survey?
+
+    SurveyMetadataJob.perform_later(id) if saved_change_to_survey_complete? && survey_complete
+  end
+
+  def create_http(url)
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http
+  end
+
+  def create_get_request(url)
+    request = Net::HTTP::Get.new(url)
+    request['Content-Type'] = 'application/json'
+    request['X-API-TOKEN'] = Rails.application.credentials.config[:QUALTRICS_TOKEN]
+    request
   end
 end

@@ -1,23 +1,23 @@
 <template>
   <div>
-    <h3>Participant Recruitment</h3>
+    <h3>SMILE Study</h3>
     <Participants />
     <Timeline />
   </div>
 </template>
 
 <script>
-  import Timeline from './Timeline';
-  import Participants from './Participants';
+import Timeline from './Timeline';
+import Participants from './Participants';
 
- export default {
-   name: 'Home',
+export default {
+  name: 'Home',
 
-   components: {
-      Timeline,
-      Participants
-   },
- };
+  components: {
+    Timeline,
+    Participants,
+  },
+};
 </script>
 
 <style scoped>
