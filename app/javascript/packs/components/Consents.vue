@@ -1,12 +1,12 @@
 <template>
   <div class="card mb-5">
     <div class="card-header">
-      <h5 class="card-title">Baselines</h5>
+      <h5 class="card-title">Consents</h5>
     </div>
     <div class="card-body">
       <div v-if="loaded" class="row">
         <CountryTable
-          :data-obj="baselines"
+          :data-obj="consents"
           :first-header="'Status'"
           :second-header="'Count'"
         />
@@ -23,36 +23,30 @@ import axios from 'axios';
 import CountryTable from './CountryTable';
 
 export default {
-  name: 'Baselines',
-
+  name: 'Consents',
   props: {
     countryName: String,
   },
-
-  data: () => ({
-    baselines: {},
-    loaded: false,
-  }),
-
   components: {
     CountryTable,
   },
-
+  data: () => ({
+    consents: {},
+    loaded: false,
+  }),
   watch: {
     countryName: function () {
       this.fetchData();
     },
   },
-
   mounted: function () {
     this.fetchData();
   },
-
   methods: {
     fetchData() {
       this.loaded = false;
       axios
-        .get(`${this.$basePrefix}survey_responses/baselines`, {
+        .get(`${this.$basePrefix}survey_responses/consents`, {
           params: { country: this.countryName },
         })
         .then((response) => {
@@ -62,7 +56,7 @@ export default {
           ) {
             window.location.reload();
           }
-          this.baselines = response.data;
+          this.consents = response.data;
           this.loaded = true;
         });
     },

@@ -309,22 +309,6 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
-  def self.consent_stats(country_name)
-    responses = SurveyResponse.where(country: country_name, survey_title: 'SMILE Consent')
-    {
-      Consented: responses.count(&:consented),
-      'Not Consented': responses.count { |r| !r.consented }
-    }
-  end
-
-  def self.baseline_stats(country_name)
-    SurveyResponses::Baseline.new.stats(country_name)
-  end
-
-  def self.progress_stats(country_name)
-    SurveyResponses::BlockProgress.new.progress(country_name)
-  end
-
   def fetch_qualtrics_data
     url = URI("https://#{Rails.application.credentials.config[:QUALTRICS_BASE_URL]}/surveys/#{survey_uuid}/responses/#{response_uuid}")
     http = create_http(url)

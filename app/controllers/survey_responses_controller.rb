@@ -1,10 +1,14 @@
 class SurveyResponsesController < ApplicationController
   def baselines
-    render json: SurveyResponse.baseline_stats(params[:country])
+    render json: SurveyResponses::Baseline.new.stats(params[:country])
+  end
+
+  def consents
+    render json: SurveyResponses::Consent.new.stats(params[:country])
   end
 
   def progress
-    render json: SurveyResponse.progress_stats(params[:country])
+    render json: SurveyResponses::BlockProgress.new.progress(params[:country])
   end
 
   def mobilizers

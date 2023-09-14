@@ -17,8 +17,8 @@
         <b-tab lazy title="Recruitment Timeline">
           <CountryTimeline :country-name="countryName"></CountryTimeline>
         </b-tab>
-        <b-tab lazy title="Baseline Surveys">
-          <Baselines :country-name="countryName"></Baselines>
+        <b-tab lazy title="Surveys">
+          <Surveys :country-name="countryName"></Surveys>
         </b-tab>
         <b-tab lazy title="Baseline Blocks Progress">
           <Progress :country-name="countryName"></Progress>
@@ -38,10 +38,10 @@
 import CountryTimeline from './CountryTimeline';
 import StudySource from './StudySource';
 import SgmGroups from './SgmGroups';
-import Baselines from './Baselines';
 import Progress from './Progress';
 import Mobilizers from './Mobilizers';
 import Agencies from './Agencies';
+import Surveys from './Surveys.vue';
 
 export default {
   name: 'CountryData',
@@ -54,10 +54,10 @@ export default {
     CountryTimeline,
     StudySource,
     SgmGroups,
-    Baselines,
     Progress,
     Mobilizers,
     Agencies,
+    Surveys,
   },
 
   methods: {

@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   resources :survey_responses, only: [] do
     collection do
       get '/baselines' => 'survey_responses#baselines'
+      get '/consents' => 'survey_responses#consents'
       get '/progress' => 'survey_responses#progress'
       get '/mobilizers' => 'survey_responses#mobilizers'
       get '/agencies' => 'survey_responses#agencies'
