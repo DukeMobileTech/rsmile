@@ -15,7 +15,7 @@ Vue.use(BootstrapVueIcons);
 
 let prefix = '/';
 if (process.env.NODE_ENV !== 'development') {
-  prefix = '/real_smile/';
+  prefix = '/rds_smile/';
 }
 Vue.prototype.$basePrefix = prefix;
 

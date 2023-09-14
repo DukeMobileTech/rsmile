@@ -1,5 +1,5 @@
 ActiveAdmin.register Invite do
-  permit_params :first_name, :last_name, :email, :password
+  permit_params :first_name, :last_name, :email, :password, :admin
 
   member_action :send_invite, method: :get do
     redirect_to resource_path
@@ -9,11 +9,12 @@ ActiveAdmin.register Invite do
     link_to 'Send Invite', send_invite_admin_invite_path(params[:id])
   end
 
-  form title: 'Invite User' do |_f|
+  form title: 'Invite User' do |f|
     inputs 'Details' do
       input :first_name
       input :last_name
       input :email
+      f.input :admin
     end
     actions
   end
@@ -39,6 +40,7 @@ ActiveAdmin.register Invite do
 
       # Invite code is present, there is an associated invite, and it is the user's invite
       if @invite_code && @invite && @invite.email == @user.email && !@invite.user_exists?
+        @user.admin = @invite.admin
         if @user.save
           @invite.redeemed!
           # ClearanceMailer.deliver_confirmation @user

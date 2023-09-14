@@ -70,8 +70,8 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
 
   def amend
-    @participant = Participant.find(params[:id]) unless params[:id].blank?
-    @participant = Participant.find_by(email: sanitized_email) if @participant.nil? && !sanitized_email.blank?
+    @participant = Participant.find(params[:id]) if params[:id].present?
+    @participant = Participant.find_by(email: sanitized_email) if @participant.nil? && sanitized_email.present?
 
     if @participant.nil?
       render json: { error: 'not found' }, status: :not_found
@@ -102,20 +102,13 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
-  def check_resume_code
-    res = Participant.check_resume_code(params[:resume_code])
-    render json: res, status: :ok
-  end
-
   private
 
   def participant_params
     params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
                                           :study_id, :rds_id, :code, :referrer_code, :sgm_group,
                                           :referrer_sgm_group, :match, :quota, :language, :contact,
-                                          :preferred_contact_method, :resume_code, :verification_code,
-                                          survey_responses_attributes: %i[survey_uuid response_uuid survey_complete survey_title
-                                                                          c_survey_uuid c_response_uuid c_survey_complete c_survey_title])
+                                          :preferred_contact_method, :verification_code, :seed, :remind)
   end
 
   def sanitized_email

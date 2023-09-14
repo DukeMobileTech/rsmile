@@ -19,7 +19,7 @@ development:
   <<: *default
   # database: rsmile_development
   # database: real_smile_development
-  database: rsmile
+  database: rds_smile_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

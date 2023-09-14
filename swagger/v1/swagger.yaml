@@ -4,11 +4,11 @@ info:
   title: API V1
   version: v1
 paths:
-  "/api/v1/consents":
+  '/api/v1/consents':
     post:
       summary: send consent form
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -26,21 +26,21 @@ paths:
                 country:
                   type: string
               required:
-              - language
-              - email
-              - country
-  "/api/v1/participants":
+                - language
+                - email
+                - country
+  '/api/v1/participants':
     get:
       summary: list participants
       security:
-      - bearer: []
+        - bearer: []
       responses:
         '200':
           description: successful
     post:
       summary: create participant
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -80,14 +80,14 @@ paths:
                 language:
                   type: string
               required:
-              - email
-              - phone_number
-              - country
-  "/api/v1/participants/verify":
+                - email
+                - phone_number
+                - country
+  '/api/v1/participants/verify':
     post:
       summary: verify participant
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -103,13 +103,13 @@ paths:
                 id:
                   type: integer
               required:
-              - verification_code
-              - id
-  "/api/v1/participants/amend":
+                - verification_code
+                - id
+  '/api/v1/participants/amend':
     put:
       summary: update participant attributes
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -147,12 +147,12 @@ paths:
                 preferred_contact_method:
                   type: string
               required:
-              - email
-  "/api/v1/participants/update_and_resend":
+                - email
+  '/api/v1/participants/update_and_resend':
     put:
       summary: update participant attributes
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -170,47 +170,28 @@ paths:
                 language:
                   type: string
               required:
-              - id
-              - contact
-              - language
-  "/api/v1/participants/check":
-    post:
-      summary: check participant resume code
-      security:
-      - bearer: []
-      parameters: []
-      responses:
-        '200':
-          description: successful
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                resume_code:
-                  type: string
-              required:
-              - resume_code
-  "/api/v1/participants/{id}":
+                - id
+                - contact
+                - language
+  '/api/v1/participants/{id}':
     parameters:
-    - name: id
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
     get:
       summary: show participant
       security:
-      - bearer: []
+        - bearer: []
       responses:
         '200':
           description: successful
     put:
       summary: update participant
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -248,19 +229,19 @@ paths:
                 preferred_contact_method:
                   type: string
               required:
-              - id
+                - id
     delete:
       summary: delete participant
       security:
-      - bearer: []
+        - bearer: []
       responses:
         '200':
           description: successful
-  "/api/v1/survey_responses":
+  '/api/v1/survey_responses':
     post:
       summary: create survey_response
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -289,11 +270,11 @@ paths:
                   type: string
                 language:
                   type: string
-  "/api/v1/survey_responses/safety":
+  '/api/v1/survey_responses/safety':
     post:
       summary: send safety planning form
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -307,12 +288,12 @@ paths:
                 responses:
                   type: string
               required:
-              - responses
-  "/api/v1/survey_responses/amend":
+                - responses
+  '/api/v1/survey_responses/amend':
     put:
       summary: update survey_response attributes
       security:
-      - bearer: []
+        - bearer: []
       parameters: []
       responses:
         '200':
@@ -342,12 +323,12 @@ paths:
                 language:
                   type: string
               required:
-              - response_uuid
+                - response_uuid
 servers:
-- url: http://{defaultHost}
-  variables:
-    defaultHost:
-      default: 127.0.0.1:3000/
+  - url: http://{defaultHost}
+    variables:
+      defaultHost:
+        default: 127.0.0.1:3000/
 components:
   securitySchemes:
     basic_auth:

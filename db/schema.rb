@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_20_165632) do
+ActiveRecord::Schema.define(version: 2023_10_03_150427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2023_07_20_165632) do
     t.datetime "redeemed_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "admin", default: false
     t.index ["id", "email"], name: "index_invites_on_id_and_email", unique: true
     t.index ["id", "invite_code"], name: "index_invites_on_id_and_invite_code", unique: true
   end
@@ -70,12 +71,13 @@ ActiveRecord::Schema.define(version: 2023_07_20_165632) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "preferred_contact_method"
     t.boolean "verified", default: false
-    t.string "resume_code"
     t.string "verification_code"
     t.boolean "include", default: true
+    t.boolean "seed", default: false
+    t.boolean "remind", default: true
+    t.boolean "quota_met", default: false
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
-    t.index ["resume_code"], name: "index_participants_on_resume_code", unique: true
   end
 
   create_table "response_exports", force: :cascade do |t|

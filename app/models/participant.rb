@@ -21,9 +21,11 @@ require 'sorted_set'
 #  updated_at               :datetime         not null
 #  preferred_contact_method :string
 #  verified                 :boolean          default(FALSE)
-#  resume_code              :string
 #  verification_code        :string
 #  include                  :boolean          default(TRUE)
+#  seed                     :boolean          default(FALSE)
+#  remind                   :boolean          default(TRUE)
+#  quota_met                :boolean          default(FALSE)
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
@@ -39,7 +41,6 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
-  before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
 
   scope :excluded, -> { where(include: false) }
   scope :eligible, -> { where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS) }
@@ -208,20 +209,6 @@ class Participant < ApplicationRecord
     final_stats
   end
 
-  def self.check_resume_code(code)
-    return { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil } if code.blank?
-
-    participant = find_by(resume_code: code&.upcase&.strip)
-    if participant
-      baseline = participant.survey_responses.where(survey_title: 'SMILE Survey - Baseline',
-                                                    survey_complete: false).first
-      { id: participant.id, self_generated_id: participant.self_generated_id,
-        country: participant.country, status: 'valid', response_id: baseline&.response_uuid }
-    else
-      { id: nil, self_generated_id: nil, country: nil, status: 'invalid', response_id: nil }
-    end
-  end
-
   def to_s
     "#{self_generated_id} #{email}"
   end
@@ -350,6 +337,10 @@ class Participant < ApplicationRecord
     duplicates = baselines.where.not(id: accepted.id)
     update_non_duplicate(accepted)
     update_duplicates(duplicates)
+  end
+
+  def recruiter
+    Participant.where(code: referrer_code)&.first if referrer_code.present?
   end
 
   private
