@@ -1,3 +1,5 @@
+require 'sorted_set'
+
 # == Schema Information
 #
 # Table name: participants
@@ -21,33 +23,74 @@
 #  verified                 :boolean          default(FALSE)
 #  resume_code              :string
 #  verification_code        :string
+#  include                  :boolean          default(TRUE)
 #
 class Participant < ApplicationRecord
-  has_many :survey_responses, dependent: :destroy
+  has_many :survey_responses, dependent: :destroy, inverse_of: :participant
+
   validates :email, presence: true, uniqueness: true
   validates :phone_number, :country, presence: true
+
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
+
   before_save :assign_identifiers
+  before_save :enforce_unique_code
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.resume_code = ('A'..'Z').to_a.sample(5).join if resume_code.blank? }
 
+  scope :excluded, -> { where(include: false) }
+  scope :eligible, -> { where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS) }
+  scope :eligible_completed_main_block, lambda {
+    eligible.joins(:survey_responses)
+            .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+            .where(survey_responses: { duplicate: false })
+            .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
+  }
+  scope :ineligible, -> { where(include: true).where(sgm_group: INELIGIBLE_SGM_GROUPS) }
+  scope :blanks, -> { where(include: true).where(sgm_group: 'blank') }
+  scope :derived, lambda {
+    ineligible.joins(:survey_responses)
+              .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+              .where(survey_responses: { duplicate: false })
+              .where('metadata @> hstore(:key, :value)', key: 'attraction_sgm_group', value: 'eligible')
+  }
+  scope :contactable, lambda {
+    eligible_completed_main_block
+      .joins(:survey_responses)
+      .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+      .where(survey_responses: { duplicate: false })
+      .where('metadata @> hstore(:key, :value)', key: 'can_contact', value: 'true')
+  }
+
   def consents
-    survey_responses.where(survey_title: 'SMILE Consent')
+    survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
   end
 
   def contacts
-    survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline')
+    survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline').order(:created_at)
   end
 
   def baselines
-    survey_responses.where(survey_title: 'SMILE Survey - Baseline')
+    survey_responses.where(survey_title: 'SMILE Survey - Baseline').order(:created_at)
   end
 
   def safety_plans
-    survey_responses.where(survey_title: 'Safety Planning')
+    survey_responses.where(survey_title: 'Safety Planning').order(:created_at)
+  end
+
+  def baseline
+    baselines.where(duplicate: false).first
+  end
+
+  def consent
+    consents.where(duplicate: false).first
+  end
+
+  def contact
+    contacts.where(duplicate: false).first
   end
 
   def send_verification_message(language)
@@ -100,83 +143,69 @@ class Participant < ApplicationRecord
     end
   end
 
-  def self.summary_stats
-    stats = {}
-    surveys = SurveyResponse.all.includes([:participant])
-    survey_titles = ['SMILE Contact Info Form - Baseline', 'SMILE Consent', 'SMILE Survey - Baseline',
-                     'Safety Planning']
-    Participant.all.group_by(&:country).each do |country, participants|
-      country_surveys = surveys.select { |s| s.country == country }
-      stats[country] = { 'participants': participants.size }
-      survey_titles.each do |title|
-        title_surveys = country_surveys.select { |s| s.survey_title == title }
-        if title == 'SMILE Survey - Baseline'
-          # For baseline only count eligible and completed surveys
-          title_surveys = country_surveys.select { |s| s.survey_title == title && s.eligible && s.survey_complete }
-        end
-        nils = title_surveys.select { |ts| ts.participant_id.nil? } # Surveys not attached to participants
-        part_ids = title_surveys.pluck(:participant_id).uniq # Remove duplicates
-        survey_count = if nils.size > 0
-                         (part_ids.size - 1) + nils.size # Count surveys without participants as unique
-                       else
-                         part_ids.size
-                       end
-        country_stats = stats[country]
-        country_stats[title] = survey_count
-        stats[country] = country_stats
-      end
-    end
-    stats
-  end
+  # Include participants who have the following characteristics:
+  # i) have include = true
+  # ii) the sgm_group is not 'blank', not 'ineligible', and not 'no group'
+  # iii) have completed the baseline survey
+  def self.eligible_participants
+    # Participant.where(include: true).where.not(sgm_group: ineligible_sgm_groups)
 
-  def self.all_sgm_groups
-    ['non-binary person', 'transgender woman', 'transgender man', 'woman attracted to women',
-     'man attracted to men', 'multi-attracted woman', 'multi-attracted man', 'no group', 'ineligible', 'blank']
-  end
-
-  def self.sgm_stats(kountry)
-    stats = {}
-    participants = Participant.where(country: kountry)
-    all_sgm_groups.each do |group|
-      stats[group] = participants.count { |participant| participant.sgm_group == group }
-    end
-    stats
-  end
-
-  def self.blank_stats(kountry)
-    no_baseline = []
-    baseline_started = []
-    participants = Participant.where(country: kountry).where(sgm_group: 'blank')
-    participants.each do |part|
-      if !part.contacts.empty? & part.baselines.empty?
-        no_baseline << part
-      elsif !part.baselines.empty?
-        baseline_started << part
-      end
-    end
-    { 'Contact Info completed but Baseline not started': no_baseline.size,
-      'Baseline started but SOGI not completed': baseline_started.size }
+    Participant.includes(:survey_responses)
+               .where(include: true)
+               .where.not(sgm_group: INELIGIBLE_SGM_GROUPS)
+               .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+               .where(survey_responses: { survey_complete: true })
   end
 
   def self.weekly_statistics(kountry)
     stats = []
-    participants = Participant.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%Y',
-                                                                                  week_start: :monday).count
-    eligible = Participant.where(country: kountry).where.not(sgm_group: 'ineligible').where.not(sgm_group: 'blank').group_by_week(
-      :created_at, format: '%m/%d/%Y', week_start: :monday
-    ).count
+    participants = eligible_participants.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
     total = []
+    index = 0
     participants.each do |week, count|
       total << { week => [count] }
-    end
-    index = 0
-    eligible.each do |week, count|
       list = total[index][week]
       list << count
       stats << { week => list }
       index += 1
     end
     stats
+  end
+
+  def self.weekly_statistics_by_country
+    Groupdate.week_start = :monday
+    weeks = SortedSet.new
+    stats = {}
+    COUNTRIES.each do |country|
+      country_stats = {}
+      participants = eligible_participants.where(country: country).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
+      participants.each do |week, count|
+        next unless count.positive?
+
+        country_stats[week] = count
+        weeks << Date.strptime(week, '%m/%d/%y')
+      end
+      stats[country] = country_stats
+    end
+    [weeks, stats]
+  end
+
+  def self.weekly_participants
+    wsbc = weekly_statistics_by_country
+    final_stats = {}
+    wsbc[1].each do |country, country_stats|
+      country_week_list = []
+      wsbc[0].each do |week|
+        week_str = week.strftime('%m/%d/%y')
+        country_week_list << if country_stats[week_str].blank?
+                               { week_str => 0 }
+                             else
+                               { week_str => country_stats[week_str] }
+                             end
+      end
+      final_stats[country] = country_week_list
+    end
+    final_stats
   end
 
   def self.check_resume_code(code)
@@ -193,87 +222,158 @@ class Participant < ApplicationRecord
     end
   end
 
-  # def self.existing_user(address, sgi)
-  #   sgi = nil if sgi.empty?
-  #   participant = find_by(email: address&.downcase&.strip, self_generated_id: sgi)
-  #   { id: participant&.id, self_generated_id: participant&.self_generated_id,
-  #     country: participant&.country, verified: participant&.verified }
-  # end
-
   def to_s
     "#{self_generated_id} #{email}"
   end
 
   def self.enrollment
-    file = Tempfile.new(Time.now.to_i.to_s)
-    Axlsx::Package.new do |p|
-      wb = p.workbook
-      countries.each do |state|
-        add_country_sheet(wb, state)
-      end
-      p.serialize(file.path)
-    end
-    file
+    Participants::EnrollmentLogbook.new.file
   end
 
-  def self.add_country_sheet(wb, kountry)
-    wb.add_worksheet(name: kountry) do |sheet|
-      tab_color = colors[countries.index(kountry)]
-      sheet.sheet_pr.tab_color = tab_color
-      sheet.add_row country_header
-      participants = Participant.where(country: kountry)
-      participants.each do |participant|
-        sheet.add_row [participant.self_generated_id, participant.id, participant.baselines.pluck(:id).join(' | '),
-                       participant.contacts.pluck(:id).join(' | '), participant.consents.pluck(:id).join(' | '),
-                       participant.consents.last&.created_at&.strftime('%Y-%m-%d'),
-                       participant.baselines.last&.created_at&.strftime('%Y-%m-%d'),
-                       participant.sgm_group, participant.ip_addresses&.join(' | '),
-                       participant.duration, '', participant.verified, participant.age_year_match, '', '']
-      end
-    end
+  def self.participant_level
+    Participants::ParticipantLevelData.new.file
   end
 
-  def self.colors
-    %w[9C6ACB 6DD865 85B2C9 559F93]
-  end
-
-  def self.country_header
-    ['Participant Self-Gen ID',	'Participant Database ID', 'Baseline Survey IDs',
-     'Contact Info Form ID', 'Consent ID',	'Date of Enrollment (Consent)',
-     'Baseline Survey Completion Date', 'SGM Group Assigned', 'IP Address',
-     'Duration (min)', '% Survey Completed', 'Verified',	'Age/Year Match',	'Study Outcome',
-     'Notes']
-  end
-
-  def self.countries
-    %w[Vietnam Kenya Brazil]
+  def self.enrolled_eligible_participants
+    Participant.includes(:survey_responses)
+               .where(include: true)
+               .where.not(sgm_group: INELIGIBLE_SGM_GROUPS)
   end
 
   def ip_addresses
-    survey_responses.map { |sr| sr.ip_address&.strip }.uniq.reject { |sr| sr.blank? }
+    survey_responses.map { |sr| sr.ip_address&.strip }.uniq.compact_blank
   end
 
   def duration
-    d = baselines.last&.duration
+    d = baseline&.duration
     len = nil
     len = (d.to_i / 60.0).ceil if d
     len
   end
 
+  def completion
+    baseline&.progress
+  end
+
   def age_year_match
-    birth_year = contacts.last&.birth_year
-    age = baselines.last&.age&.to_i
+    birth_year = contact&.birth_year
+    age = baseline&.age
     return 'No' if birth_year.blank? || age.blank?
 
     cal_age = created_at.year - birth_year.to_i
-    diff = cal_age - age
+    diff = cal_age - age.to_i
     diff.abs <= 2 ? 'Yes' : 'No'
+  end
+
+  def race
+    baseline&.race
+  end
+
+  def ethnicity
+    baseline&.ethnicity
+  end
+
+  def gender
+    baseline&.gender
+  end
+
+  def age
+    baseline&.age
+  end
+
+  def gender_identity
+    baseline&.gender_identity_label
+  end
+
+  def sexual_orientation
+    baseline&.sexual_orientation_label
+  end
+
+  def intersex
+    baseline&.intersex
+  end
+
+  def sexual_attraction
+    baseline&.sexual_attraction_label
+  end
+
+  def attraction_eligibility
+    baseline&.attraction_sgm_group
+  end
+
+  def mismatch
+    mm = baseline&.sgm_group_mismatch?
+    mm ? 'Yes' : 'No'
+  end
+
+  def age_unit
+    'Years'
+  end
+
+  def self.assign_sgm_groups
+    Participant.find_each(&:assign_sgm_group)
+  end
+
+  def assign_sgm_group
+    filter_duplicate_baselines
+    reload
+    return if baseline.nil? || baseline.sgm_group == sgm_group
+
+    self.sgm_group = baseline.sgm_group
+    save
+  end
+
+  def filter_duplicate_baselines
+    return if baselines.empty?
+
+    accepted = baselines.where(survey_complete: true).first
+    if accepted
+      duplicates = baselines.where.not(id: accepted.id)
+      update_non_duplicate(accepted)
+      update_duplicates(duplicates)
+    else
+      filter_duplicate_baselines_by_progress
+    end
+  end
+
+  def most_progress
+    progs = baselines.map { |b| b.progress.to_i }
+    max_prog = progs.max
+    return nil if max_prog.nil?
+
+    baselines.where('metadata @> hstore(:key, :value)', key: 'progress', value: max_prog.to_s).first
+  end
+
+  def filter_duplicate_baselines_by_progress
+    accepted = most_progress
+    accepted = baselines.first if accepted.nil?
+    duplicates = baselines.where.not(id: accepted.id)
+    update_non_duplicate(accepted)
+    update_duplicates(duplicates)
   end
 
   private
 
+  def update_duplicates(duplicates)
+    # rubocop:disable Rails::SkipsModelValidations
+    duplicates.update_all(duplicate: true)
+    # rubocop:enable Rails::SkipsModelValidations
+  end
+
+  def update_non_duplicate(accepted)
+    # rubocop:disable Rails::SkipsModelValidations
+    accepted.update_column(:duplicate, false)
+    # rubocop:enable Rails::SkipsModelValidations
+  end
+
   def assign_identifiers
     self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if code.blank?
     self.study_id = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if study_id.blank?
+  end
+
+  def enforce_unique_code
+    begin
+      self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}"
+    end while self.class.exists?(code: code)
   end
 end

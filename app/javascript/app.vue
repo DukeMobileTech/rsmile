@@ -1,67 +1,94 @@
 <template>
   <div id="app" class="container">
     <nav class="navbar navbar-light bg-light mt-2 mb-2">
-        <div class="container-fluid">
-        <div class="nav-item"><h1>{{ message }}</h1></div>
+      <div class="container-fluid">
         <div class="nav-item">
-          <button v-on:click="handleLogout" class="btn btn-danger" >Sign Out</button>
+          <img v-bind:src="logo" alt="SMILE Study" v-on:click="reload" />
+        </div>
+        <div class="nav-item">
+          <button v-on:click="linkToAdmin" class="btn btn-outline-info">
+            Admin
+          </button>
+        </div>
+        <div class="nav-item">
+          <button v-on:click="handleLogout" class="btn btn-danger">
+            <b-icon icon="power"></b-icon> Sign Out
+          </button>
         </div>
       </div>
     </nav>
     <keep-alive>
-      <component @countryname="updateCountry" :is="visibleComponent" v-bind="currentProperties"></component>
+      <component
+        @countryname="updateCountry"
+        :is="visibleComponent"
+        v-bind="currentProperties"
+      ></component>
     </keep-alive>
   </div>
 </template>
 
 <script>
- import axios from 'axios';
- import Participant from './packs/components/Participant';
- import CountryData from './packs/components/CountryData';
+import axios from 'axios';
+import Home from './packs/components/Home';
+import CountryData from './packs/components/CountryData';
 
 export default {
   data: function () {
+    let image = require('images/smile.png');
+    if (process.env.NODE_ENV !== 'development') {
+      image =
+        this.$basePrefix.substring(0, this.$basePrefix.length - 1) + image;
+    }
     return {
-      message: "SMILE Study",
+      message: 'SMILE Study',
       admin: `${this.$basePrefix}admin`,
       country: null,
-    }
+      logo: image,
+    };
   },
 
   components: {
-    Participant,
+    Home,
     CountryData,
   },
 
   methods: {
-    handleLogout () {
-      axios.defaults.headers.common['X-CSRF-TOKEN'] = document.head.querySelector('meta[name="csrf-token"]').content;
-      axios.delete(`${this.$basePrefix}sign_out`)
-      .then(response => {
-        window.location.reload();
-      }).catch(error => {
-        window.location.reload();
-      });
+    handleLogout() {
+      axios.defaults.headers.common['X-CSRF-TOKEN'] =
+        document.head.querySelector('meta[name="csrf-token"]').content;
+      axios
+        .delete(`${this.$basePrefix}sign_out`)
+        .then((response) => {
+          window.location.reload();
+        })
+        .catch((error) => {
+          window.location.reload();
+        });
     },
     updateCountry(value) {
       this.country = value;
-    }
+    },
+    linkToAdmin() {
+      window.location.href = this.admin;
+    },
+    reload() {
+      window.location.reload();
+    },
   },
 
   computed: {
     visibleComponent() {
-      if(this.country == null) {
-        return 'Participant';
+      if (this.country == null) {
+        return 'Home';
       } else {
         return 'CountryData';
       }
     },
     currentProperties() {
       if (this.visibleComponent === 'CountryData') {
-        return { countryName: this.country }
+        return { countryName: this.country };
       }
-    }
-  }
-
-}
+    },
+  },
+};
 </script>

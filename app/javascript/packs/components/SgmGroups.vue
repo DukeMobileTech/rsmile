@@ -1,24 +1,46 @@
 <template>
-  <div :key="'sgm-group'" class="card mt-5">
-    <div class="card-header">
-      <h5 class="card-title">SGM Groups</h5>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col">
-          <CountryTable :data-obj="sgmGroups" :first-header="'SGM Group'" :second-header="'Count'" />
+  <div :key="'sgm-group'">
+    <h5>Recruitment Per SGM Group</h5>
+    <div class="row">
+      <div class="col-sm-6">
+        <p>Eligible Groups</p>
+        <div v-if="loadingEligible" class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
         </div>
-        <div class="col">
-          <PieChart v-if="loaded" :chartdata="chartData" :options="chartOptions"></PieChart>
+        <ProgressTable v-else :data-obj="sgmGroups" />
+        <div class="mt-3 mb-3">
+          <p><strong>Caveats</strong></p>
+          <div>The recruited column only counts participants who are 
+            <strong>eligible</strong> and <strong>completed</strong> the baseline survey.
+          </div>
+          <div>This means:</div>
+          <ul>
+            <li>Completing the original long survey in its entirety.</li>
+            <li>Completing at the least the main block of the short survey.</li>
+          </ul>
         </div>
       </div>
-      <div class="row">
-        <div class="card-header">
-          <h5 class="card-title">Blank Breakdown</h5>
+      <div class="col-sm-6">
+        <div v-if="loadingEligible" class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
         </div>
-        <div>
-          <CountryTable :data-obj="blankStats" :first-header="'Survey Progress'" :second-header="'Count'" />
+        <PieChart v-else :chartdata="chartData" :options="chartOptions"></PieChart>
+      </div>
+    </div>
+    <div class="row mt-3 border-top">
+      <div class="col pt-1">
+        <p>Ineligible Groups</p>
+        <div v-if="loadingIneligible" class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
         </div>
+        <IneligibleTable v-else :data-obj="ineligibleSgmGroups" />
+      </div>
+      <div class="col pt-1">
+        <p>Blank Group</p>
+        <div v-if="loadingBlank" class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
+        </div>
+        <CountryTable v-else :data-obj="blankStats" :first-header="'Survey Progress'" :second-header="'Count'" />
       </div>
     </div>
   </div>
@@ -28,12 +50,16 @@
 import axios from 'axios';
 import PieChart from './charts/PieChart';
 import CountryTable from './CountryTable';
+import ProgressTable from './ProgressTable';
+import IneligibleTable from './IneligibleTable';
 
 export default {
   name: 'SgmGroups',
 
   data: () => ({
-    loaded: false,
+    loadingEligible: false,
+    loadingBlank: false,
+    loadingIneligible: false,
     chartOptions: {
         legend: {
           display: true
@@ -44,6 +70,7 @@ export default {
     chartData: {},
     sgmGroups: {},
     blankStats: {},
+    ineligibleSgmGroups: {},
   }),
 
   props: {
@@ -53,18 +80,34 @@ export default {
   components: {
     PieChart,
     CountryTable,
+    ProgressTable,
+    IneligibleTable,
   },
 
-  activated: function () {
-    this.fetchSgmData();
-    this.fetchBlankStats();
+  watch: {
+    countryName: function () {
+      this.fetchData();
+    }
+  },
+
+  mounted: function () {
+    this.fetchData();
   },
 
   methods: {
-    fetchSgmData() {
-      this.loaded = false;
-      axios.get(`${this.$basePrefix}participants/sgm_groups`, { params: {country: this.countryName } })
+    fetchData() {
+      this.fetchEligibleSgmData();
+      this.fetchIneligibleSgmData();
+      this.fetchBlankStats();
+    },
+
+    fetchEligibleSgmData() {
+      this.loadingEligible = true;
+      axios.get(`${this.$basePrefix}participants/eligible_sgm_stats`, { params: {country: this.countryName } })
       .then(response => {
+        if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+          window.location.reload();
+        }
         this.sgmGroups = response.data;
         let groups = Object.keys(this.sgmGroups);
         let counts = [];
@@ -76,29 +119,44 @@ export default {
           datasets: [{
             borderWidth: 1,
             backgroundColor: [
-            'rgba(87, 0, 228, 0.71)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(16, 44, 58, 0.36)',
-            'rgba(40, 4, 246, 0.99)',
-            'rgba(25, 255, 111, 0.47)',
-            'rgba(246, 19, 4, 0.93)',
-            'rgba(255, 0, 255, 0.51)',
-            'rgba(200, 75, 0, 0.51)',
-            'rgba(200, 224, 0, 1)',
+            'rgba(87, 0, 228, 0.6)',
+            'rgba(40, 4, 246, 0.6)',
+            'rgba(25, 255, 111, 0.5)',
+            'rgba(246, 19, 4, 0.7)',
+            'rgba(255, 0, 255, 0.5)',
+            'rgba(200, 75, 0, 0.5)',
+            'rgba(180, 164, 50, 0.7)',
             ],
             data: counts,
           }],
         };
-        this.loaded = true;
+        this.loadingEligible = false;
       });
     },
 
     fetchBlankStats() {
+      this.loadingBlank = true;
       axios.get(`${this.$basePrefix}participants/blank_stats`, { params: { country: this.countryName } })
       .then(response => {
+        if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+          window.location.reload();
+        }
         this.blankStats = response.data;
+        this.loadingBlank = false;
       });
-    }
+    },
+
+    fetchIneligibleSgmData() {
+      this.loadingIneligible = true;
+      axios.get(`${this.$basePrefix}participants/ineligible_sgm_stats`, { params: {country: this.countryName } })
+      .then(response => {
+        if (typeof response.data == "string" && response.data.startsWith("<!DOCTYPE html>")) {
+          window.location.reload();
+        }
+        this.ineligibleSgmGroups = response.data;
+        this.loadingIneligible = false;
+      });
+    },
   },
 }
 </script>
@@ -107,5 +165,10 @@ export default {
 h5 {
   font-size: 2em;
   text-align: center;
+}
+p {
+  font-size: 1.2em;
+  text-align: center;
+  font-weight: bold;
 }
 </style>

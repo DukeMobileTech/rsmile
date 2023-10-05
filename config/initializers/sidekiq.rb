@@ -1,4 +1,4 @@
-url = "redis://localhost:6379/0"
+url = "redis://localhost:6379/#{Rails.application.credentials.config[:REDIS_DB]}"
 
 Sidekiq.configure_server do |config|
   config.redis = { url: url }

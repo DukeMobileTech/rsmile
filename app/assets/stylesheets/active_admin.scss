@@ -43,3 +43,16 @@
   margin-top: 10px;
   text-align: center;
 }
+
+tr.odd, tr.even {
+  &.mismatch {
+      td.col {
+          background-color:lightpink;
+      }
+  }
+  &.mismatch-reverse {
+    td.col {
+        background-color:lightgreen;
+    }
+}
+}

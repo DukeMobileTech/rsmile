@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_27_135558) do
+ActiveRecord::Schema.define(version: 2023_07_20_165632) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -72,9 +72,22 @@ ActiveRecord::Schema.define(version: 2022_06_27_135558) do
     t.boolean "verified", default: false
     t.string "resume_code"
     t.string "verification_code"
+    t.boolean "include", default: true
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
     t.index ["resume_code"], name: "index_participants_on_resume_code", unique: true
+  end
+
+  create_table "response_exports", force: :cascade do |t|
+    t.string "country"
+    t.string "survey_id"
+    t.string "progress_id"
+    t.decimal "percent_complete"
+    t.string "status"
+    t.string "file_id"
+    t.string "file_path"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "survey_responses", force: :cascade do |t|
@@ -89,6 +102,7 @@ ActiveRecord::Schema.define(version: 2022_06_27_135558) do
     t.boolean "eligible", default: true
     t.boolean "consented", default: true
     t.hstore "metadata"
+    t.boolean "duplicate", default: false
     t.index ["metadata"], name: "index_survey_responses_on_metadata", using: :gist
     t.index ["response_uuid"], name: "index_survey_responses_on_response_uuid", unique: true
   end

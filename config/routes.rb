@@ -1,13 +1,14 @@
 # == Route Map
 #
 require 'sidekiq/web'
+# rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   namespace :admin do
     get '/signup/:invite_code' => 'invites#new_invite', as: 'redeem_invitation'
     post '/signup/:invite_code' => 'invites#redeem_invite', as: 'redeem_invite'
   end
 
-  constraints Clearance::Constraints::SignedIn.new { |user| user.admin? } do
+  constraints Clearance::Constraints::SignedIn.new(&:admin?) do
     mount Rswag::Ui::Engine => '/api-docs'
     mount Rswag::Api::Engine => '/api-docs'
     mount Sidekiq::Web, at: '/admin/sidekiq', as: 'sidekiq'
@@ -37,16 +38,23 @@ Rails.application.routes.draw do
   root 'landing#index'
   resources :participants, only: [:index] do
     collection do
-      get '/sgm_groups' => 'participants#sgm_groups'
+      get '/eligible_sgm_stats' => 'participants#eligible_sgm_stats'
+      get '/ineligible_sgm_stats' => 'participants#ineligible_sgm_stats'
       get '/grouped' => 'participants#grouped'
       get '/blank_stats' => 'participants#blank_stats'
+      get '/weekly_participants' => 'participants#weekly_participants'
     end
   end
   resources :survey_responses, only: [] do
     collection do
-      get '/sources' => 'survey_responses#sources'
-      get '/consents' => 'survey_responses#consents'
       get '/baselines' => 'survey_responses#baselines'
+      get '/consents' => 'survey_responses#consents'
+      get '/progress' => 'survey_responses#progress'
+      get '/mobilizers' => 'survey_responses#mobilizers'
+      get '/agencies' => 'survey_responses#agencies'
+      get '/sources' => 'survey_responses#sources'
+      get '/timeline' => 'survey_responses#timeline'
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
