@@ -82,6 +82,9 @@ ActiveAdmin.register Participant do
         end
       end
     end
+    column 'Accepted', &:accepted?
+    column 'Mobilizer', &:mobilizer
+    column 'Source', &:source
     column :created_at
     column :updated_at
     actions

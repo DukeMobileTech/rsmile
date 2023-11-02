@@ -65,6 +65,22 @@ class Participant < ApplicationRecord
       .where('metadata @> hstore(:key, :value)', key: 'can_contact', value: 'true')
   }
 
+  def accepted?
+    return false if include == false ||
+                    INELIGIBLE_SGM_GROUPS.include?(sgm_group) ||
+                    baseline.nil?
+
+    baseline.main_block == 'true'
+  end
+
+  def mobilizer
+    baseline&.mobilizer_code
+  end
+
+  def source
+    baseline&.source_label
+  end
+
   def consents
     survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
   end
