@@ -26,7 +26,7 @@ class SurveyResponse < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   after_create { SurveyMetadataJob.set(wait: 15.days).perform_later(id) if baseline_survey? }
   after_save :assign_participant_sgm_group
-  after_save :fetch_metadata
+  # after_save :fetch_metadata
 
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender, :referee_code,
