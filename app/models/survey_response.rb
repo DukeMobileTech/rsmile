@@ -33,7 +33,8 @@ class SurveyResponse < ApplicationRecord
                  :gender_identity, :sexual_orientation, :intersex, :can_contact,
                  :sexual_attraction, :attraction_eligibility, :attraction_sgm_group,
                  :main_block, :group_a, :group_b, :group_c, :groups_done, :survey_counter,
-                 :self_generated_id, :mobilizer_code
+                 :self_generated_id, :mobilizer_code, :locality, :city, :region, :sgm_network_size,
+                 :education
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
@@ -337,6 +338,7 @@ class SurveyResponse < ApplicationRecord
     contactable(values)
     update_sogi(values, labels)
     group_completion(values)
+    demographics(values)
   end
 
   def response_progress(values)
@@ -353,6 +355,43 @@ class SurveyResponse < ApplicationRecord
     assign_attributes(country: self[:country].presence || values['Country'],
                       self_generated_id: values['SELF_GENERATED_ID'],
                       source: values['QID446']&.join(','))
+    set_community(values)
+    update_city(values)
+    update_region(values)
+  end
+
+  def set_community(values)
+    locality = values['QID5'] if values['QID5'].present?
+    locality = values['QID503'] if values['QID503'].present?
+    locality = values['QID541'] if values['QID541'].present?
+
+    if locality == 1
+      self.locality = 'rural'
+    elsif locality == 2
+      self.locality = 'urban'
+    elsif locality == 89
+      self.locality = 'suburban'
+    elsif locality == 88
+      self.locality = 'not sure'
+    end
+  end
+
+  def update_city(values)
+    return if values['QID2'].blank?
+
+    self.city = CITIES[values['QID2']]
+  end
+
+  def update_region(values)
+    return if values['QID12'].blank?
+
+    self.region = REGIONS[values['QID12']]
+  end
+
+  def demographics(values)
+    return if values['QID46'].blank?
+
+    self.education = EDUCATION_LEVELS[values['QID46']]
   end
 
   def recruitment(values)
@@ -365,7 +404,7 @@ class SurveyResponse < ApplicationRecord
                       sexual_orientation: values['Sexual_Orientation'],
                       sexual_attraction: values['QID35']&.sort&.join(','),
                       sgm_group: values['SGM_Group'].present? ? values['SGM_Group']&.downcase : 'blank',
-                      intersex: labels['QID19'])
+                      intersex: labels['QID19'], sgm_network_size: values['QID422'])
   end
 
   def update_block_completion(values)

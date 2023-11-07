@@ -1,20 +1,30 @@
 <template>
-  <div :key="'group-by-date'">
-    <h5>Participant Recruitment Timeline</h5>
-    <LineChart
-      v-if="loaded"
-      :chartdata="chartData"
-      :options="chartOptions"
-    ></LineChart>
-    <div v-else class="text-center">
-      <b-spinner type="grow" variant="primary"></b-spinner>
+  <div>
+    <div :key="'group-by-date'" class="card mb-5">
+      <div class="card-header">
+        <h5 class="card-title">Participant Recruitment Timeline</h5>
+      </div>
+      <div class="card-body">
+        <LineChart
+          v-if="loaded"
+          :chartdata="chartData"
+          :options="chartOptions"
+        ></LineChart>
+        <div v-else class="text-center">
+          <b-spinner type="grow" variant="primary"></b-spinner>
+        </div>
+      </div>
     </div>
+    <SgmGroupRecruitmentTimeline
+      :country-name="countryName"
+    ></SgmGroupRecruitmentTimeline>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import LineChart from './charts/LineChart';
+import SgmGroupRecruitmentTimeline from './SgmGroupRecruitmentTimeline';
 
 export default {
   name: 'CountryTimeline',
@@ -56,6 +66,7 @@ export default {
 
   components: {
     LineChart,
+    SgmGroupRecruitmentTimeline,
   },
 
   watch: {

@@ -242,6 +242,10 @@ class Participant < ApplicationRecord
     "#{self_generated_id} #{email}"
   end
 
+  def self.rds_candidates
+    Participants::RdsCandidates.new.file
+  end
+
   def self.enrollment
     Participants::EnrollmentLogbook.new.file
   end

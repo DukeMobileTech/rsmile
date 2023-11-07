@@ -16,6 +16,14 @@ ActiveAdmin.register Participant do
     redirect_to resource_path
   end
 
+  collection_action :rds_candidates, method: :get do
+    redirect_to resource_path
+  end
+
+  action_item :rds_candidates, only: :index do
+    link_to 'RDS Candidates', rds_candidates_admin_participants_path
+  end
+
   action_item :enrollment, only: :index do
     link_to 'Enrollment Logbook', enrollment_admin_participants_path
   end
@@ -44,6 +52,11 @@ ActiveAdmin.register Participant do
         ParticipantDuplicatesJob.perform_later(participant.id)
       end
       redirect_to admin_participants_path
+    end
+
+    def rds_candidates
+      send_file Participant.rds_candidates, type: 'text/xlsx',
+                                            filename: "RDS-Candidates-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
     end
   end
 
