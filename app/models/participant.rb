@@ -109,6 +109,14 @@ class Participant < ApplicationRecord
     contacts.where(duplicate: false).first
   end
 
+  def pretty_phone_number
+    number = phone_number&.gsub(/\s+/, '')
+    number = "+#{number}" if number[0] != '+'
+    number = "#{number[0..2]} #{number[3..]}" if country == 'Brazil' || country == 'Vietnam'
+    number = "#{number[0..3]} #{number[4..]}" if country == 'Kenya'
+    number
+  end
+
   def send_verification_message(language)
     # return if verified
     language = language&.downcase&.strip
@@ -290,7 +298,7 @@ class Participant < ApplicationRecord
   end
 
   def ethnicity
-    baseline&.ethnicity
+    baseline&.ethnicity_label
   end
 
   def gender

@@ -404,7 +404,7 @@ class SurveyResponse < ApplicationRecord
                       sexual_orientation: values['Sexual_Orientation'],
                       sexual_attraction: values['QID35']&.sort&.join(','),
                       sgm_group: values['SGM_Group'].present? ? values['SGM_Group']&.downcase : 'blank',
-                      intersex: labels['QID19'], sgm_network_size: values['QID422'])
+                      intersex: labels['QID19'], sgm_network_size: values['QID422_TEXT'])
   end
 
   def update_block_completion(values)
@@ -461,21 +461,32 @@ class SurveyResponse < ApplicationRecord
   def parse_race_ethnicity(kountry, values)
     case kountry
     when 'Kenya'
-      assign_race_ethnicity('Black', 'Not Hispanic or Latino')
+      assign_race_ethnicity('Black', values['QID538'])
     when 'Vietnam'
-      assign_race_ethnicity('Asian', 'Not Hispanic or Latino')
+      assign_race_ethnicity('Asian', values['QID45'])
     when 'Brazil'
-      assign_race_ethnicity(brazil_race(values['QID45']), 'Hispanic or Latino')
+      assign_race_ethnicity(brazil_race(values['QID45']), values['QID45'])
     end
   end
 
-  def assign_race_ethnicity(race, ethnicity)
+  def assign_race_ethnicity(race, ethn_values)
+    ethn_values = [] if ethn_values.blank?
     self.race = race
-    self.ethnicity = ethnicity
+    self.ethnicity = ethn_values&.map { |val| ETHNICITIES[val.strip] }&.join(', ')
   end
 
-  # rubocop:disable Metrics/MethodLength
-  def brazil_race(value)
+  def ethnicity_label
+    lookup = {
+      'Kenya' => 'Not Hispanic or Latino',
+      'Vietnam' => 'Not Hispanic or Latino',
+      'Brazil' => 'Hispanic or Latino'
+    }
+    lookup[country]
+  end
+
+  # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+  def brazil_race(values)
+    value = ETHNICITIES[values&.first&.strip]
     case value
     when 'Branco'
       'White'
@@ -491,7 +502,7 @@ class SurveyResponse < ApplicationRecord
       'Unknown'
     end
   end
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
   def network_class
     octet = ip_address&.split('.')&.first&.to_i

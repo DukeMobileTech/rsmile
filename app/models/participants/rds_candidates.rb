@@ -33,8 +33,9 @@ module Participants
        'Network', 'Education']
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
     def participant_row(participant)
-      [participant.id, participant.email, participant.phone_number,
+      [participant.id, participant.email, participant.pretty_phone_number,
        participant.self_generated_id, participant.consent&.created_at&.strftime('%Y-%m-%d'),
        participant.verified, participant.code, participant.contact_method,
        participant.gender_identity, participant.sexual_orientation,
@@ -44,5 +45,6 @@ module Participants
        participant.baseline&.region, participant.baseline&.sgm_network_size,
        participant.baseline&.education]
     end
+    # rubocop:enable Metrics/AbcSize Metrics/PerceivedComplexity Metrics/CyclomaticComplexity
   end
 end

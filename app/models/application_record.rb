@@ -132,4 +132,33 @@ class ApplicationRecord < ActiveRecord::Base
     32 => 'Beyond university',
     33 => 'Other'
   }.freeze
+  ETHNICITIES = {
+    '1' => 'Branco',
+    '2' => 'Pardo',
+    '3' => 'Preto',
+    '4' => 'Amarelo',
+    '5' => 'Indigenous',
+    '6' => 'Embu',
+    '7' => 'Kalenjin',
+    '8' => 'Kamba',
+    '9' => 'Kikuyu',
+    '10' => 'Kisii',
+    '11' => 'Luhya',
+    '12' => 'Luo',
+    '13' => 'Maasai',
+    '14' => 'Mijikenda / Swahili',
+    '15' => 'Meru',
+    '16' => 'Taita/Taveta',
+    '17' => 'Turkana',
+    '18' => 'Samburu',
+    '19' => 'Somali',
+    '20' => 'Vietnamese',
+    '21' => 'Tay',
+    '22' => 'Thai',
+    '23' => 'Chinese',
+    '24' => 'Khmer',
+    '25' => 'Muong',
+    '26' => 'Nung',
+    '27' => 'Other'
+  }.freeze
 end
