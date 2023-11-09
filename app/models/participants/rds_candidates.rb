@@ -23,6 +23,7 @@ module Participants
         participants.each do |participant|
           sheet.add_row participant_row(participant)
         end
+        add_summary(sheet, participants)
       end
     end
 
@@ -46,5 +47,22 @@ module Participants
        participant.baseline&.education]
     end
     # rubocop:enable Metrics/AbcSize Metrics/PerceivedComplexity Metrics/CyclomaticComplexity
+
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    def add_summary(sheet, participants)
+      total = participants.count
+      sheet.add_row []
+      sheet.add_row ['SGM Group', 'Count', 'Percent']
+      Participant::ELIGIBLE_SGM_GROUPS.each do |sgm_group|
+        group_count = participants.where(sgm_group: sgm_group).count
+        sheet.add_row [sgm_group, group_count, "#{(group_count.to_f / total * 100).round(1)}%"]
+      end
+      sheet.add_row ['Total', total, '100%']
+      count1 = total + 3
+      sheet.add_style "A#{count1}:C#{count1}", b: true
+      count2 = count1 + Participant::ELIGIBLE_SGM_GROUPS.size + 1
+      sheet.add_style "A#{count2}:C#{count2}", b: true
+    end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
   end
 end
