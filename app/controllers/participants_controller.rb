@@ -22,4 +22,8 @@ class ParticipantsController < ApplicationController
   def weekly_participants
     render json: Participant.weekly_participants
   end
+
+  def sgm_timeline
+    render json: Participants::SgmTimeline.new.stats(params[:country])
+  end
 end
