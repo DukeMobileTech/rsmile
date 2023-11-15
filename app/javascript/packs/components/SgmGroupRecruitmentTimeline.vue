@@ -127,6 +127,7 @@ export default {
         '#70369d',
       ];
       let index = 0;
+      let count = 0;
       Object.keys(data).forEach((sgmGroup) => {
         let weeklyStats = [];
         let cumulativeStats = [];
@@ -137,6 +138,7 @@ export default {
           weeklyStats.push(value);
           cumulativeStats.push(cumulative);
         });
+        count = weeklyStats.length;
         let color = colors[index];
         chartData.datasets.push(
           {
@@ -158,6 +160,14 @@ export default {
           }
         );
         index++;
+      });
+      chartData.datasets.push({
+        label: 'SGM Group Target',
+        backgroundColor: '#008080',
+        fill: false,
+        borderWidth: 1,
+        borderColor: '#008080',
+        data: Array(count).fill(500),
       });
       return chartData;
     },
