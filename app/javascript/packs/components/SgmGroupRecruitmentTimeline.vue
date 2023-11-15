@@ -129,18 +129,34 @@ export default {
       let index = 0;
       Object.keys(data).forEach((sgmGroup) => {
         let weeklyStats = [];
+        let cumulativeStats = [];
+        let cumulative = 0;
         data[sgmGroup].forEach((stats) => {
-          weeklyStats.push(Object.values(stats)[0]);
+          let value = Object.values(stats)[0];
+          cumulative += value;
+          weeklyStats.push(value);
+          cumulativeStats.push(cumulative);
         });
         let color = colors[index];
-        chartData.datasets.push({
-          label: sgmGroup,
-          backgroundColor: color,
-          fill: false,
-          borderWidth: 1,
-          borderColor: color,
-          data: weeklyStats,
-        });
+        chartData.datasets.push(
+          {
+            label: sgmGroup,
+            backgroundColor: color,
+            fill: false,
+            borderWidth: 1,
+            borderColor: color,
+            data: weeklyStats,
+          },
+          {
+            label: `${sgmGroup} (cumulative)`,
+            backgroundColor: color,
+            fill: false,
+            borderWidth: 1,
+            borderColor: color,
+            borderDash: [5, 5],
+            data: cumulativeStats,
+          }
+        );
         index++;
       });
       return chartData;
