@@ -41,6 +41,9 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
+  after_save :check_referrer_sgm_group
+  after_save :check_match
+  after_save :secondary_seeds
 
   scope :excluded, -> { where(include: false) }
   scope :eligible, -> { where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS) }
@@ -343,6 +346,10 @@ class Participant < ApplicationRecord
     Participant.where(code: referrer_code)&.first if referrer_code.present?
   end
 
+  def recruits
+    Participant.where(referrer_code: code)
+  end
+
   private
 
   def update_duplicates(duplicates)
@@ -366,5 +373,38 @@ class Participant < ApplicationRecord
     begin
       self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}"
     end while self.class.exists?(code: code)
+  end
+
+  def check_referrer_sgm_group
+    return unless recruiter
+    return if recruiter.sgm_group == referrer_sgm_group
+
+    self.referrer_sgm_group = recruiter.sgm_group
+    save!
+  end
+
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+  def check_match
+    return unless recruiter
+    return unless ELIGIBLE_SGM_GROUPS.include?(recruiter.sgm_group)
+    return unless ELIGIBLE_SGM_GROUPS.include?(sgm_group)
+    return unless ELIGIBLE_SGM_GROUPS.include?(referrer_sgm_group)
+    return if match && sgm_group == referrer_sgm_group
+    return if !match && sgm_group != referrer_sgm_group
+
+    self.match = sgm_group == referrer_sgm_group
+    save!
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+
+  def secondary_seeds
+    return if seed
+    return if referrer_code.blank?
+    return if recruiter.nil?
+    return if match
+    return unless ELIGIBLE_SGM_GROUPS.include?(sgm_group)
+
+    self.seed = true
+    save!
   end
 end

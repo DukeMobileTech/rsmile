@@ -1,6 +1,13 @@
+# rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant do
   menu priority: 1
   config.per_page = [25, 50, 100, 250, 500, 1000, 2500, 5000, 10_000]
+  filter :seed
+  filter :code
+  filter :referrer_code
+  filter :sgm_group, as: :select, collection: proc { Participant::ELIGIBLE_SGM_GROUPS }
+  filter :referrer_sgm_group, as: :select, collection: proc { Participant::ELIGIBLE_SGM_GROUPS }
+  filter :quota_met
   actions :all, except: %i[new]
   permit_params :include
 
@@ -56,10 +63,16 @@ ActiveAdmin.register Participant do
     column :phone_number
     column :country
     column :self_generated_id
+    column :seed
+    column :code
     column :include
     column :sgm_group
+    column :referrer_sgm_group
+    column :match
+    column :quota_met
     column :verified
     column :verification_code
+    column :remind
     column 'Contact Method', &:contact_method
     column 'Consent' do |participant|
       ul do
@@ -79,6 +92,13 @@ ActiveAdmin.register Participant do
       ul do
         participant.baselines.each do |baseline|
           li { link_to baseline.id, admin_survey_response_path(baseline.id) }
+        end
+      end
+    end
+    column 'Recruits' do |participant|
+      ul do
+        participant.recruits.each do |recruit|
+          li { link_to recruit.code, admin_participant_path(recruit.id) }
         end
       end
     end
@@ -135,3 +155,4 @@ ActiveAdmin.register Participant do
     f.actions
   end
 end
+# rubocop:enable Metrics/BlockLength
