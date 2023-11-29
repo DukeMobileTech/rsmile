@@ -2,6 +2,7 @@
 ActiveAdmin.register Participant do
   menu priority: 1
   config.per_page = [25, 50, 100, 250, 500, 1000, 2500, 5000, 10_000]
+  config.clear_action_items! # Removes the link to 'New' action
   filter :seed
   filter :code
   filter :referrer_code
@@ -64,7 +65,12 @@ ActiveAdmin.register Participant do
     column :country
     column :self_generated_id
     column :seed
-    column :code
+    column :code do |participant|
+      link_to participant.code, admin_participant_path(participant.id)
+    end
+    column :referrer_code do |participant|
+      link_to participant.referrer_code, admin_participant_path(participant.recruiter.id) if participant.recruiter
+    end
     column :include
     column :sgm_group
     column :referrer_sgm_group
@@ -101,6 +107,9 @@ ActiveAdmin.register Participant do
           li { link_to recruit.code, admin_participant_path(recruit.id) }
         end
       end
+    end
+    column 'Reminders' do |participant|
+      link_to participant.reminders.size, admin_participant_reminders_path(participant.id)
     end
     column :created_at
     column :updated_at
@@ -144,6 +153,9 @@ ActiveAdmin.register Participant do
             li { link_to baseline.id, admin_survey_response_path(baseline.id) }
           end
         end
+      end
+      column 'Reminders' do |participant|
+        link_to participant.reminders.size, admin_participant_reminders_path(participant.id)
       end
     end
   end

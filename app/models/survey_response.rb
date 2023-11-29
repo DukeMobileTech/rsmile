@@ -27,6 +27,7 @@ class SurveyResponse < ApplicationRecord
   after_create { SurveyMetadataJob.set(wait: 15.days).perform_later(id) if baseline_survey? }
   after_save :assign_participant_sgm_group
   after_save :fetch_metadata
+  after_save :schedule_reminder
 
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender, :referee_code,
@@ -86,6 +87,22 @@ class SurveyResponse < ApplicationRecord
   scope :eligible_completed_main_block, lambda {
     completed_main_block.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
   }
+
+  if Rails.env.production?
+    REMINDERS = {
+      one: 1.week,
+      two: 2.weeks,
+      three: 3.weeks
+    }
+  end
+
+  if Rails.env.development? || Rails.env.test?
+    REMINDERS = {
+      one: 1.minute,
+      two: 2.minutes,
+      three: 3.minutes
+    }
+  end
 
   def baseline_survey?
     survey_title&.strip == 'SMILE Survey - Baseline'
@@ -482,6 +499,7 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def ip_network
     octets = ip_address&.split('.')
     case network_class
@@ -504,6 +522,45 @@ class SurveyResponse < ApplicationRecord
     when 'C'
       octets&.last
     end
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity
+
+  def recruitment_survey?
+    survey_title&.strip == 'RDS Recruitment Info'
+  end
+
+  # rubocop:disable Metrics/AbcSize
+  def reminder_conditions_met?
+    recruitment_survey? && !participant.nil? && participant.email.present? &&
+      participant.phone_number.present? && participant.remind &&
+      !participant.recruitment_quota_met && !participant.reminder_quota_met
+  end
+  # rubocop:enable Metrics/AbcSize
+
+  def schedule_reminder
+    return unless reminder_conditions_met?
+
+    if participant.preferred_contact_method == '1' && participant.email.present?
+      schedule_email
+    elsif participant.preferred_contact_method == '2' && participant.phone_number.present?
+      schedule_sms
+    end
+  end
+
+  # rubocop:disable Metrics/AbcSize
+  def schedule_email
+    ReminderMailer.with(participant: participant).reminder_email.deliver_now
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:two])
+    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:three])
+  end
+  # rubocop:enable Metrics/AbcSize
+
+  def schedule_sms
+    RecruitmentReminderJob.perform_now(participant_id)
+    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:one]).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:two]).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:three]).perform_later(participant_id)
   end
 
   private

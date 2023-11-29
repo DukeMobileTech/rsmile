@@ -29,6 +29,7 @@ require 'sorted_set'
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
+  has_many :reminders, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :phone_number, :country, presence: true
@@ -350,6 +351,32 @@ class Participant < ApplicationRecord
     Participant.where(referrer_code: code)
   end
 
+  def reminder_quota_met
+    reminders.size >= 3
+  end
+
+  def recruitment_quota_met
+    recruits.size >= 2
+  end
+
+  def sgm_match
+    sgm_group == referrer_sgm_group
+  end
+
+  # rubocop:disable Style/CaseLikeIf
+  def sgm_group_label
+    if sgm_group == 'transgender woman' || sgm_group == 'transgender man'
+      'transgender people'
+    elsif sgm_group == 'woman attracted to women'
+      'women attracted to women'
+    elsif sgm_group == 'man attracted to men'
+      'men attracted to men'
+    else
+      sgm_group
+    end
+  end
+  # rubocop:enable Style/CaseLikeIf
+
   private
 
   def update_duplicates(duplicates)
@@ -365,13 +392,13 @@ class Participant < ApplicationRecord
   end
 
   def assign_identifiers
-    self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if code.blank?
+    self.code = "#{country[0].upcase}-#{Random.rand(10_000_000...99_999_999)}" if code.blank?
     self.study_id = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if study_id.blank?
   end
 
   def enforce_unique_code
     begin
-      self.code = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}"
+      self.code = "#{country[0].upcase}-#{Random.rand(10_000_000...99_999_999)}"
     end while self.class.exists?(code: code)
   end
 
@@ -389,10 +416,10 @@ class Participant < ApplicationRecord
     return unless ELIGIBLE_SGM_GROUPS.include?(recruiter.sgm_group)
     return unless ELIGIBLE_SGM_GROUPS.include?(sgm_group)
     return unless ELIGIBLE_SGM_GROUPS.include?(referrer_sgm_group)
-    return if match && sgm_group == referrer_sgm_group
-    return if !match && sgm_group != referrer_sgm_group
+    return if match && sgm_match
+    return if !match && !sgm_match
 
-    self.match = sgm_group == referrer_sgm_group
+    self.match = sgm_match
     save!
   end
   # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize

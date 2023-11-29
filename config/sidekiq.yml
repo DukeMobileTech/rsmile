@@ -1,6 +1,6 @@
 :queues:
   - [default, 1]
-  - [rs_qualtrics, 1]
+  - [rds, 1]
 production:
   :concurrency: 2
   :pidfile: tmp/pids/sidekiq.pid

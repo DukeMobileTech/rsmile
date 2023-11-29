@@ -1,3 +1,4 @@
+# rubocop:disable Style/ClassAndModuleChildren
 class Api::V1::ParticipantsController < Api::ApiController
   def index
     @participants = Participant.all
@@ -9,6 +10,7 @@ class Api::V1::ParticipantsController < Api::ApiController
     render json: @participant
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def create
     @participant = Participant.where(email: sanitized_email).first_or_initialize(participant_params)
     @participant.assign_attributes(participant_params)
@@ -99,6 +101,15 @@ class Api::V1::ParticipantsController < Api::ApiController
       render json: @participant, status: :ok
     else
       render json: @participant.errors, status: :unprocessable_entity
+    end
+  end
+
+  def check
+    @participant = Participant.find_by(code: params[:code])
+    if params[:code].blank? || @participant.nil?
+      render json: { continue: false }, status: :ok
+    else
+      render json: { continue: true }, status: :ok
     end
   end
 

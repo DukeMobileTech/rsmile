@@ -1,5 +1,5 @@
-require "active_support/core_ext/integer/time"
-
+require 'active_support/core_ext/integer/time'
+# rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -53,7 +53,7 @@ Rails.application.configure do
   config.log_level = :info
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -74,7 +74,7 @@ Rails.application.configure do
   #   user_name: Rails.application.credentials.config[:SMTP_USERNAME],
   #   password: Rails.application.credentials.config[:SMTP_PASSWORD]
   # }
-  config.action_mailer.default_url_options = { host: "#{Rails.application.credentials.config[:SMTP_HOSTNAME]}" }
+  config.action_mailer.default_url_options = { host: Rails.application.credentials.config[:SMTP_HOSTNAME].to_s }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -90,13 +90,13 @@ Rails.application.configure do
   config.active_support.disallowed_deprecation_warnings = []
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
+  config.log_formatter = Logger::Formatter.new
 
   # Use a different logger for distributed setups.
   # require "syslog/logger"
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
@@ -129,7 +129,8 @@ Rails.application.configure do
   config.middleware.use ExceptionNotification::Rack,
                         email: {
                           email_prefix: Rails.application.credentials.config[:EMAIL_PREFIX],
-                          sender_address: Rails.application.credentials.config[:from_email],
+                          sender_address: Rails.application.credentials.config[:default_from_email],
                           exception_recipients: Rails.application.credentials.config[:RECIPIENTS]
                         }
 end
+# rubocop:enable Metrics/BlockLength

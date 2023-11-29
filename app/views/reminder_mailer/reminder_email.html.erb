@@ -1,0 +1,19 @@
+Dear participant,
+<p>Thank you for participating in the SMILE Study.</p>
+<p>When you completed the survey, you agreed to recruit other sexual and gender minority (LGBTQ+) participants who identify as
+  <b><%= @participant.sgm_group_label %></b> to also take the survey.</p>
+<p>For each of the people you recruit who successfully completes the survey (up to 2 people), you will receive $2.</p>
+<p>Please let each person know in your own words about the survey, and that they can learn more about it by clicking on their invitation link.</p>
+<p>
+  <b>Please note:</b>
+  The link below is different from the one you used to start your survey. Please only use this link to invite others to take their survey.
+</p>
+<p>You can recruit other people by sharing with them the following link:</p>
+<p><%= Rails.application.credentials.config[:invitation_url] %>?referrer_code=<%= @participant.code %></p>
+<p>Thank you.</p>
+<p>Sincerely,</p>
+<p><%= Rails.application.credentials.config[:from_name] %>
+  (<%= Rails.application.credentials.config[:from_name_alt] %>) and
+  <%= Rails.application.credentials.config[:from_email] %>
+  (<%= Rails.application.credentials.config[:from_phone] %>)</p>
+<p>On behalf of the SMILE Team</p>
