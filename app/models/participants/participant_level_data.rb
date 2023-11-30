@@ -18,8 +18,9 @@ module Participants
         sheet.add_row participant_header
         participants = Participant.enrolled_eligible_participants
         participants.each do |participant|
-          sheet.add_row [participant.race, participant.ethnicity, participant.gender,
-                         participant.age, participant.age_unit]
+          sheet.add_row [participant.race || 'Unknown', participant.ethnicity || 'Unknown',
+                         participant.gender || 'Unknown', participant.age || 'Unknown',
+                         participant.age_unit]
         end
       end
     end

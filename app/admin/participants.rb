@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant do
   menu priority: 1
   config.per_page = [25, 50, 100, 250, 500, 1000, 2500, 5000, 10_000]
@@ -38,13 +39,13 @@ ActiveAdmin.register Participant do
 
   controller do
     def enrollment
-      send_file Participant.enrollment, type: 'text/xlsx',
-                                        filename: "Enrollment-Logbook-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+      send_file Participants::EnrollmentLogbook.new.file,
+                type: 'text/xlsx', filename: "Enrollment-Logbook-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
     end
 
     def participant_level
-      send_file Participant.participant_level, type: 'text/xlsx',
-                                               filename: "Participant-Level-Data-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+      send_file Participants::ParticipantLevelData.new.file,
+                type: 'text/xlsx', filename: "Participant-Level-Data-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
     end
 
     def participant_duplicates
@@ -55,8 +56,8 @@ ActiveAdmin.register Participant do
     end
 
     def rds_candidates
-      send_file Participant.rds_candidates, type: 'text/xlsx',
-                                            filename: "RDS-Candidates-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+      send_file Participants::RdsCandidates.new.file,
+                type: 'text/xlsx', filename: "RDS-Candidates-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
     end
   end
 
@@ -151,3 +152,4 @@ ActiveAdmin.register Participant do
     f.actions
   end
 end
+# rubocop:enable Metrics/BlockLength

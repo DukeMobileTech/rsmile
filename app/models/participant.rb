@@ -64,6 +64,9 @@ class Participant < ApplicationRecord
       .where(survey_responses: { duplicate: false })
       .where('metadata @> hstore(:key, :value)', key: 'can_contact', value: 'true')
   }
+  scope :enrolled_eligible_participants, lambda {
+    eligible.includes(:survey_responses)
+  }
 
   def accepted?
     return false if include == false ||
@@ -248,24 +251,6 @@ class Participant < ApplicationRecord
 
   def to_s
     "#{self_generated_id} #{email}"
-  end
-
-  def self.rds_candidates
-    Participants::RdsCandidates.new.file
-  end
-
-  def self.enrollment
-    Participants::EnrollmentLogbook.new.file
-  end
-
-  def self.participant_level
-    Participants::ParticipantLevelData.new.file
-  end
-
-  def self.enrolled_eligible_participants
-    Participant.includes(:survey_responses)
-               .where(include: true)
-               .where.not(sgm_group: INELIGIBLE_SGM_GROUPS)
   end
 
   def ip_addresses
