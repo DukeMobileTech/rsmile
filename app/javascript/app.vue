@@ -3,7 +3,7 @@
     <nav class="navbar navbar-light bg-light mt-2 mb-2">
       <div class="container-fluid">
         <div class="nav-item">
-          <img v-bind:src="logo" alt="SMILE Study" v-on:click="reload" />
+          <img v-bind:src="logo" alt="SMILE RDS" v-on:click="reload" />
         </div>
         <div class="nav-item">
           <button v-on:click="linkToAdmin" class="btn btn-outline-info">
@@ -40,7 +40,7 @@ export default {
         this.$basePrefix.substring(0, this.$basePrefix.length - 1) + image;
     }
     return {
-      message: 'SMILE Study',
+      message: 'SMILE RDS',
       admin: `${this.$basePrefix}admin`,
       country: null,
       logo: image,

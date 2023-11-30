@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>SMILE Study</h3>
+    <h3>SMILE RDS</h3>
     <Participants />
     <Timeline />
   </div>

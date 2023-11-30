@@ -4,7 +4,7 @@ ActiveAdmin.setup do |config|
   # Set the title that is displayed on the main layout
   # for each of the active admin pages.
   #
-  config.site_title = 'SMILE Study Admin Dashboard'
+  config.site_title = 'SMILE RDS Admin Dashboard'
 
   # Set the link url for the title. For example, to take
   # users to your main site. Defaults to no link.
@@ -233,7 +233,7 @@ ActiveAdmin.setup do |config|
   config.namespace :admin do |admin|
     admin.build_menu :utility_navigation do |menu|
       menu.add label: 'Sidekiq', url: proc { sidekiq_path }
-      menu.add label: 'SMILE Study Dashboard', url: proc { root_path }
+      menu.add label: 'SMILE RDS Dashboard', url: proc { root_path }
       admin.add_current_user_to_menu  menu
       admin.add_logout_button_to_menu menu
     end
