@@ -455,6 +455,8 @@ class SurveyResponse < ApplicationRecord
       'Woman'
     elsif qid21&.include?('non-binary person')
       'Unknown'
+    else
+      qid21&.capitalize
     end
   end
 
