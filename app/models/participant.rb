@@ -26,6 +26,7 @@ require 'sorted_set'
 #  seed                     :boolean          default(FALSE)
 #  remind                   :boolean          default(TRUE)
 #  quota_met                :boolean          default(FALSE)
+#  baseline_participant_id  :integer
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
@@ -376,6 +377,28 @@ class Participant < ApplicationRecord
     end
   end
   # rubocop:enable Style/CaseLikeIf
+
+  def self.parse_country(code)
+    prefix = code[0].upcase
+    countries = { 'B' => 'Brazil', 'K' => 'Kenya', 'V' => 'Vietnam' }
+    countries[prefix]
+  end
+
+  def self.parse_contact_method(method)
+    if method == 'Email'
+      '1'
+    elsif method == 'Phone'
+      '2'
+    end
+  end
+
+  def self.parse_verification(status)
+    if status == 'TRUE'
+      true
+    elsif status == 'FALSE'
+      false
+    end
+  end
 
   private
 

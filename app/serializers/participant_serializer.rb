@@ -24,6 +24,7 @@
 #  seed                     :boolean          default(FALSE)
 #  remind                   :boolean          default(TRUE)
 #  quota_met                :boolean          default(FALSE)
+#  baseline_participant_id  :integer
 #
 class ParticipantSerializer < ActiveModel::Serializer
   attributes :id, :email, :phone_number, :country, :self_generated_id, :study_id,
