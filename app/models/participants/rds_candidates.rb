@@ -19,7 +19,7 @@ module Participants
         tab_color = Participant::COLORS[Participant::COUNTRIES.index(country)]
         sheet.sheet_pr.tab_color = tab_color
         sheet.add_row country_header
-        participants = Participant.contactable.where(country: country)
+        participants = Participant.includes(:survey_responses).contactable.where(country: country)
         participants.each do |participant|
           sheet.add_row participant_row(participant)
         end
@@ -31,22 +31,21 @@ module Participants
       ['Database ID', 'Email', 'Phone Number', 'Self Generated ID', 'Date of Enrollment',
        'Verified', 'Code', 'Contact Method', 'Gender Identity', 'Sexual Orientation', 'Intersex',
        'Sexual Attraction', 'SGM Group', 'Race', 'Ethnicity', 'Locality', 'City', 'Region',
-       'Network', 'Education']
+       'Network', 'Education', 'Age']
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
     def participant_row(participant)
       [participant.id, participant.email, participant.pretty_phone_number,
        participant.self_generated_id, participant.consent&.created_at&.strftime('%Y-%m-%d'),
        participant.verified, participant.code, participant.contact_method,
        participant.gender_identity, participant.sexual_orientation,
        participant.intersex, participant.sexual_attraction, participant.sgm_group,
-       participant.baseline&.race, participant.baseline&.ethnicity,
-       participant.baseline&.locality, participant.baseline&.city,
-       participant.baseline&.region, participant.baseline&.sgm_network_size,
-       participant.baseline&.education]
+       participant.race, participant.ethnicity, participant.baseline&.locality,
+       participant.baseline&.city, participant.baseline&.region,
+       participant.baseline&.sgm_network_size, participant.baseline&.education, participant.age]
     end
-    # rubocop:enable Metrics/AbcSize Metrics/PerceivedComplexity Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def add_summary(sheet, participants)
