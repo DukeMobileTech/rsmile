@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 ActiveAdmin.register SurveyResponse, as: 'Baseline' do
   menu label: 'Baseline Surveys'
   menu priority: 4
@@ -80,6 +81,6 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
     def csv_filename
       "Baseline-Surveys-#{Time.now.to_i}.csv"
     end
-
   end
 end
+# rubocop:enable Metrics/BlockLength

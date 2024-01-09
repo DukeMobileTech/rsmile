@@ -109,7 +109,7 @@ class SurveyResponse < ApplicationRecord
   end
 
   def country
-    (read_attribute(:country).presence || participant&.country)
+    read_attribute(:country).presence || participant&.country
   end
 
   def country=(str)

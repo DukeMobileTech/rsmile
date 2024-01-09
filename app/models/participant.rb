@@ -272,9 +272,24 @@ class Participant < ApplicationRecord
     baseline&.ethnicity_label
   end
 
+  # rubocop:disable Metrics/MethodLength
   def gender
-    baseline&.gender
+    gen = baseline&.gender
+    if gen.blank?
+      gil = baseline&.gender_identity_label
+      gen = if ['Agender', 'Non-binary Person', 'Questioning Person', 'Another Gender'].include? gil
+              'Unknown'
+            elsif gil == 'Transgender Woman'
+              'Woman'
+            elsif gil == 'Transgender Man'
+              'Man'
+            else
+              gil
+            end
+    end
+    gen
   end
+  # rubocop:enable Metrics/MethodLength
 
   def age
     baseline&.age
