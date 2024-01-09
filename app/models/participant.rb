@@ -170,23 +170,9 @@ class Participant < ApplicationRecord
     end
   end
 
-  # Include participants who have the following characteristics:
-  # i) have include = true
-  # ii) the sgm_group is not 'blank', not 'ineligible', and not 'no group'
-  # iii) have completed the baseline survey
-  def self.eligible_participants
-    # Participant.where(include: true).where.not(sgm_group: ineligible_sgm_groups)
-
-    Participant.includes(:survey_responses)
-               .where(include: true)
-               .where.not(sgm_group: INELIGIBLE_SGM_GROUPS)
-               .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
-               .where(survey_responses: { survey_complete: true })
-  end
-
   def self.weekly_statistics(kountry)
     stats = []
-    participants = eligible_participants.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
+    participants = eligible_completed_main_block.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
     total = []
     index = 0
     participants.each do |week, count|
@@ -205,7 +191,7 @@ class Participant < ApplicationRecord
     stats = {}
     COUNTRIES.each do |country|
       country_stats = {}
-      participants = eligible_participants.where(country: country).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
+      participants = eligible_completed_main_block.where(country: country).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
       participants.each do |week, count|
         next unless count.positive?
 
