@@ -1,6 +1,6 @@
 ActiveAdmin.register SurveyResponse, as: 'Consent' do
   menu label: 'Consent Surveys'
-  menu priority: 2
+  menu priority: 3
   config.per_page = [25, 50, 100]
   preserve_default_filters!
   filter :participant, collection: -> { Participant.where(id: SurveyResponse.consents.pluck(:participant_id).uniq) }

@@ -48,4 +48,7 @@ class ApplicationRecord < ActiveRecord::Base
     '25' => 'Influencers',
     '26' => 'Instagram'
   }.freeze
+  INITIAL = 'INITIAL SEEDS CONTACT'.freeze
+  FIRST = 'FIRST REMINDER'.freeze
+  REMINDER_TYPES = [INITIAL, FIRST].freeze
 end

@@ -70,6 +70,7 @@ class Participant < ApplicationRecord
       .where(survey_responses: { duplicate: false })
       .where('metadata @> hstore(:key, :value)', key: 'can_contact', value: 'true')
   }
+  scope :seeds, -> { where(seed: true) }
 
   def consents
     survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
@@ -398,6 +399,12 @@ class Participant < ApplicationRecord
     elsif status == 'FALSE'
       false
     end
+  end
+
+  def start_rds
+    return unless seed
+
+    RdsMailer.with(participant: self).start_rds_email.deliver_now
   end
 
   private

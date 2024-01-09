@@ -10,7 +10,7 @@ ActiveAdmin.register Participant do
   filter :referrer_sgm_group, as: :select, collection: proc { Participant::ELIGIBLE_SGM_GROUPS }
   filter :quota_met
   actions :all, except: %i[new]
-  permit_params :include
+  permit_params :include, :seed
 
   collection_action :enrollment, method: :get do
     redirect_to resource_path
@@ -154,7 +154,7 @@ ActiveAdmin.register Participant do
           end
         end
       end
-      column 'Reminders' do |participant|
+      row 'Reminders' do |participant|
         link_to participant.reminders.size, admin_participant_reminders_path(participant.id)
       end
     end
