@@ -45,7 +45,7 @@ ActiveAdmin.register Participant do
 
     def participant_level
       send_file Participants::ParticipantLevelData.new.file,
-                type: 'text/xlsx', filename: "Participant-Level-Data-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+                type: 'text/csv', filename: "Participant-Level-Data-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
     end
 
     def participant_duplicates

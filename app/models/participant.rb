@@ -272,24 +272,36 @@ class Participant < ApplicationRecord
     baseline&.ethnicity_label
   end
 
-  # rubocop:disable Metrics/MethodLength
   def gender
     gen = baseline&.gender
     if gen.blank?
       gil = baseline&.gender_identity_label
-      gen = if ['Agender', 'Non-binary Person', 'Questioning Person', 'Another Gender'].include? gil
-              'Unknown'
-            elsif gil == 'Transgender Woman'
-              'Woman'
-            elsif gil == 'Transgender Man'
-              'Man'
-            else
-              gil
-            end
+      gen = identity_label(gil)
     end
-    gen
+    gender_label(gen)
   end
-  # rubocop:enable Metrics/MethodLength
+
+  def identity_label(gil)
+    if ['Agender', 'Non-binary Person', 'Questioning Person', 'Another Gender'].include? gil
+      'Unknown'
+    elsif gil == 'Transgender Woman'
+      'Woman'
+    elsif gil == 'Transgender Man'
+      'Man'
+    else
+      gil
+    end
+  end
+
+  def gender_label(gen)
+    if gen == 'Woman'
+      'Female'
+    elsif gen == 'Man'
+      'Male'
+    else
+      gen
+    end
+  end
 
   def age
     baseline&.age
@@ -321,7 +333,7 @@ class Participant < ApplicationRecord
   end
 
   def age_unit
-    'Years'
+    age.blank? ? 'Unknown' : 'Years'
   end
 
   def self.assign_sgm_groups
