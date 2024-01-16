@@ -47,6 +47,9 @@ Vue.prototype.$SOURCES = {
   24: 'Social work Club from University of Labour and Social Affairs 2',
   25: 'Influencers',
   26: 'Instagram',
+  27: 'Parade',
+  28: 'Conference',
+  29: 'Subway exposition',
 };
 
 Vue.prototype.$SGM_LABELS = {

@@ -21,7 +21,7 @@ module SurveyResponses
     private
 
     def skip(country, num)
-      ([3, 25, 26].include?(num) && country != 'Brazil') ||
+      ([3, 25, 26, 27, 28, 29].include?(num) && country != 'Brazil') ||
         (num == 9 && country == 'Vietnam') ||
         (country != 'Vietnam' && [10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].include?(num))
     end

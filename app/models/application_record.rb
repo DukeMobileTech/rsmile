@@ -46,7 +46,10 @@ class ApplicationRecord < ActiveRecord::Base
     '23' => 'Motive Agency',
     '24' => 'Social work Club from University of Labour and Social Affairs 2',
     '25' => 'Influencers',
-    '26' => 'Instagram'
+    '26' => 'Instagram',
+    '27' => 'Parade',
+    '28' => 'Conference',
+    '29' => 'Subway exposition'
   }.freeze
   CITIES = {
     1 => 'São Paulo',
