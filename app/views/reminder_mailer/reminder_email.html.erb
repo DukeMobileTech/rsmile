@@ -1,8 +1,17 @@
 Dear participant,
-<p>Thank you for participating in the SMILE Study.</p>
-<p>When you completed the survey, you agreed to recruit other sexual and gender minority (LGBTQ+) participants who identify as
-  <b><%= @participant.sgm_group_label %></b> to also take the survey.</p>
-<p>For each of the people you recruit who successfully completes the survey (up to 2 people), you will receive $2.</p>
+<p>Thank you for participating in the SMILE research study.</p>
+<p>When you completed the survey, you stated that you may be willing to recruit other people to take the survey.</p>
+<p>For each of the people you recruit who successfully completes the survey (up to 2 people), you will receive $2,
+  and the person completing the survey will receive a small payment as well.
+</p>
+<b>
+  <p>
+    Please only share this link with people that... </br>
+    1) are <%= @participant.sgm_group_label %> </br>
+    2) you know, </br>
+    3) know you, AND you have communicated with at least once in the past 2 years by any form of communication
+  </p>
+</b>
 <p>Please let each person know in your own words about the survey, and that they can learn more about it by clicking on their invitation link.</p>
 <p>
   <b>Please note:</b>
@@ -12,8 +21,10 @@ Dear participant,
 <p><%= Rails.application.credentials.config[:invitation_url] %>?referrer_code=<%= @participant.code %></p>
 <p>Thank you.</p>
 <p>Sincerely,</p>
-<p><%= Rails.application.credentials.config[:from_name] %>
-  (<%= Rails.application.credentials.config[:from_name_alt] %>) and
-  <%= Rails.application.credentials.config[:from_email] %>
-  (<%= Rails.application.credentials.config[:from_phone] %>)</p>
+<p>
+<%= Rails.application.credentials.config[:from_name] %> and 
+<%= Rails.application.credentials.config[:from_name_alt] %>
+- <%= Rails.application.credentials.config[:from_email] %>
+(<%= Rails.application.credentials.config[:from_phone] %>)
+</p>
 <p>On behalf of the SMILE Team</p>

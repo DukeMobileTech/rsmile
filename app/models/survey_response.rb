@@ -125,7 +125,7 @@ class SurveyResponse < ApplicationRecord
   end
 
   def country
-    (read_attribute(:country).presence || participant&.country)
+    read_attribute(:country).presence || participant&.country
   end
 
   def country=(str)
@@ -526,7 +526,7 @@ class SurveyResponse < ApplicationRecord
   # rubocop:enable Metrics/CyclomaticComplexity
 
   def recruitment_survey?
-    survey_title&.strip == 'RDS Recruitment Info'
+    survey_title&.strip == 'SMILE Consent - RDS Seeds'
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -547,6 +547,7 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
+  # TODO: 'Refactor to 4 reminder scenarios'
   # rubocop:disable Metrics/AbcSize
   def schedule_email
     ReminderMailer.with(participant: participant).reminder_email.deliver_now
