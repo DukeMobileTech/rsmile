@@ -105,11 +105,11 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
 
   def check
-    @participant = Participant.find_by(code: params[:code])
-    if params[:code].blank? || @participant.nil?
-      render json: { continue: false }, status: :ok
+    participant = Participant.find_by(code: params[:code])
+    if params[:code].blank? || participant.nil? || !participant.seed || participant.quota_met
+      render json: { continue: false, sgm_group: nil }, status: :ok
     else
-      render json: { continue: true }, status: :ok
+      render json: { continue: true, sgm_group: participant.sgm_group }, status: :ok
     end
   end
 

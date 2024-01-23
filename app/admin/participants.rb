@@ -9,6 +9,8 @@ ActiveAdmin.register Participant do
   filter :sgm_group, as: :select, collection: proc { Participant::ELIGIBLE_SGM_GROUPS }
   filter :referrer_sgm_group, as: :select, collection: proc { Participant::ELIGIBLE_SGM_GROUPS }
   filter :quota_met
+  filter :email
+  filter :phone_number
   actions :all, except: %i[new]
   permit_params :include, :seed
 
