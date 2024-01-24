@@ -18,9 +18,13 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :participants do
+        member do
+          get '/referrer' => 'participants#referrer', as: 'referrer'
+        end
         collection do
           post '/verify' => 'participants#verify', as: 'verify'
           post '/check' => 'participants#check', as: 'check'
+          post '/referrer_check' => 'participants#referrer_check', as: 'referrer_check'
           put '/amend' => 'participants#amend', as: 'amend'
           put '/update_and_resend' => 'participants#update_and_resend', as: 'update_and_resend'
         end

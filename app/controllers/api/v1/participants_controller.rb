@@ -113,6 +113,27 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  def referrer_check
+    participant = Participant.find_by(code: params[:code])
+    if params[:code].blank? || participant.nil? || participant.quota_met
+      render json: { continue: false, sgm_group: nil }, status: :ok
+    else
+      render json: { continue: true, sgm_group: participant.sgm_group }, status: :ok
+    end
+  end
+
+  def referrer
+    participant = Participant.find(params[:id])
+    render json: { referrer_sgm_group: nil, match: nil, quota_met: nil }, status: :not_found if participant.nil?
+    recruiter = participant.recruiter
+    render json: { referrer_sgm_group: nil, match: nil, quota_met: nil }, status: :not_found if recruiter.nil?
+    render json: {
+      referrer_sgm_group: recruiter.sgm_group,
+      match: participant.sgm_group == recruiter.sgm_group,
+      quota_met: recruiter.quota_met
+    }, status: :ok
+  end
+
   private
 
   def participant_params
