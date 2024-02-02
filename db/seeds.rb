@@ -29,13 +29,11 @@ User.create(email: 'user@example.com', password: 'Password1!', admin: true)
     country: countries.sample,
     self_generated_id: "#{countries.sample[0]}-#{Random.rand(0...99)}-#{digit}-#{digit}-#{letter}#{letter}#{letter}",
     rds_id: "#{countries.sample[0]}-#{Random.rand(10_000...99_999)}-#{[1, 2].sample}",
-    study_id: "#{countries.sample[0]}-#{Random.rand(10_000...99_999)}",
     code: "#{countries.sample[0]}-#{Random.rand(10_000...99_999)}",
     referrer_code: "#{countries.sample[0]}-#{Random.rand(10_000...99_999)}",
     sgm_group: groups.sample,
     referrer_sgm_group: groups.sample,
-    match: [true, false].sample,
-    quota: digit
+    match: [true, false].sample
   )
   SurveyResponse.create(
     participant_id: p.id,

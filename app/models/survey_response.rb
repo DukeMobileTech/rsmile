@@ -93,7 +93,7 @@ class SurveyResponse < ApplicationRecord
       one: 1.week,
       two: 2.weeks,
       three: 3.weeks
-    }
+    }.freeze
   end
 
   if Rails.env.development? || Rails.env.test?
@@ -101,7 +101,7 @@ class SurveyResponse < ApplicationRecord
       one: 1.minute,
       two: 2.minutes,
       three: 3.minutes
-    }
+    }.freeze
   end
 
   def baseline_survey?
@@ -526,16 +526,14 @@ class SurveyResponse < ApplicationRecord
   # rubocop:enable Metrics/CyclomaticComplexity
 
   def recruitment_survey?
-    survey_title&.strip == 'SMILE Consent - RDS Seeds'
+    survey_title&.strip == 'SMILE Recruitment - RDS'
   end
 
-  # rubocop:disable Metrics/AbcSize
   def reminder_conditions_met?
     recruitment_survey? && !participant.nil? && participant.email.present? &&
       participant.phone_number.present? && participant.remind &&
-      !participant.recruitment_quota_met && !participant.reminder_quota_met
+      !participant.recruitment_quota_met # && !participant.reminder_quota_met
   end
-  # rubocop:enable Metrics/AbcSize
 
   def schedule_reminder
     return unless reminder_conditions_met?
@@ -547,21 +545,36 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
-  # TODO: 'Refactor to 4 reminder scenarios'
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def schedule_email
-    ReminderMailer.with(participant: participant).reminder_email.deliver_now
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:one])
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:two])
-    ReminderMailer.with(participant: participant).reminder_email.deliver_later(wait: SurveyResponse::REMINDERS[:three])
+    if participant.agree_to_recruit && participant.wants_payment
+      one_two_three
+    elsif participant.agree_to_recruit && !participant.wants_payment
+      one_two
+    elsif !participant.agree_to_recruit && participant.wants_payment
+      ReminderMailer.with(participant: participant).three.deliver_now
+    elsif !participant.agree_to_recruit && !participant.wants_payment
+      ReminderMailer.with(participant: participant).four.deliver_now
+    end
   end
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def schedule_sms
     RecruitmentReminderJob.perform_now(participant_id)
     RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:one]).perform_later(participant_id)
     RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:two]).perform_later(participant_id)
     RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:three]).perform_later(participant_id)
+  end
+
+  def one_two_three
+    ReminderMailer.with(participant: participant).one.deliver_now
+    ReminderMailer.with(participant: participant).two.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    ReminderMailer.with(participant: participant).three.deliver_later(wait: SurveyResponse::REMINDERS[:two])
+  end
+
+  def one_two
+    ReminderMailer.with(participant: participant).one.deliver_now
+    ReminderMailer.with(participant: participant).two.deliver_later(wait: SurveyResponse::REMINDERS[:one])
   end
 
   private

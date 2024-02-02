@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_21_155534) do
+ActiveRecord::Schema.define(version: 2024_02_02_210031) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -67,14 +67,12 @@ ActiveRecord::Schema.define(version: 2023_12_21_155534) do
     t.string "phone_number"
     t.string "country"
     t.string "self_generated_id"
-    t.string "study_id"
     t.string "rds_id"
     t.string "code"
     t.string "referrer_code"
     t.string "sgm_group"
     t.string "referrer_sgm_group"
     t.boolean "match"
-    t.integer "quota"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "preferred_contact_method"
@@ -85,6 +83,8 @@ ActiveRecord::Schema.define(version: 2023_12_21_155534) do
     t.boolean "remind", default: true
     t.boolean "quota_met", default: false
     t.integer "baseline_participant_id"
+    t.boolean "agree_to_recruit", default: true
+    t.boolean "wants_payment", default: true
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
   end

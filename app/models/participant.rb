@@ -9,14 +9,12 @@ require 'sorted_set'
 #  phone_number             :string
 #  country                  :string
 #  self_generated_id        :string
-#  study_id                 :string
 #  rds_id                   :string
 #  code                     :string
 #  referrer_code            :string
 #  sgm_group                :string
 #  referrer_sgm_group       :string
 #  match                    :boolean
-#  quota                    :integer
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  preferred_contact_method :string
@@ -27,6 +25,8 @@ require 'sorted_set'
 #  remind                   :boolean          default(TRUE)
 #  quota_met                :boolean          default(FALSE)
 #  baseline_participant_id  :integer
+#  agree_to_recruit         :boolean          default(TRUE)
+#  wants_payment            :boolean          default(TRUE)
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
@@ -407,6 +407,16 @@ class Participant < ApplicationRecord
     RdsMailer.with(participant: self).start_rds_email.deliver_now
   end
 
+  def payment_amount
+    if recruits.size >= 2
+      '$5'
+    elsif recruits.size == 1
+      '$3'
+    else
+      seed ? '$0' : '$1'
+    end
+  end
+
   private
 
   def update_duplicates(duplicates)
@@ -423,7 +433,6 @@ class Participant < ApplicationRecord
 
   def assign_identifiers
     self.code = "#{country[0].upcase}-#{Random.rand(10_000_000...99_999_999)}" if code.blank?
-    self.study_id = "#{country[0].upcase}-#{Random.rand(10_000...99_999)}" if study_id.blank?
   end
 
   def enforce_unique_code

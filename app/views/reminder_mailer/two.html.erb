@@ -1,0 +1,34 @@
+Dear participant,
+<p>Thank you for participating in the SMILE research study. You still have remaining survey invitations.</p>
+<p>You have 1 more week to invite people to participate in the study. 
+  If you have already sent the survey link to people, it could be that they have not yet finished the survey, 
+  or that they declined to participate, or that they tried but were not eligible to take the survey 
+  (because they previously participated, or did not fit the study participant criteria). 
+  Please remind your contacts to participate using the link below.</p>
+<p>For each of the people you recruit who successfully completes the survey (up to 2 people), you will receive $2,
+  and the person completing the survey will receive a small payment as well.
+</p>
+<b>
+  <p>
+    Please only share this link with people that... <br>
+    1) are <%= @participant.sgm_group_label %> <br>
+    2) you know, <br>
+    3) know you, AND you have communicated with at least once in the past 2 years by any form of communication
+  </p>
+</b>
+<p>Please let each person know in your own words about the survey, and that they can learn more about it by clicking on their invitation link.</p>
+<p>
+  <b>Please note:</b>
+  The link below is different from the one you used to start your survey. Please only use this link to invite others to take their survey.
+</p>
+<p>You can recruit other people by sharing with them the following link:</p>
+<p><%= Rails.application.credentials.config[:invitation_url] %>?referrer_code=<%= @participant.code %></p>
+<p>Thank you.</p>
+<p>Sincerely,</p>
+<p>
+  <%= Rails.application.credentials.config[:from_name] %> and 
+  <%= Rails.application.credentials.config[:from_name_alt] %>
+  - <%= Rails.application.credentials.config[:from_email] %>
+  (<%= Rails.application.credentials.config[:from_phone] %>)
+</p>
+<p>On behalf of the SMILE Team</p>

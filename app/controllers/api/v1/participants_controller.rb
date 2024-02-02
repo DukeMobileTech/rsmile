@@ -137,9 +137,9 @@ class Api::V1::ParticipantsController < Api::ApiController
   private
 
   def participant_params
-    params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id,
-                                          :study_id, :rds_id, :code, :referrer_code, :sgm_group,
-                                          :referrer_sgm_group, :match, :quota, :language, :contact,
+    params.fetch(:participant, {}).permit(:email, :phone_number, :country, :self_generated_id, :agree_to_recruit,
+                                          :wants_payment, :rds_id, :code, :referrer_code, :sgm_group,
+                                          :referrer_sgm_group, :match, :language, :contact,
                                           :preferred_contact_method, :verification_code, :seed, :remind)
   end
 

@@ -59,8 +59,6 @@ paths:
                   type: string
                 self_generated_id:
                   type: string
-                study_id:
-                  type: string
                 rds_id:
                   type: string
                 code:
@@ -72,8 +70,6 @@ paths:
                 referrer_sgm_group:
                   type: string
                 match:
-                  type: string
-                quota:
                   type: string
                 preferred_contact_method:
                   type: string
@@ -128,8 +124,6 @@ paths:
                   type: string
                 self_generated_id:
                   type: string
-                study_id:
-                  type: string
                 rds_id:
                   type: string
                 code:
@@ -141,8 +135,6 @@ paths:
                 referrer_sgm_group:
                   type: string
                 match:
-                  type: string
-                quota:
                   type: string
                 preferred_contact_method:
                   type: string
@@ -210,8 +202,6 @@ paths:
                   type: string
                 self_generated_id:
                   type: string
-                study_id:
-                  type: string
                 rds_id:
                   type: string
                 code:
@@ -223,8 +213,6 @@ paths:
                 referrer_sgm_group:
                   type: string
                 match:
-                  type: string
-                quota:
                   type: string
                 preferred_contact_method:
                   type: string

@@ -4,11 +4,12 @@ Dear participant,
 <p>For each of the people you recruit who successfully completes the survey (up to 2 people), you will receive $2,
   and the person completing the survey will receive a small payment as well.
 </p>
+<p>You have upto 2 weeks to complete this process - the people you invite to participate in the study have to complete their surveys in the next 2 weeks.</p>
 <b>
   <p>
-    Please only share this link with people that... </br>
-    1) are <%= @participant.sgm_group_label %> </br>
-    2) you know, </br>
+    Please only share this link with people that... <br>
+    1) are <%= @participant.sgm_group_label %> <br>
+    2) you know, <br>
     3) know you, AND you have communicated with at least once in the past 2 years by any form of communication
   </p>
 </b>
@@ -22,9 +23,9 @@ Dear participant,
 <p>Thank you.</p>
 <p>Sincerely,</p>
 <p>
-<%= Rails.application.credentials.config[:from_name] %> and 
-<%= Rails.application.credentials.config[:from_name_alt] %>
-- <%= Rails.application.credentials.config[:from_email] %>
-(<%= Rails.application.credentials.config[:from_phone] %>)
+  <%= Rails.application.credentials.config[:from_name] %> and 
+  <%= Rails.application.credentials.config[:from_name_alt] %>
+  - <%= Rails.application.credentials.config[:from_email] %>
+  (<%= Rails.application.credentials.config[:from_phone] %>)
 </p>
 <p>On behalf of the SMILE Team</p>
