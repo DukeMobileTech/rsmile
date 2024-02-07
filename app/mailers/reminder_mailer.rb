@@ -5,10 +5,12 @@ class ReminderMailer < ApplicationMailer
   after_action :set_reminder_count
 
   def one
+    @participant.reminders.create(channel: 'Email', category: Participant::FIRST)
     mail(to: @participant.email, subject: 'SMILE Study - First Recruitment Reminder')
   end
 
   def two
+    @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
     if @participant.recruitment_quota_met
       three
     else
@@ -17,10 +19,12 @@ class ReminderMailer < ApplicationMailer
   end
 
   def three
+    @participant.reminders.create(channel: 'Email', category: Participant::THIRD)
     mail(to: @participant.email, subject: 'SMILE Study - Thank You')
   end
 
   def four
+    @participant.reminders.create(channel: 'Email', category: Participant::FOURTH)
     mail(to: @participant.email, subject: 'SMILE Study - Thank You')
   end
 

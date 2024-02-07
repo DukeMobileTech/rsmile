@@ -76,6 +76,10 @@ class Participant < ApplicationRecord
     survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
   end
 
+  def seed_consents
+    survey_responses.where(survey_title: 'SMILE Consent - RDS Seeds').order(:created_at)
+  end
+
   def contacts
     survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline').order(:created_at)
   end
@@ -404,7 +408,10 @@ class Participant < ApplicationRecord
   def start_rds
     return unless seed
 
-    RdsMailer.with(participant: self).start_rds_email.deliver_now
+    RdsMailer.with(participant: self).start.deliver_now
+    RdsMailer.with(participant: self).remind.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    RdsMailer.with(participant: self).payment.deliver_later(wait: SurveyResponse::REMINDERS[:two])
+    RdsMailer.with(participant: self).thanks.deliver_later(wait: SurveyResponse::REMINDERS[:three])
   end
 
   def payment_amount

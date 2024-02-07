@@ -90,9 +90,9 @@ class SurveyResponse < ApplicationRecord
 
   if Rails.env.production?
     REMINDERS = {
-      one: 1.week,
-      two: 2.weeks,
-      three: 3.weeks
+      one: 1.day,
+      two: 2.days,
+      three: 3.days
     }.freeze
   end
 

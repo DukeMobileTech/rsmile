@@ -1,0 +1,14 @@
+Dear participant,
+<p>Thank you for participating in the SMILE research study.</p>
+<p>Your compensation for participating in the study is <%= @participant.payment_amount %>. 
+  It will be paid out in the next 2 weeks using the mobile phone number <%= @participant.phone_number %>.</p>
+<p>If you have any questions, please reach out to your country coordinator.</p>
+<p>Thank you.</p>
+<p>Sincerely,</p>
+<p>
+  <%= Rails.application.credentials.config[:from_name] %> and 
+  <%= Rails.application.credentials.config[:from_name_alt] %>
+  - <%= Rails.application.credentials.config[:from_email] %>
+  (<%= Rails.application.credentials.config[:from_phone] %>)
+</p>
+<p>On behalf of the SMILE Team</p>

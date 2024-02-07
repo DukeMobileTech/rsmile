@@ -50,5 +50,8 @@ class ApplicationRecord < ActiveRecord::Base
   }.freeze
   INITIAL = 'INITIAL SEEDS CONTACT'.freeze
   FIRST = 'FIRST REMINDER'.freeze
-  REMINDER_TYPES = [INITIAL, FIRST].freeze
+  SECOND = 'SECOND REMINDER'.freeze
+  THIRD = 'THIRD REMINDER'.freeze
+  FOURTH = 'FOURTH REMINDER'.freeze
+  REMINDER_TYPES = [INITIAL, FIRST, SECOND, THIRD, FOURTH].freeze
 end
