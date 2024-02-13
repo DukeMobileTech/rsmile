@@ -408,10 +408,15 @@ class Participant < ApplicationRecord
   def start_rds
     return unless seed
 
-    RdsMailer.with(participant: self).start.deliver_now
-    RdsMailer.with(participant: self).remind.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    RdsMailer.with(participant: self).invite_initial.deliver_now
+    RdsMailer.with(participant: self).invite_reminder.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+  end
+
+  def seed_post_consent_communication
+    RdsMailer.with(participant: self).post_consent.deliver_now
+    RdsMailer.with(participant: self).post_consent_reminder.deliver_later(wait: SurveyResponse::REMINDERS[:one])
     RdsMailer.with(participant: self).payment.deliver_later(wait: SurveyResponse::REMINDERS[:two])
-    RdsMailer.with(participant: self).thanks.deliver_later(wait: SurveyResponse::REMINDERS[:three])
+    RdsMailer.with(participant: self).gratitude.deliver_later(wait: SurveyResponse::REMINDERS[:three])
   end
 
   def payment_amount

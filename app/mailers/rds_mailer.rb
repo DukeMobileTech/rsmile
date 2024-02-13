@@ -3,22 +3,35 @@ class RdsMailer < ApplicationMailer
                                         Rails.application.credentials.config[:from_name])
 
   before_action :set_participant
+  before_action :set_language
 
-  def start
+  def invite_initial
     @participant.reminders.create(channel: 'Email', category: Participant::INITIAL)
-    mail(to: @participant.email, subject: 'SMILE Study Recruitment')
+    mail(to: @participant.email, subject: I18n.t('rds.invite_initial', locale: @language))
   end
 
-  def remind
+  def invite_reminder
+    return unless @participant.seed_consents.empty?
+
+    @participant.reminders.create(channel: 'Email', category: Participant::REMIND)
+    mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))
+  end
+
+  def post_consent
     return unless @participant.agree_to_recruit
 
-    if @participant.recruits.empty?
-      start
-    elsif @participant.recruitment_quota_met
+    @participant.reminders.create(channel: 'Email', category: Participant::FIRST)
+    mail(to: @participant.email, subject: I18n.t('rds.post_survey', locale: @language))
+  end
+
+  def post_consent_reminder
+    return unless @participant.agree_to_recruit
+
+    if @participant.recruitment_quota_met
       payment
     else
       @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
-      mail(to: @participant.email, subject: 'SMILE Study - Second Recruitment Reminder')
+      mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
     end
   end
 
@@ -27,22 +40,26 @@ class RdsMailer < ApplicationMailer
 
     if @participant.wants_payment
       @participant.reminders.create(channel: 'Email', category: Participant::THIRD)
-      mail(to: @participant.email, subject: 'SMILE Study - Thank You')
+      mail(to: @participant.email, subject: I18n.t('rds.payment', locale: @language))
     else
-      thanks
+      gratitude
     end
   end
 
-  def thanks
+  def gratitude
     return unless @participant.agree_to_recruit
 
     @participant.reminders.create(channel: 'Email', category: Participant::FOURTH)
-    mail(to: @participant.email, subject: 'SMILE Study - Thank You')
+    mail(to: @participant.email, subject: I18n.t('rds.gratitude', locale: @language))
   end
 
   private
 
   def set_participant
     @participant = params[:participant]
+  end
+
+  def set_language
+    @language = 'en'
   end
 end

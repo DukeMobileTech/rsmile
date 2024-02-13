@@ -2,30 +2,30 @@ class ReminderMailer < ApplicationMailer
   default from: email_address_with_name(Rails.application.credentials.config[:from_email],
                                         Rails.application.credentials.config[:from_name])
   before_action :set_participant
-  after_action :set_reminder_count
+  after_action :set_language
 
-  def one
+  def post_baseline
     @participant.reminders.create(channel: 'Email', category: Participant::FIRST)
-    mail(to: @participant.email, subject: 'SMILE Study - First Recruitment Reminder')
+    mail(to: @participant.email, subject: I18n.t('rds.post_survey', locale: @language))
   end
 
-  def two
-    @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
+  def post_baseline_reminder
     if @participant.recruitment_quota_met
-      three
+      payment
     else
-      mail(to: @participant.email, subject: 'SMILE Study - Second Recruitment Reminder')
+      @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
+      mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
     end
   end
 
-  def three
+  def payment
     @participant.reminders.create(channel: 'Email', category: Participant::THIRD)
-    mail(to: @participant.email, subject: 'SMILE Study - Thank You')
+    mail(to: @participant.email, subject: I18n.t('rds.payment', locale: @language))
   end
 
-  def four
+  def gratitude
     @participant.reminders.create(channel: 'Email', category: Participant::FOURTH)
-    mail(to: @participant.email, subject: 'SMILE Study - Thank You')
+    mail(to: @participant.email, subject: I18n.t('rds.gratitude', locale: @language))
   end
 
   private
@@ -34,10 +34,7 @@ class ReminderMailer < ApplicationMailer
     @participant = params[:participant]
   end
 
-  def set_reminder_count
-    return if @participant.reminder_quota_met
-
-    count = @participant.reminders.size + 1
-    @participant.reminders.create(category: count)
+  def set_language
+    @language = 'en'
   end
 end

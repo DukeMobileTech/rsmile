@@ -28,6 +28,7 @@ class SurveyResponse < ApplicationRecord
   after_save :assign_participant_sgm_group
   after_save :fetch_metadata
   after_save :schedule_reminder
+  after_save :seeds_post_consent
 
   store_accessor :metadata, :source, :language, :sgm_group, :ip_address, :duration,
                  :birth_year, :age, :progress, :race, :ethnicity, :gender, :referee_code,
@@ -529,6 +530,15 @@ class SurveyResponse < ApplicationRecord
     survey_title&.strip == 'SMILE Recruitment - RDS'
   end
 
+  def seeds_consent_survey?
+    survey_title&.strip == 'SMILE Consent - RDS Seeds'
+  end
+
+  def seeds_reminder_conditions_met?
+    seeds_consent_survey? && consented && !participant.nil? && participant.seed &&
+      participant.email.present? && participant.phone_number.present?
+  end
+
   def reminder_conditions_met?
     recruitment_survey? && !participant.nil? && participant.email.present? &&
       participant.phone_number.present? && participant.remind &&
@@ -552,9 +562,9 @@ class SurveyResponse < ApplicationRecord
     elsif participant.agree_to_recruit && !participant.wants_payment
       one_two
     elsif !participant.agree_to_recruit && participant.wants_payment
-      ReminderMailer.with(participant: participant).three.deliver_now
+      ReminderMailer.with(participant: participant).payment.deliver_now
     elsif !participant.agree_to_recruit && !participant.wants_payment
-      ReminderMailer.with(participant: participant).four.deliver_now
+      ReminderMailer.with(participant: participant).gratitude.deliver_now
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -567,14 +577,20 @@ class SurveyResponse < ApplicationRecord
   end
 
   def one_two_three
-    ReminderMailer.with(participant: participant).one.deliver_now
-    ReminderMailer.with(participant: participant).two.deliver_later(wait: SurveyResponse::REMINDERS[:one])
-    ReminderMailer.with(participant: participant).three.deliver_later(wait: SurveyResponse::REMINDERS[:two])
+    ReminderMailer.with(participant: participant).post_baseline.deliver_now
+    ReminderMailer.with(participant: participant).post_baseline_reminder.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    ReminderMailer.with(participant: participant).payment.deliver_later(wait: SurveyResponse::REMINDERS[:two])
   end
 
   def one_two
-    ReminderMailer.with(participant: participant).one.deliver_now
-    ReminderMailer.with(participant: participant).two.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    ReminderMailer.with(participant: participant).post_baseline.deliver_now
+    ReminderMailer.with(participant: participant).post_baseline_reminder.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+  end
+
+  def seeds_post_consent
+    return unless seeds_reminder_conditions_met?
+
+    participant.seed_post_consent_communication
   end
 
   private

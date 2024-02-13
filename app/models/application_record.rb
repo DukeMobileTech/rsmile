@@ -48,10 +48,11 @@ class ApplicationRecord < ActiveRecord::Base
     '25' => 'Influencers',
     '26' => 'Instagram'
   }.freeze
-  INITIAL = 'INITIAL SEEDS CONTACT'.freeze
-  FIRST = 'FIRST REMINDER'.freeze
-  SECOND = 'SECOND REMINDER'.freeze
-  THIRD = 'THIRD REMINDER'.freeze
-  FOURTH = 'FOURTH REMINDER'.freeze
-  REMINDER_TYPES = [INITIAL, FIRST, SECOND, THIRD, FOURTH].freeze
+  INITIAL = 'SEEDS INVITE'.freeze
+  REMIND = 'SEEDS INVITE REMINDER'.freeze
+  FIRST = 'POST CONSENT'.freeze
+  SECOND = 'POST CONSENT REMINDER'.freeze
+  THIRD = 'PAYMENT'.freeze
+  FOURTH = 'GRATITUDE'.freeze
+  REMINDER_TYPES = [INITIAL, REMIND, FIRST, SECOND, THIRD, FOURTH].freeze
 end

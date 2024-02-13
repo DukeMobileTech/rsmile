@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant, as: 'Seed' do
   menu label: 'RDS Seeds'
   menu priority: 2
@@ -61,3 +62,4 @@ ActiveAdmin.register Participant, as: 'Seed' do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

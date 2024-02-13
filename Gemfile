@@ -48,6 +48,7 @@ group :development, :test do
   gem 'annotate', '~> 3.1', '>= 3.1.1'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'faker', '~> 2.23'
+  gem 'htmlbeautifier', '~> 1.4', '>= 1.4.2'
   gem 'rexml', '~> 3.2', '>= 3.2.5'
   gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
   gem 'rswag-specs', '~> 2.8'
