@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Invite do
   permit_params :first_name, :last_name, :email, :password, :admin
 
@@ -61,3 +62,4 @@ ActiveAdmin.register Invite do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

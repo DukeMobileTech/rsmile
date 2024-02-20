@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   namespace :admin do
     get '/signup/:invite_code' => 'invites#new_invite', as: 'redeem_invitation'
     post '/signup/:invite_code' => 'invites#redeem_invite', as: 'redeem_invite'
+    get '/opt_out/:code' => 'participants#opt_out', as: 'opt_out'
   end
 
   constraints Clearance::Constraints::SignedIn.new(&:admin?) do

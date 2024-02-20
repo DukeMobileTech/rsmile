@@ -1,6 +1,6 @@
 class RdsMailer < ApplicationMailer
   default from: email_address_with_name(Rails.application.credentials.config[:default_from_email],
-                                        Rails.application.credentials.config[:from_name])
+                                        Rails.application.credentials.config[:default_from_name])
 
   before_action :set_participant
   before_action :set_language
@@ -12,6 +12,7 @@ class RdsMailer < ApplicationMailer
 
   def invite_reminder
     return unless @participant.seed_consents.empty?
+    return if @participant.opt_out
 
     @participant.reminders.create(channel: 'Email', category: Participant::REMIND)
     mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))

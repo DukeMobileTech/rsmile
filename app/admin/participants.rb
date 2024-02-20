@@ -26,6 +26,10 @@ ActiveAdmin.register Participant do
     redirect_to resource_path
   end
 
+  collection_action :opt_out, method: :get do
+    redirect_to resource_path
+  end
+
   action_item :enrollment, only: :index do
     link_to 'Enrollment Logbook', enrollment_admin_participants_path
   end
@@ -39,6 +43,8 @@ ActiveAdmin.register Participant do
   end
 
   controller do
+    skip_before_action :require_login, only: %i[opt_out]
+
     def enrollment
       send_file Participant.enrollment, type: 'text/xlsx',
                                         filename: "Enrollment-Logbook-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
@@ -54,6 +60,12 @@ ActiveAdmin.register Participant do
         ParticipantDuplicatesJob.perform_later(participant.id)
       end
       redirect_to admin_participants_path
+    end
+
+    def opt_out
+      participant = Participant.find_by(code: params[:code])
+      participant&.update(opt_out: true)
+      render 'opt_out', layout: 'clearance'
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_02_210031) do
+ActiveRecord::Schema.define(version: 2024_02_20_172530) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 2024_02_02_210031) do
     t.integer "baseline_participant_id"
     t.boolean "agree_to_recruit", default: true
     t.boolean "wants_payment", default: true
+    t.boolean "opt_out", default: false
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
   end

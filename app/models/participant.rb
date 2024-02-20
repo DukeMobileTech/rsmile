@@ -27,6 +27,7 @@ require 'sorted_set'
 #  baseline_participant_id  :integer
 #  agree_to_recruit         :boolean          default(TRUE)
 #  wants_payment            :boolean          default(TRUE)
+#  opt_out                  :boolean          default(FALSE)
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant

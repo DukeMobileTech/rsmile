@@ -1,6 +1,6 @@
 class ReminderMailer < ApplicationMailer
-  default from: email_address_with_name(Rails.application.credentials.config[:from_email],
-                                        Rails.application.credentials.config[:from_name])
+  default from: email_address_with_name(Rails.application.credentials.config[:default_from_email],
+                                        Rails.application.credentials.config[:default_from_name])
   before_action :set_participant
   after_action :set_language
 
