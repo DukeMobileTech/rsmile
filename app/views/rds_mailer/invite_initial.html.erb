@@ -20,11 +20,9 @@ Dear participant,
 <p>You have two weeks to invite people to participate in the study.</p>
 <p>Thank you.</p>
 <p>Sincerely,</p>
-(country coordinator and their contact details)<br>
-<%= Rails.application.credentials.config[:from_name] %> - 
-<%= Rails.application.credentials.config[:from_email] %>
-(<%= Rails.application.credentials.config[:from_phone] %>)<br>
+<%= @participant.country_contact %><br>
 <%= Rails.application.credentials.config[:from_name_alt] %> - 
 <%= Rails.application.credentials.config[:from_email_alt] %>
 (<%= Rails.application.credentials.config[:from_phone_alt] %>)<br>
-On behalf of the SMILE Team
+On behalf of the SMILE Team<br>
+<em>Please do not reply to this email. If you want to talk to someone, use the contacts provided above.</em>

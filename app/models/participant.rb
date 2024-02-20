@@ -430,6 +430,18 @@ class Participant < ApplicationRecord
     end
   end
 
+  # rubocop:disable Style/CaseLikeIf
+  def country_contact
+    if country == 'Vietnam'
+      Rails.application.credentials.config[:VIETNAM_CONTACTS]
+    elsif country == 'Kenya'
+      Rails.application.credentials.config[:KENYA_CONTACTS]
+    elsif country == 'Brazil'
+      Rails.application.credentials.config[:BRAZIL_CONTACTS]
+    end
+  end
+  # rubocop:enable Style/CaseLikeIf
+
   private
 
   def update_duplicates(duplicates)
