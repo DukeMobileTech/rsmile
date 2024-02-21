@@ -2,7 +2,9 @@ Dear participant,
 <p>Thank you for participating in the SMILE research study. In the future we may reach 
   out to request your participation in more surveys.
 </p>
-<p>If you have any questions, please reach out to your [country coordinator] [contact details].</p>
+<p>If you have any questions, please reach out to your SMILE <%= @participant.country %> coordinator - 
+  <%= @participant.country_contact %>.
+</p>
 <p>Thank you.</p>
 <p>Sincerely,</p>
 <%= @participant.country_contact %><br>

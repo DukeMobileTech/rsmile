@@ -6,9 +6,9 @@ Dear participant,
   to opt out of future reminders.
 </p>
 <p>You can invite up to 2 people. For each person you invite who successfully 
-  completes the survey, you will receive a small payment of $2 [specific to country], 
-  and the person completing the survey will receive a small payment ($1 [specific to 
-  each country]) as well.
+  completes the survey, you will receive a small payment of <%= @participant.recruitment_amount %>, 
+  and the person completing the survey will receive a small payment 
+  (<%= @participant.survey_amount %>) as well.
 </p>
 <p>If you would like to invite other people to join the research study, please click 
   on the link below to learn more.

@@ -89,12 +89,20 @@ class Participant < ApplicationRecord
     survey_responses.where(survey_title: 'SMILE Survey - Baseline').order(:created_at)
   end
 
+  def rds_baselines
+    survey_responses.where(survey_title: 'SMILE Survey - Baseline RDS').order(:created_at)
+  end
+
   def safety_plans
     survey_responses.where(survey_title: 'Safety Planning').order(:created_at)
   end
 
   def baseline
     baselines.where(duplicate: false).first
+  end
+
+  def rds_baseline
+    rds_baselines.where(duplicate: false).first
   end
 
   def consent
@@ -420,16 +428,6 @@ class Participant < ApplicationRecord
     RdsMailer.with(participant: self).gratitude.deliver_later(wait: SurveyResponse::REMINDERS[:three])
   end
 
-  def payment_amount
-    if recruits.size >= 2
-      '$5'
-    elsif recruits.size == 1
-      '$3'
-    else
-      seed ? '$0' : '$1'
-    end
-  end
-
   # rubocop:disable Style/CaseLikeIf
   def country_contact
     if country == 'Vietnam'
@@ -441,6 +439,41 @@ class Participant < ApplicationRecord
     end
   end
   # rubocop:enable Style/CaseLikeIf
+
+  def recruitment_amount
+    payments = { 'Vietnam' => '37,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' }
+    payments[country]
+  end
+
+  def survey_amount
+    payments = { 'Vietnam' => '50,000 VND', 'Kenya' => 'KES 300', 'Brazil' => 'R$ 10' }
+    payments[country]
+  end
+
+  def payment_amount
+    if recruits.size >= 2
+      max_amount
+    elsif recruits.size == 1
+      one_invite_amount
+    elsif rds_baseline
+      survey_amount
+    else
+      payments = { 'Vietnam' => '0 VND', 'Kenya' => 'KES 0', 'Brazil' => 'R$ 0' }
+      payments[country]
+    end
+  end
+
+  def max_amount
+    payments = { 'Vietnam' => '124,000 VND', 'Kenya' => 'KES 700', 'Brazil' => 'R$ 24' }
+    payments = { 'Vietnam' => '74,000 VND', 'Kenya' => 'KES 400', 'Brazil' => 'R$ 14' } if seed
+    payments[country]
+  end
+
+  def one_invite_amount
+    payments = { 'Vietnam' => '87,000 VND', 'Kenya' => 'KES 500', 'Brazil' => 'R$ 17' }
+    payments = { 'Vietnam' => '37,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' } if seed
+    payments[country]
+  end
 
   private
 
