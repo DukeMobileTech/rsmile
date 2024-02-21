@@ -38,8 +38,8 @@ class Participant < ApplicationRecord
 
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
 
-  before_save :assign_identifiers
-  before_save :enforce_unique_code
+  before_create :assign_identifiers
+  before_create :enforce_unique_code
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
