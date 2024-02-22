@@ -119,9 +119,12 @@ class Api::V1::ParticipantsController < Api::ApiController
   def referrer_check
     participant = Participant.find_by(code: params[:code])
     if params[:code].blank? || participant.nil? || participant.quota_met
-      render json: { continue: false, sgm_group: nil }, status: :ok
+      render json: { continue: false, sgm_group: nil, country: nil },
+             status: :ok
     else
-      render json: { continue: true, sgm_group: participant.sgm_group }, status: :ok
+      render json: { continue: true, sgm_group: participant.sgm_group,
+                     country: participant.country },
+             status: :ok
     end
   end
 
