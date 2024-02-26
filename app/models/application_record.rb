@@ -19,6 +19,15 @@ class ApplicationRecord < ActiveRecord::Base
     'ineligible' => 'IN',
     'blank' => 'BL'
   }.freeze
+  SGM_GROUPS_PLURAL = {
+    'non-binary person' => 'non-binary people',
+    'transgender woman' => 'transgender women',
+    'transgender man' => 'transgender men',
+    'woman attracted to women' => 'women attracted to women',
+    'man attracted to men' => 'men attracted to men',
+    'multi-attracted woman' => 'multi-attracted women',
+    'multi-attracted man' => 'multi-attracted men'
+  }.freeze
   SOURCES = {
     '0' => 'Not indicated',
     '1' => 'Radio advertisement',

@@ -378,19 +378,9 @@ class Participant < ApplicationRecord
     sgm_group == referrer_sgm_group
   end
 
-  # rubocop:disable Style/CaseLikeIf
   def sgm_group_label
-    if sgm_group == 'transgender woman' || sgm_group == 'transgender man'
-      'transgender people'
-    elsif sgm_group == 'woman attracted to women'
-      'women attracted to women'
-    elsif sgm_group == 'man attracted to men'
-      'men attracted to men'
-    else
-      sgm_group
-    end
+    SGM_GROUPS_PLURAL[sgm_group]
   end
-  # rubocop:enable Style/CaseLikeIf
 
   def self.parse_country(code)
     prefix = code[0].upcase

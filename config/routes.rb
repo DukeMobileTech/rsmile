@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       resources :participants do
         member do
           get '/referrer' => 'participants#referrer', as: 'referrer'
+          get '/recruitment' => 'participants#recruitment', as: 'recruitment'
         end
         collection do
           post '/verify' => 'participants#verify', as: 'verify'

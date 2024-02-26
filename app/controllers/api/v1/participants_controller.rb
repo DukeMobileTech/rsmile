@@ -49,6 +49,7 @@ class Api::V1::ParticipantsController < Api::ApiController
       render json: @participant.errors, status: :unprocessable_entity
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def update
     @participant = Participant.find(params[:id])
@@ -71,6 +72,7 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def amend
     @participant = Participant.find(params[:id]) if params[:id].present?
     @participant = Participant.find_by(email: sanitized_email) if @participant.nil? && sanitized_email.present?
@@ -83,7 +85,9 @@ class Api::V1::ParticipantsController < Api::ApiController
       render json: @participant.errors, status: :unprocessable_entity
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def update_and_resend
     @participant = Participant.find(params[:id])
     if params[:contact].include? '@'
@@ -103,6 +107,7 @@ class Api::V1::ParticipantsController < Api::ApiController
       render json: @participant.errors, status: :unprocessable_entity
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def check
     participant = Participant.find_by(code: params[:code])
@@ -138,6 +143,18 @@ class Api::V1::ParticipantsController < Api::ApiController
       match: participant.sgm_group == recruiter.sgm_group,
       quota_met: recruiter.quota_met
     }, status: :ok
+  end
+
+  def recruitment
+    participant = Participant.find(params[:id])
+    recruiter = participant&.recruiter
+    if params[:id].blank? || participant.nil? || recruiter.nil?
+      render json: { sgm_group: nil, quota_met: nil, code: nil }, status: :not_found
+    else
+      render json: { sgm_group: participant.sgm_group_label,
+                     quota_met: recruiter.quota_met, code: participant.code },
+             status: :ok
+    end
   end
 
   private
