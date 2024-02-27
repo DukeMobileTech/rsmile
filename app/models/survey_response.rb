@@ -534,6 +534,10 @@ class SurveyResponse < ApplicationRecord
     survey_title&.strip == 'SMILE Consent - RDS Seeds'
   end
 
+  def rds_survey?
+    survey_title&.strip == 'SMILE Survey - Baseline RDS'
+  end
+
   def seeds_reminder_conditions_met?
     seeds_consent_survey? && consented && !participant.nil? && participant.seed &&
       participant.email.present? && participant.phone_number.present?

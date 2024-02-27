@@ -36,6 +36,9 @@ Rails.application.routes.draw do
           put '/amend' => 'survey_responses#amend', as: 'amend'
           post '/safety' => 'survey_responses#safety', as: 'safety'
         end
+        member do
+          get '/sync' => 'survey_responses#sync', as: 'sync'
+        end
       end
       resources :consents, only: [:create]
     end

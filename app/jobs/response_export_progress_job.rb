@@ -1,5 +1,5 @@
 class ResponseExportProgressJob < ApplicationJob
-  queue_as :rs_qualtrics
+  queue_as :rds
 
   def perform(response_export_id)
     response_export = ResponseExport.where(id: response_export_id).first
