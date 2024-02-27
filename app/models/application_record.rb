@@ -64,4 +64,20 @@ class ApplicationRecord < ActiveRecord::Base
   THIRD = 'PAYMENT'.freeze
   FOURTH = 'GRATITUDE'.freeze
   REMINDER_TYPES = [INITIAL, REMIND, FIRST, SECOND, THIRD, FOURTH].freeze
+
+  if Rails.env.production?
+    REMINDERS = {
+      one: 1.day,
+      two: 2.days,
+      three: 3.days
+    }.freeze
+  end
+
+  if Rails.env.development? || Rails.env.test?
+    REMINDERS = {
+      one: 1.minute,
+      two: 2.minutes,
+      three: 3.minutes
+    }.freeze
+  end
 end

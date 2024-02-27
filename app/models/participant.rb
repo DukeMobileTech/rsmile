@@ -129,6 +129,7 @@ class Participant < ApplicationRecord
     end
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def verify(v_code)
     return if v_code.blank?
 
@@ -162,6 +163,7 @@ class Participant < ApplicationRecord
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # Include participants who have the following characteristics:
   # i) have include = true
@@ -177,6 +179,7 @@ class Participant < ApplicationRecord
                .where(survey_responses: { survey_complete: true })
   end
 
+  # rubocop:disable Metrics/MethodLength
   def self.weekly_statistics(kountry)
     stats = []
     participants = eligible_participants.where(country: kountry).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
@@ -191,7 +194,9 @@ class Participant < ApplicationRecord
     end
     stats
   end
+  # rubocop:enable Metrics/MethodLength
 
+  # rubocop:disable Metrics/MethodLength
   def self.weekly_statistics_by_country
     Groupdate.week_start = :monday
     weeks = SortedSet.new
@@ -209,7 +214,9 @@ class Participant < ApplicationRecord
     end
     [weeks, stats]
   end
+  # rubocop:enable Metrics/MethodLength
 
+  # rubocop:disable Metrics/MethodLength
   def self.weekly_participants
     wsbc = weekly_statistics_by_country
     final_stats = {}
@@ -227,6 +234,7 @@ class Participant < ApplicationRecord
     end
     final_stats
   end
+  # rubocop:enable Metrics/MethodLength
 
   def to_s
     "#{self_generated_id} #{email}"
@@ -408,14 +416,14 @@ class Participant < ApplicationRecord
     return unless seed
 
     RdsMailer.with(participant: self).invite_initial.deliver_now
-    RdsMailer.with(participant: self).invite_reminder.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    RdsMailer.with(participant: self).invite_reminder.deliver_later(wait: REMINDERS[:one])
   end
 
   def seed_post_consent_communication
     RdsMailer.with(participant: self).post_consent.deliver_now
-    RdsMailer.with(participant: self).post_consent_reminder.deliver_later(wait: SurveyResponse::REMINDERS[:one])
-    RdsMailer.with(participant: self).payment.deliver_later(wait: SurveyResponse::REMINDERS[:two])
-    RdsMailer.with(participant: self).gratitude.deliver_later(wait: SurveyResponse::REMINDERS[:three])
+    RdsMailer.with(participant: self).post_consent_reminder.deliver_later(wait: REMINDERS[:one])
+    RdsMailer.with(participant: self).payment.deliver_later(wait: REMINDERS[:two])
+    RdsMailer.with(participant: self).gratitude.deliver_later(wait: REMINDERS[:three])
   end
 
   # rubocop:disable Style/CaseLikeIf
@@ -497,7 +505,7 @@ class Participant < ApplicationRecord
     save!
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+  # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def check_match
     return unless recruiter
     return unless ELIGIBLE_SGM_GROUPS.include?(recruiter.sgm_group)
@@ -509,7 +517,7 @@ class Participant < ApplicationRecord
     self.match = sgm_match
     save!
   end
-  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
   def secondary_seeds
     return if seed

@@ -89,22 +89,6 @@ class SurveyResponse < ApplicationRecord
     completed_main_block.where('(metadata -> :key) NOT IN (:values)', key: 'sgm_group', values: INELIGIBLE_SGM_GROUPS)
   }
 
-  if Rails.env.production?
-    REMINDERS = {
-      one: 1.day,
-      two: 2.days,
-      three: 3.days
-    }.freeze
-  end
-
-  if Rails.env.development? || Rails.env.test?
-    REMINDERS = {
-      one: 1.minute,
-      two: 2.minutes,
-      three: 3.minutes
-    }.freeze
-  end
-
   def baseline_survey?
     survey_title&.strip == 'SMILE Survey - Baseline'
   end
@@ -146,6 +130,7 @@ class SurveyResponse < ApplicationRecord
     participant&.self_generated_id
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
   def set_attraction_sgm_group
     if attraction_eligible?
       attractions = sexual_attraction&.split(',')
@@ -160,14 +145,16 @@ class SurveyResponse < ApplicationRecord
           self.attraction_sgm_group = male_attraction_grouping(attr_val)
         end
       elsif attractions.size > 1
-        attraction_grouping_2(attractions)
+        attraction_grouping2(attractions)
       end
     else
       self.attraction_sgm_group = nil
     end
     save
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
 
+  # rubocop:disable Metrics/MethodLength
   def female_attraction_grouping(value)
     case value
     when '1'
@@ -182,7 +169,9 @@ class SurveyResponse < ApplicationRecord
       'no group'
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
+  # rubocop:disable Metrics/MethodLength
   def male_attraction_grouping(value)
     case value
     when '1'
@@ -197,8 +186,10 @@ class SurveyResponse < ApplicationRecord
       'no group'
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
-  def attraction_grouping_2(attractions)
+  # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+  def attraction_grouping2(attractions)
     case gender_identity
     when '1', '10'
       if attractions.size == 2 && attractions.include?('3') && attractions.include?('4')
@@ -214,6 +205,7 @@ class SurveyResponse < ApplicationRecord
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
 
   def attraction_eligible?
     attraction_eligibility == 'eligible' && INELIGIBLE_SGM_GROUPS.include?(sgm_group)
@@ -239,6 +231,7 @@ class SurveyResponse < ApplicationRecord
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def set_attraction_eligibility
     self.attraction_eligibility = 'ineligible'
     attractions = sexual_attraction&.split(',')
@@ -251,7 +244,9 @@ class SurveyResponse < ApplicationRecord
       self.attraction_eligibility = 'eligible'
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
+  # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
   def gender_identity_label
     case gender_identity
     when '1', '10'
@@ -274,7 +269,9 @@ class SurveyResponse < ApplicationRecord
       gender_identity
     end
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
+  # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
   def sexual_orientation_label
     case sexual_orientation
     when '1', '9', '16'
@@ -297,11 +294,13 @@ class SurveyResponse < ApplicationRecord
       sexual_orientation
     end
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
   def sexual_attraction_label
     sexual_attraction&.split(',')&.map { |v| sexual_attraction_value(v) }&.join(', ')
   end
 
+  # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
   def sexual_attraction_value(value)
     case value
     when '1'
@@ -326,6 +325,7 @@ class SurveyResponse < ApplicationRecord
       value
     end
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
   def self.consent_stats(country_name)
     responses = SurveyResponse.where(country: country_name, survey_title: 'SMILE Consent')
@@ -571,20 +571,20 @@ class SurveyResponse < ApplicationRecord
 
   def schedule_sms
     RecruitmentReminderJob.perform_now(participant_id)
-    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:one]).perform_later(participant_id)
-    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:two]).perform_later(participant_id)
-    RecruitmentReminderJob.set(wait: SurveyResponse::REMINDERS[:three]).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: REMINDERS[:one]).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(participant_id)
+    RecruitmentReminderJob.set(wait: REMINDERS[:three]).perform_later(participant_id)
   end
 
   def one_two_three
     ReminderMailer.with(participant: participant).post_baseline.deliver_now
-    ReminderMailer.with(participant: participant).post_baseline_reminder.deliver_later(wait: SurveyResponse::REMINDERS[:one])
-    ReminderMailer.with(participant: participant).payment.deliver_later(wait: SurveyResponse::REMINDERS[:two])
+    ReminderMailer.with(participant: participant).post_baseline_reminder.deliver_later(wait: REMINDERS[:one])
+    ReminderMailer.with(participant: participant).payment.deliver_later(wait: REMINDERS[:two])
   end
 
   def one_two
     ReminderMailer.with(participant: participant).post_baseline.deliver_now
-    ReminderMailer.with(participant: participant).post_baseline_reminder.deliver_later(wait: SurveyResponse::REMINDERS[:one])
+    ReminderMailer.with(participant: participant).post_baseline_reminder.deliver_later(wait: REMINDERS[:one])
   end
 
   def seeds_post_consent
