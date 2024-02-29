@@ -10,38 +10,9 @@ class Api::V1::ParticipantsController < Api::ApiController
     render json: @participant
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def create
     @participant = Participant.where(email: sanitized_email).first_or_initialize(participant_params)
     @participant.assign_attributes(participant_params)
-    unless params[:survey_uuid].blank? && params[:response_uuid].blank?
-      response = SurveyResponse.find_by(response_uuid: params[:response_uuid])
-      if response
-        response.update(survey_complete: params[:survey_complete],
-                        survey_title: params[:survey_title])
-      else
-        @participant.survey_responses.build(
-          survey_uuid: params[:survey_uuid],
-          response_uuid: params[:response_uuid],
-          survey_complete: params[:survey_complete],
-          survey_title: params[:survey_title]
-        )
-      end
-    end
-    unless params[:c_survey_uuid].blank? && params[:c_response_uuid].blank?
-      response = SurveyResponse.find_by(response_uuid: params[:c_response_uuid])
-      if response
-        response.update(survey_complete: params[:c_survey_complete],
-                        survey_title: params[:c_survey_title])
-      else
-        @participant.survey_responses.build(
-          survey_uuid: params[:c_survey_uuid],
-          response_uuid: params[:c_response_uuid],
-          survey_complete: params[:c_survey_complete],
-          survey_title: params[:c_survey_title]
-        )
-      end
-    end
     if @participant.save
       @participant.send_verification_message(params[:language])
       render json: @participant, status: :created
@@ -49,7 +20,6 @@ class Api::V1::ParticipantsController < Api::ApiController
       render json: @participant.errors, status: :unprocessable_entity
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def update
     @participant = Participant.find(params[:id])

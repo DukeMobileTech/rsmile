@@ -2,8 +2,7 @@ Dear participant,
 <p>Thank you for participating in the SMILE research study.</p>
 <p>When you completed the survey, you stated that you may be willing to invite other 
   people to take the survey. If you do not want to invite anyone, you can ignore this 
-  email or click <a href="<%= admin_opt_out_url({code: @participant.code}) %>">here</a>
-  to opt out of future reminders.
+  email or <a href="<%= admin_opt_out_url({code: @participant.code}) %>">opt out</a> of future reminders.
 </p>
 <p>You can invite up to 2 people. For each person you invite who successfully 
   completes the survey, you will receive a small payment of <%= @participant.recruitment_amount %>, 

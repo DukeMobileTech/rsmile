@@ -28,6 +28,9 @@ require 'sorted_set'
 #  agree_to_recruit         :boolean          default(TRUE)
 #  wants_payment            :boolean          default(TRUE)
 #  opt_out                  :boolean          default(FALSE)
+#  due_on                   :datetime
+#  derived_seed             :boolean          default(FALSE)
+#  chain_level              :integer          default(0)
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
@@ -40,13 +43,13 @@ class Participant < ApplicationRecord
 
   before_create :assign_identifiers
   before_create :enforce_unique_code
+  after_create :non_seed_rds_attributes
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   after_save :check_referrer_sgm_group
   after_save :check_match
-  after_save :secondary_seeds
 
   scope :excluded, -> { where(include: false) }
   scope :eligible, -> { where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS) }
@@ -415,8 +418,34 @@ class Participant < ApplicationRecord
   def start_rds
     return unless seed
 
+    seed_rds_attributes
     RdsMailer.with(participant: self).invite_initial.deliver_now
     RdsMailer.with(participant: self).invite_reminder.deliver_later(wait: REMINDERS[:one])
+  end
+
+  def seed_rds_attributes
+    # rubocop:disable Rails/SkipsModelValidations
+    update_columns(rds_id: code, due_on: DateTime.now + 14.days)
+    # rubocop:enable Rails/SkipsModelValidations
+  end
+
+  def non_seed_rds_attributes
+    return if seed
+
+    rds_code = code
+    rds_code = "#{recruiter.rds_id}=#{code}" if recruiter
+    levels = rds_code.split('=')
+    # rubocop:disable Rails/SkipsModelValidations
+    update_columns(rds_id: rds_code, chain_level: levels.size - 1)
+    # rubocop:enable Rails/SkipsModelValidations
+  end
+
+  def set_due_date
+    return if due_on
+
+    # rubocop:disable Rails/SkipsModelValidations
+    update_columns(due_on: DateTime.now + 14.days)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 
   def seed_post_consent_communication
@@ -518,15 +547,4 @@ class Participant < ApplicationRecord
     save!
   end
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
-
-  def secondary_seeds
-    return if seed
-    return if referrer_code.blank?
-    return if recruiter.nil?
-    return if match
-    return unless ELIGIBLE_SGM_GROUPS.include?(sgm_group)
-
-    self.seed = true
-    save!
-  end
 end

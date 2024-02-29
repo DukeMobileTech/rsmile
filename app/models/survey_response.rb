@@ -557,6 +557,7 @@ class SurveyResponse < ApplicationRecord
     elsif participant.preferred_contact_method == '2' && participant.phone_number.present?
       schedule_sms
     end
+    participant.set_due_date
   end
 
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

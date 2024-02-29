@@ -26,6 +26,9 @@
 #  agree_to_recruit         :boolean          default(TRUE)
 #  wants_payment            :boolean          default(TRUE)
 #  opt_out                  :boolean          default(FALSE)
+#  due_on                   :datetime
+#  derived_seed             :boolean          default(FALSE)
+#  chain_level              :integer          default(0)
 #
 class ParticipantSerializer < ActiveModel::Serializer
   attributes :id, :email, :phone_number, :country, :self_generated_id, :wants_payment, :agree_to_recruit,
