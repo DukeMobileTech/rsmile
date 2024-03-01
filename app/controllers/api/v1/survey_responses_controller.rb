@@ -48,7 +48,7 @@ module Api
 
       def sync
         survey_response = SurveyResponse.find(params[:id])
-        if survey_response&.rds_survey?
+        if survey_response&.baseline_survey?
           SurveyMetadataJob.perform_later(survey_response.id)
           render json: { status: 'queued' }, status: :ok
         else

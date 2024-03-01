@@ -39,7 +39,7 @@ class SurveyResponse < ApplicationRecord
 
   scope :consents, -> { where(survey_title: 'SMILE Consent') }
   scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
-  scope :baselines, -> { where(survey_title: 'SMILE Survey - Baseline') }
+  scope :baselines, -> { where(survey_title: BASELINE_TITLE) }
   scope :safety_plans, -> { where(survey_title: 'Safety Planning') }
   # An included baseline survey is one that is:
   # 1. Not a duplicate
@@ -90,7 +90,7 @@ class SurveyResponse < ApplicationRecord
   }
 
   def baseline_survey?
-    survey_title&.strip == 'SMILE Survey - Baseline'
+    survey_title&.strip == BASELINE_TITLE
   end
 
   def short_survey?
@@ -532,10 +532,6 @@ class SurveyResponse < ApplicationRecord
 
   def seeds_consent_survey?
     survey_title&.strip == 'SMILE Consent - RDS Seeds'
-  end
-
-  def rds_survey?
-    survey_title&.strip == 'SMILE Survey - Baseline RDS'
   end
 
   def seeds_reminder_conditions_met?

@@ -54,7 +54,7 @@ class Participant < ApplicationRecord
   scope :eligible, -> { where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS) }
   scope :eligible_completed_main_block, lambda {
     eligible.joins(:survey_responses)
-            .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+            .where(survey_responses: { survey_title: BASELINE_TITLE })
             .where(survey_responses: { duplicate: false })
             .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
   }
@@ -62,21 +62,21 @@ class Participant < ApplicationRecord
   scope :blanks, -> { where(include: true).where(sgm_group: 'blank') }
   scope :derived, lambda {
     ineligible.joins(:survey_responses)
-              .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+              .where(survey_responses: { survey_title: BASELINE_TITLE })
               .where(survey_responses: { duplicate: false })
               .where('metadata @> hstore(:key, :value)', key: 'attraction_sgm_group', value: 'eligible')
   }
   scope :contactable, lambda {
     eligible_completed_main_block
       .joins(:survey_responses)
-      .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+      .where(survey_responses: { survey_title: BASELINE_TITLE })
       .where(survey_responses: { duplicate: false })
       .where('metadata @> hstore(:key, :value)', key: 'can_contact', value: 'true')
   }
   scope :seeds, -> { where(seed: true) }
 
   def consents
-    survey_responses.where(survey_title: 'SMILE Consent').order(:created_at)
+    survey_responses.where(survey_title: 'SMILE Consent - RDS').order(:created_at)
   end
 
   def seed_consents
@@ -84,15 +84,11 @@ class Participant < ApplicationRecord
   end
 
   def contacts
-    survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline').order(:created_at)
+    survey_responses.where(survey_title: 'SMILE Contact Info Form - Baseline RDS').order(:created_at)
   end
 
   def baselines
-    survey_responses.where(survey_title: 'SMILE Survey - Baseline').order(:created_at)
-  end
-
-  def rds_baselines
-    survey_responses.where(survey_title: 'SMILE Survey - Baseline RDS').order(:created_at)
+    survey_responses.where(survey_title: BASELINE_TITLE).order(:created_at)
   end
 
   def safety_plans
@@ -101,10 +97,6 @@ class Participant < ApplicationRecord
 
   def baseline
     baselines.where(duplicate: false).first
-  end
-
-  def rds_baseline
-    rds_baselines.where(duplicate: false).first
   end
 
   def consent
@@ -177,7 +169,7 @@ class Participant < ApplicationRecord
     Participant.includes(:survey_responses)
                .where(include: true)
                .where.not(sgm_group: INELIGIBLE_SGM_GROUPS)
-               .where(survey_responses: { survey_title: 'SMILE Survey - Baseline' })
+               .where(survey_responses: { survey_title: BASELINE_TITLE })
                .where(survey_responses: { survey_complete: true })
   end
 
@@ -376,12 +368,24 @@ class Participant < ApplicationRecord
     Participant.where(referrer_code: code)
   end
 
+  def eligible_recruits
+    recruits.where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS)
+  end
+
+  def eligible_completed_recruits
+    eligible_recruits.joins(:survey_responses)
+                     .where(survey_responses: { survey_title: BASELINE_TITLE })
+                     .where(survey_responses: { survey_complete: true })
+                     .where(survey_responses: { duplicate: false })
+                     .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
+  end
+
   def reminder_quota_met
     reminders.size >= 3
   end
 
   def recruitment_quota_met
-    recruits.size >= 2
+    eligible_completed_recruits.size >= 2
   end
 
   def sgm_match
@@ -481,7 +485,7 @@ class Participant < ApplicationRecord
       max_amount
     elsif recruits.size == 1
       one_invite_amount
-    elsif rds_baseline
+    elsif baseline
       survey_amount
     else
       payments = { 'Vietnam' => '0 VND', 'Kenya' => 'KES 0', 'Brazil' => 'R$ 0' }
@@ -503,6 +507,14 @@ class Participant < ApplicationRecord
 
   def sgm_group_enrolling
     SGM_GROUP_RECRUITMENT[country][sgm_group]
+  end
+
+  def update_recruiter_quota
+    return if recruiter.nil?
+
+    # rubocop:disable Rails/SkipsModelValidations
+    recruiter.update_column(:quota_met, recruiter.recruitment_quota_met)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 
   private

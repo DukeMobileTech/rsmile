@@ -119,4 +119,6 @@ class ApplicationRecord < ActiveRecord::Base
       'blank' => false
     }
   }.freeze
+
+  BASELINE_TITLE = 'SMILE Survey - Baseline RDS'.freeze
 end
