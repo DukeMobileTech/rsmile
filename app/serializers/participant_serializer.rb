@@ -12,7 +12,7 @@
 #  referrer_code            :string
 #  sgm_group                :string
 #  referrer_sgm_group       :string
-#  match                    :boolean
+#  match                    :boolean          default(FALSE)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  preferred_contact_method :string

@@ -14,7 +14,7 @@ require 'sorted_set'
 #  referrer_code            :string
 #  sgm_group                :string
 #  referrer_sgm_group       :string
-#  match                    :boolean
+#  match                    :boolean          default(FALSE)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  preferred_contact_method :string
@@ -48,8 +48,7 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
-  after_save :check_referrer_sgm_group
-  after_save :check_match
+  after_save :sgm_group_checks
 
   scope :excluded, -> { where(include: false) }
   scope :eligible, -> { where(include: true).where(sgm_group: ELIGIBLE_SGM_GROUPS) }
@@ -502,6 +501,10 @@ class Participant < ApplicationRecord
     payments[country]
   end
 
+  def sgm_group_enrolling
+    SGM_GROUP_RECRUITMENT[country][sgm_group]
+  end
+
   private
 
   def update_duplicates(duplicates)
@@ -526,25 +529,37 @@ class Participant < ApplicationRecord
     end while self.class.exists?(code: code)
   end
 
+  def sgm_group_checks
+    # rubocop:disable Rails::SkipsModelValidations
+    update_columns(referrer_sgm_group: check_referrer_sgm_group, match: check_match)
+    reload
+    update_columns(derived_seed: check_derived_seed)
+    # rubocop:enable Rails::SkipsModelValidations
+  end
+
   def check_referrer_sgm_group
-    return unless recruiter
-    return if recruiter.sgm_group == referrer_sgm_group
-
-    self.referrer_sgm_group = recruiter.sgm_group
-    save!
+    if recruiter.nil?
+      nil
+    else
+      recruiter.sgm_group
+    end
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def check_match
-    return unless recruiter
-    return unless ELIGIBLE_SGM_GROUPS.include?(recruiter.sgm_group)
-    return unless ELIGIBLE_SGM_GROUPS.include?(sgm_group)
-    return unless ELIGIBLE_SGM_GROUPS.include?(referrer_sgm_group)
-    return if match && sgm_match
-    return if !match && !sgm_match
-
-    self.match = sgm_match
-    save!
+    if recruiter.nil? ||
+       ELIGIBLE_SGM_GROUPS.exclude?(sgm_group) ||
+       ELIGIBLE_SGM_GROUPS.exclude?(referrer_sgm_group)
+      false
+    else
+      sgm_match
+    end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+
+  def check_derived_seed
+    if match
+      false
+    else
+      SGM_GROUP_RECRUITMENT[country][sgm_group]
+    end
+  end
 end

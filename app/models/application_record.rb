@@ -80,4 +80,43 @@ class ApplicationRecord < ActiveRecord::Base
       three: 3.minutes
     }.freeze
   end
+
+  SGM_GROUP_RECRUITMENT = {
+    'Brazil' => {
+      'non-binary person' => true,
+      'transgender woman' => true,
+      'transgender man' => true,
+      'woman attracted to women' => true,
+      'man attracted to men' => true,
+      'multi-attracted woman' => true,
+      'multi-attracted man' => true,
+      'no group' => false,
+      'ineligible' => false,
+      'blank' => false
+    },
+    'Kenya' => {
+      'non-binary person' => true,
+      'transgender woman' => true,
+      'transgender man' => true,
+      'woman attracted to women' => true,
+      'man attracted to men' => true,
+      'multi-attracted woman' => true,
+      'multi-attracted man' => true,
+      'no group' => false,
+      'ineligible' => false,
+      'blank' => false
+    },
+    'Vietnam' => {
+      'non-binary person' => true,
+      'transgender woman' => true,
+      'transgender man' => true,
+      'woman attracted to women' => true,
+      'man attracted to men' => true,
+      'multi-attracted woman' => true,
+      'multi-attracted man' => true,
+      'no group' => false,
+      'ineligible' => false,
+      'blank' => false
+    }
+  }.freeze
 end

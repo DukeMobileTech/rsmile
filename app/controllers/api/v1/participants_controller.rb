@@ -105,13 +105,13 @@ class Api::V1::ParticipantsController < Api::ApiController
 
   def referrer
     participant = Participant.find(params[:id])
-    render json: { referrer_sgm_group: nil, match: nil, quota_met: nil }, status: :not_found if participant.nil?
+    render json: { referrer_sgm_group: nil, match: nil, quota_met: nil, group_enrolling: nil, derived_seed: nil }, status: :not_found if participant.nil?
     recruiter = participant.recruiter
-    render json: { referrer_sgm_group: nil, match: nil, quota_met: nil }, status: :not_found if recruiter.nil?
+    render json: { referrer_sgm_group: nil, match: nil, quota_met: nil, group_enrolling: nil, derived_seed: nil }, status: :not_found if recruiter.nil?
     render json: {
-      referrer_sgm_group: recruiter.sgm_group,
-      match: participant.sgm_group == recruiter.sgm_group,
-      quota_met: recruiter.quota_met
+      referrer_sgm_group: recruiter.sgm_group, quota_met: recruiter.quota_met,
+      match: participant.match, group_enrolling: participant.sgm_group_enrolling,
+      derived_seed: participant.derived_seed
     }, status: :ok
   end
 
