@@ -144,9 +144,7 @@ ActiveAdmin.register Participant do
       row :include
       row :created_at
       row :updated_at
-      row 'Contact Method' do |participant|
-        participant.contact_method
-      end
+      row 'Contact Method', &:contact_method
       row 'Consent' do |participant|
         ul do
           participant.consents.each do |consent|
@@ -177,6 +175,7 @@ ActiveAdmin.register Participant do
   form do |f|
     f.inputs 'Details' do
       f.input :include
+      f.input :seed
     end
     f.actions
   end

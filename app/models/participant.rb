@@ -517,6 +517,13 @@ class Participant < ApplicationRecord
     # rubocop:enable Rails/SkipsModelValidations
   end
 
+  def previous_participant
+    return true if baseline_participant_id
+    return false unless baseline
+
+    baseline.survey_complete
+  end
+
   private
 
   def update_duplicates(duplicates)

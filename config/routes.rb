@@ -24,6 +24,7 @@ Rails.application.routes.draw do
           get '/recruitment' => 'participants#recruitment', as: 'recruitment'
         end
         collection do
+          post '/email_check' => 'participants#email_check', as: 'email_check'
           post '/verify' => 'participants#verify', as: 'verify'
           post '/check' => 'participants#check', as: 'check'
           post '/referrer_check' => 'participants#referrer_check', as: 'referrer_check'

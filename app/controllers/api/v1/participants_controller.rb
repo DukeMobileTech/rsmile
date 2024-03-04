@@ -127,6 +127,15 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  def email_check
+    participant = Participant.find_by(email: sanitized_email)
+    if participant&.previous_participant
+      render json: { exists: true, id: participant.id }, status: :ok
+    else
+      render json: { exists: false, id: nil }, status: :ok
+    end
+  end
+
   private
 
   def participant_params
