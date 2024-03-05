@@ -532,6 +532,12 @@ class Participant < ApplicationRecord
     true
   end
 
+  def invite_expired?
+    return false if due_on.nil?
+
+    due_on < DateTime.now
+  end
+
   private
 
   def update_duplicates(duplicates)

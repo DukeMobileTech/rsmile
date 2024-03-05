@@ -79,9 +79,11 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
+  # Check whether a seed participant is allowed to invite other participants.
   def check
     participant = Participant.find_by(code: params[:code])
-    if params[:code].blank? || participant.nil? || !participant.seed || participant.quota_met
+    if participant.nil? || !participant.seed || participant.quota_met ||
+       participant.invite_expired? || !participant.sgm_group_enrolling
       render json: { continue: false, sgm_group: nil, id: nil, country: nil },
              status: :ok
     else
@@ -91,9 +93,10 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  # Check whether a participant is allowed to invite other participants.
   def referrer_check
     participant = Participant.find_by(code: params[:code])
-    if params[:code].blank? || participant.nil? || participant.quota_met
+    if participant.nil? || participant.quota_met || participant.invite_expired? || !participant.sgm_group_enrolling
       render json: { continue: false, sgm_group: nil, country: nil },
              status: :ok
     else
