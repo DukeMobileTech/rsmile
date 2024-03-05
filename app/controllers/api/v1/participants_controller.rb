@@ -115,14 +115,15 @@ class Api::V1::ParticipantsController < Api::ApiController
     }, status: :ok
   end
 
+  # Checks whether the participant's recruiter has met their quota. If the recruiter
+  # has met their quota, the participant is not allowed to invite other participants.
   def recruitment
     participant = Participant.find(params[:id])
-    recruiter = participant&.recruiter
-    if params[:id].blank? || participant.nil? || recruiter.nil?
+    if params[:id].blank? || participant.nil? || participant.recruiter.nil?
       render json: { sgm_group: nil, quota_met: nil, code: nil }, status: :not_found
     else
       render json: { sgm_group: participant.sgm_group_label,
-                     quota_met: recruiter.quota_met, code: participant.code },
+                     quota_met: participant.recruiter_quota_met?, code: participant.code },
              status: :ok
     end
   end

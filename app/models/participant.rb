@@ -524,6 +524,14 @@ class Participant < ApplicationRecord
     baseline.survey_complete
   end
 
+  def recruiter_quota_met?
+    return false if recruiter.nil? || recruiter.quota_met == false
+    return false if recruiter.quota_met &&
+                    recruiter.eligible_completed_recruits.pluck(:id).include?(id)
+
+    true
+  end
+
   private
 
   def update_duplicates(duplicates)

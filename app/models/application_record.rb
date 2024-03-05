@@ -76,8 +76,8 @@ class ApplicationRecord < ActiveRecord::Base
   if Rails.env.development? || Rails.env.test?
     REMINDERS = {
       one: 1.minute,
-      two: 2.minutes,
-      three: 3.minutes
+      two: 5.minutes,
+      three: 10.minutes
     }.freeze
   end
 
