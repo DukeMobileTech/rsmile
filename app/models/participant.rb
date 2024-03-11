@@ -95,6 +95,10 @@ class Participant < ApplicationRecord
     survey_responses.where(survey_title: 'Safety Planning').order(:created_at)
   end
 
+  def recruitments
+    survey_responses.where(survey_title: 'SMILE Recruitment - RDS').order(:created_at)
+  end
+
   def baseline
     baselines.where(duplicate: false).first
   end
@@ -422,9 +426,20 @@ class Participant < ApplicationRecord
     return unless seed
 
     seed_rds_attributes
-    RdsMailer.with(participant: self).invite_initial.deliver_now
-    RdsMailer.with(participant: self).invite_reminder.deliver_later(wait: REMINDERS[:one])
+    schedule_seed_reminders
   end
+
+  # rubocop:disable Metrics/AbcSize
+  def schedule_seed_reminders
+    if preferred_contact_method == '1' && email.present?
+      RdsMailer.with(participant: self).invite_initial.deliver_now
+      RdsMailer.with(participant: self).invite_reminder.deliver_later(wait: REMINDERS[:one])
+    elsif preferred_contact_method == '2' && phone_number.present?
+      RecruitmentReminderJob.perform_now(id, 'seed_initial')
+      RecruitmentReminderJob.set(wait: REMINDERS[:one]).perform_later(id, 'seed_reminder')
+    end
+  end
+  # rubocop:enable Metrics/AbcSize
 
   def seed_rds_attributes
     # rubocop:disable Rails/SkipsModelValidations
@@ -451,12 +466,21 @@ class Participant < ApplicationRecord
     # rubocop:enable Rails/SkipsModelValidations
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def seed_post_consent_communication
-    RdsMailer.with(participant: self).post_consent.deliver_now
-    RdsMailer.with(participant: self).post_consent_reminder.deliver_later(wait: REMINDERS[:one])
-    RdsMailer.with(participant: self).payment.deliver_later(wait: REMINDERS[:two])
-    RdsMailer.with(participant: self).gratitude.deliver_later(wait: REMINDERS[:three])
+    if preferred_contact_method == '1' && email.present?
+      RdsMailer.with(participant: self).post_consent.deliver_now
+      RdsMailer.with(participant: self).post_consent_reminder.deliver_later(wait: REMINDERS[:one])
+      RdsMailer.with(participant: self).payment.deliver_later(wait: REMINDERS[:two])
+      RdsMailer.with(participant: self).gratitude.deliver_later(wait: REMINDERS[:three])
+    elsif preferred_contact_method == '2' && phone_number.present?
+      RecruitmentReminderJob.perform_now(id, 'seed_post_consent')
+      RecruitmentReminderJob.set(wait: REMINDERS[:one]).perform_later(id, 'seed_post_consent_reminder')
+      RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(id, 'payment')
+      RecruitmentReminderJob.set(wait: REMINDERS[:three]).perform_later(id, 'gratitude')
+    end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # rubocop:disable Style/CaseLikeIf
   def country_contact
@@ -536,6 +560,18 @@ class Participant < ApplicationRecord
     return false if due_on.nil?
 
     due_on < DateTime.now
+  end
+
+  def formatted_phone_number
+    return if phone_number.blank?
+
+    number = phone_number
+    number.prepend('+1') if number[0] != '+'
+    number
+  end
+
+  def locale
+    'en'
   end
 
   private

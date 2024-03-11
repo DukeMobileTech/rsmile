@@ -115,6 +115,13 @@ ActiveAdmin.register Participant do
         end
       end
     end
+    column 'Recruitment' do |participant|
+      ul do
+        participant.recruitments.each do |recruitment|
+          li { link_to recruitment.id, admin_survey_response_path(recruitment.id) }
+        end
+      end
+    end
     column 'Recruits' do |participant|
       ul do
         participant.recruits.each do |recruit|
@@ -163,6 +170,13 @@ ActiveAdmin.register Participant do
         ul do
           participant.baselines.each do |baseline|
             li { link_to baseline.id, admin_survey_response_path(baseline.id) }
+          end
+        end
+      end
+      row 'Recruitment' do |participant|
+        ul do
+          participant.recruitments.each do |recruitment|
+            li { link_to recruitment.id, admin_survey_response_path(recruitment.id) }
           end
         end
       end

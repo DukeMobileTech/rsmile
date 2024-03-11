@@ -571,10 +571,10 @@ class SurveyResponse < ApplicationRecord
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def schedule_sms
-    RecruitmentReminderJob.perform_now(participant_id)
-    RecruitmentReminderJob.set(wait: REMINDERS[:one]).perform_later(participant_id)
-    RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(participant_id)
-    RecruitmentReminderJob.set(wait: REMINDERS[:three]).perform_later(participant_id)
+    RecruitmentReminderJob.perform_now(participant_id, 'participant_post_consent')
+    RecruitmentReminderJob.set(wait: REMINDERS[:one]).perform_later(participant_id, 'participant_post_consent_reminder')
+    RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(participant_id, 'payment')
+    RecruitmentReminderJob.set(wait: REMINDERS[:three]).perform_later(participant_id, 'gratitude')
   end
 
   def one_two_three

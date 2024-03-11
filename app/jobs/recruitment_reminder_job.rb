@@ -1,36 +1,100 @@
 class RecruitmentReminderJob < ApplicationJob
   queue_as :rds
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Style/StringConcatenation
-  def perform(participant_id)
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Style/CaseLikeIf, Metrics/PerceivedComplexity
+  def perform(participant_id, round)
     participant = Participant.find_by(id: participant_id)
-    return if participant.nil?
-    return if participant.raffle_quota_met
-    return if participant.reminder_quota_met
+    nil if participant.nil?
 
-    to = participant.phone_number
-    to.prepend('+1') if to[0] != '+'
-    from = Rails.application.credentials.config[:TWILIO_NUMBER]
-    body = "Hi #{participant.name}! This is a reminder from the SMILE SGM Pilot Study at Duke " +
-           'that you still have an opportunity to recruit other LGBTQ+ participants who identify as ' +
-           "#{participant.sgm_group} to also take the survey. Please share with them the following invitation link: " +
-           "#{Rails.application.credentials.config[:invitation_url]}?referrer_code=#{participant.code}"
+    if round == 'seed_initial'
+      seed_invite_initial(participant)
+    elsif round == 'seed_reminder'
+      seed_invite_reminder(participant)
+    elsif round == 'seed_post_consent'
+      seed_post_consent(participant)
+    elsif round == 'seed_post_consent_reminder'
+      seed_post_consent_reminder(participant)
+    elsif round == 'participant_post_consent'
+      participant_post_consent(participant)
+    elsif round == 'participant_post_consent_reminder'
+      participant_post_consent_reminder(participant)
+    elsif round == 'payment'
+      payment(participant)
+    elsif round == 'gratitude'
+      gratitude(participant)
+    end
+  end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Style/CaseLikeIf, Metrics/PerceivedComplexity
+
+  def seed_invite_initial(participant)
+    url = "#{Rails.application.credentials.config[:seeds_consent_url]}?code=#{participant.code}"
+    body = I18n.t('rds.sms.seed_invite_initial', url: url, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+  end
+
+  def seed_invite_reminder(participant)
+    url = "#{Rails.application.credentials.config[:seeds_consent_url]}?code=#{participant.code}"
+    body = I18n.t('rds.sms.seed_invite_reminder', url: url, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+  end
+
+  def seed_post_consent(participant)
+    url = "#{Rails.application.credentials.config[:consent_url]}?referrer_code=#{participant.code}"
+    body = I18n.t('rds.sms.seed_post_consent', sgm_group: participant.sgm_group_label,
+                                               url: url, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+  end
+
+  def seed_post_consent_reminder(participant)
+    url = "#{Rails.application.credentials.config[:consent_url]}?referrer_code=#{participant.code}"
+    body = I18n.t('rds.sms.seed_post_consent_reminder', sgm_group: participant.sgm_group_label,
+                                                        url: url, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+  end
+
+  def participant_post_consent(participant)
+    url = "#{Rails.application.credentials.config[:consent_url]}?referrer_code=#{participant.code}"
+    body = I18n.t('rds.sms.participant_post_consent', sgm_group: participant.sgm_group_label,
+                                                      url: url, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+  end
+
+  def participant_post_consent_reminder(participant)
+    url = "#{Rails.application.credentials.config[:consent_url]}?referrer_code=#{participant.code}"
+    body = I18n.t('rds.sms.participant_post_consent_reminder', sgm_group: participant.sgm_group_label,
+                                                               url: url, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+  end
+
+  def payment(participant)
+    to = participant.formatted_phone_number
+    body = I18n.t('rds.sms.payment', amount: participant.payment_amount,
+                                     country: participant.country, number: to,
+                                     contact: participant.country_contact,
+                                     locale: participant.locale)
+    send_message(to, body)
+  end
+
+  def gratitude(participant)
+    body = I18n.t('rds.sms.gratitude', country: participant.country,
+                                       contact: participant.country_contact,
+                                       locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+  end
+
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def send_message(to, body)
+    from = Rails.application.credentials.config[:RDS_TWILIO_NUMBER]
     account_sid = Rails.application.credentials.config[:TWILIO_SID]
     auth_token = Rails.application.credentials.config[:TWILIO_AUTH]
     client = Twilio::REST::Client.new(account_sid, auth_token)
-    begin
-      client.messages.create(
-        from: from,
-        to: to,
-        body: body
-      )
-      return if participant.reminder_quota_met
-
-      count = participant.reminders.size + 1
-      participant.reminders.create(category: count)
-    rescue Twilio::REST::RestError => e
-      Rails.logger.error e.message
-    end
+    client.messages.create(
+      from: from,
+      to: to,
+      body: body
+    )
+  rescue Twilio::REST::RestError => e
+    Rails.logger.error e.message
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Style/StringConcatenation
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end
