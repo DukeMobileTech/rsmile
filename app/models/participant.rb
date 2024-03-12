@@ -625,7 +625,7 @@ class Participant < ApplicationRecord
   end
 
   def check_derived_seed
-    if match
+    if seed || match
       false
     else
       SGM_GROUP_RECRUITMENT[country][sgm_group]
