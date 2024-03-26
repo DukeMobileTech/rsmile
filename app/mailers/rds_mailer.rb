@@ -61,6 +61,6 @@ class RdsMailer < ApplicationMailer
   end
 
   def set_language
-    @language = 'en'
+    @language = @participant.locale
   end
 end

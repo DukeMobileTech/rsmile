@@ -1,105 +1,148 @@
 vi:
-  copy: "Vui lòng nhận \"Phiếu chấp thuận tham gia nghiên cứu\" mà bạn yêu cầu trong file đính kèm."
-  thanks: "Cảm ơn bạn."
-  sincerely: "Trân trọng,"
-  team: "Nhóm nghiên cứu SMILE"
-  form: "Phiếu chấp thuận tham gia nghiên cứu"
+  copy: 'Vui lòng nhận "Phiếu chấp thuận tham gia nghiên cứu" mà bạn yêu cầu trong file đính kèm.'
+  thanks: 'Cảm ơn bạn.'
+  sincerely: 'Trân trọng,'
+  team: 'Nhóm nghiên cứu SMILE'
+  form: 'Phiếu chấp thuận tham gia nghiên cứu'
 
   safety:
-    email_title: "Biểu mẫu đã hoàn thành của bạn"
-    email_body: "<p><strong>Xin chào bạn,</strong></p> <p>Theo yêu cầu của bạn, xin gửi lại bản tóm tắt biểu mẫu mà bạn đã điền.</p> <p>Cảm ơn bạn!</p><p>Trân trọng,</p><p>Nhóm nghiên cứu SMILE</p>"
-    title:  "Kế hoạch An toàn"
-    intro_title: "Giới thiệu"
-    intro_p_1: "Bạn có dấu hiệu có ý nghĩ tự sát. Các câu hỏi dưới đây giúp bạn tự lên kế hoạch an toàn cho mình. Đây là cách tự bảo vệ mình trước các ý nghĩ tự sát. Quy trình an toàn được chứng minh giúp giảm nguy cơ khủng hoảng sức khỏe tâm thần. Quy trình cũng giúp bạn tự bảo vệ mình khi rơi vào khủng hoảng sức khỏe tâm thần."
-    intro_p_2: "Quy trình gồm 7 bước, tập trung vào:"
-    intro_step_1: "1) việc giữ khoảng cách với các vật nguy hiểm"
-    intro_step_2: "2) các dấu hiệu cảnh báo bạn đang rơi vào khủng hoảng"
-    intro_step_3: "3) các giải pháp giúp bạn tự ứng phó khi khủng hoảng"
-    intro_step_4: "4) những người và địa điểm giúp bạn phân tán sự tập trung"
-    intro_step_5: "5) những người bạn có thể nhờ giúp đỡ"
-    intro_step_6: "6) sự trợ giúp từ chuyên gia và cộng đồng"
-    intro_step_7: "7) điều giúp bạn tồn tại"
-    intro_p_3: "Mục đích của biểu mẫu Kế hoạch An toàn này là cung cấp cho bạn cơ hội để lập kế hoạch trước và chuẩn bị cho những tình huống khó khăn trong tương lai mà bạn có thể gặp phải."
-    intro_p_4: "Tất cả thông tin bạn nhập vào đây sẽ KHÔNG được lưu lại hoặc chia sẻ với nhóm nghiên cứu SMILE. Vì thông tin này không được lưu trữ, xin đừng quên lưu một bản sao cho chính bạn khi bạn đến phần cuối nếu bạn muốn giữ lại Kế hoạch An toàn của mình cho sau này."
-    access_title: "Bước 1: Giữ khoảng cách"
-    access_p_1: "Hãy giữ khoảng cách với các vật mà bạn có thể dùng để tự phương hại mình. Điều này giúp giảm rủi ro tự sát. Điều này cũng giúp kéo dài thời gian nhằm xoa dịu cảm giác muốn tự sát trong bạn. Tốt nhất hãy chủ động giữ khoảng cách với các vật mà bạn có thể dùng để tự phương hại mình. Chỉ sử dụng các vật này khi bạn không ở trạng thái khủng hoảng. Nếu đang rơi vào trạng thái đó, hãy nhờ ai đó vứt bỏ chúng đi hoặc cất chúng vào một nơi an toàn."
-    access_p_2: "Tự hỏi: <b>Tôi nên vứt bỏ hoặc giữ khoảng cách với vật nào? Tôi có thể dùng vật nào để tự phương hại mình?</b>"
-    access_1: "<b>​​​​Vứt bỏ các chất độc hại.</b>"
-    access_1_1: "• Cho đi hoặc bỏ hết tất cả chất độc có trong nhà."
-    access_1_2: "• Nếu có loại chất độc nào đó mà tôi phải dùng, chỉ giữ lại một ít. Phần còn lại có thể nhờ người khác giữ."
-    access_2: "<b>Vứt bỏ các loại thuốc tiềm ẩn mối nguy.</b>"
-    access_2_1: "• Tôi có thể hỏi ý kiến bác sĩ, dược sĩ hoặc các chuyên gia y tế khác."
-    access_2_2: "• Nếu có loại thuốc tiềm ẩn mối nguy mà tôi phải dùng, chỉ giữ lại một ít. Phần còn lại có thể nhờ người khác giữ."
-    access_3: "<b>Vứt bỏ hoặc giữ khoảng cách dao hoặc các vũ khí khác.</b>"
-    access_3_1: "• Tạm cất giữ vũ khí tại nhà bạn bè, người thân, két sắt, hoặc kho hàng; và nhờ người khác giữ giúp chìa khóa."
-    access_4: "<b>Những hành động khác tôi có thể làm để tránh tự phương hại mình:</b>"
-    warning_title: "Bước 2: Các dấu hiệu cảnh báo"
-    warning_p_1: "Bất kì ai cũng thường có các dấu hiệu cảnh báo hoặc một tác nhân nào đó dẫn đến tự sát. Nhận biết các dấu hiệu này giúp bạn chủ động thực hiện kế hoạch an toàn. Giúp bạn tránh được khủng hoảng tự sát."
-    warning_p_2: "Tự hỏi: <b>Tác nhân hoặc dấu hiệu cảnh báo cụ thể nào khiến khủng hoảng trong tôi tăng lên?</b>"
-    warning_1: "Cảm giác suy sụp, buồn bã, hay khóc"
-    warning_2: "Cảm giác vô vọng hoặc cảm giác mọi thứ không thể tồi tệ hơn được nữa"
-    warning_3: "Cảm giác vô dụng, hoặc thất bại"
-    warning_4: "Cảm thấy bị xem nhẹ, hạ thấp, xấu hổ, giễu cợt"
-    warning_5: "Đau đớn về mặt thể xác"
-    warning_6: "Cảm giác cô đơn hoăc bị chối bỏ"
-    warning_7: "Uống rượu bia hoặc dùng thuốc"
-    warning_8: "Cảm giác bị mắc kẹt hoặc không lối thoát"
-    warning_9: "Cảm giác lo âu, kích động"
-    warning_10: "Cảm giác muốn bỏ cuộc, cô độc"
-    warning_11: "Cảm giác tức giận, muốn tranh cãi, hoặc dễ cáu gắt"
-    warning_12: "Cảm giác quá tải với hoàn cảnh sống hiện tại (chẳng hạn như áp lực tài chính)"
-    warning_13: "Cảm thất bất lực"
-    warning_14: "Cảm giác thất bại, bất lực trước mọi việc"
-    warning_15: "Khác:"
-    cope_title: "Bước 3: Các giải pháp ứng phó"
-    cope_p_1: "Nếu bạn đang có cảm giác muốn tự sát, bạn có thể tự thực hiện các giải pháp ứng phó. Các giải pháp này giúp bạn thôi không suy nghĩ về nó nữa. Đừng chìm đắm vào những điều khiến bạn lo âu, buồn bã. Hãy làm mọi thứ giúp bạn phấn chấn hoặc giúp bạn bình tâm trở lại."
-    cope_p_2: "Tự hỏi: <b>Điều gì có thể giúp tôi phấn chấn hoặc giúp tôi bình tâm lại để phân tán sự tập trung của mình?</b>"
-    cope_1: "Đọc các loại sách giúp phấn chấn/bình tâm"
-    cope_2: "Nấu nướng"
-    cope_3: "Nghe các loại nhạc giúp phấn chấn/bình tâm"
-    cope_4: "Khiêu vũ"
-    cope_5: "Ca hát / Karaoke"
-    cope_6: "Co giãn cơ hoặc tập thể dục"
-    cope_7: "Vẽ"
-    cope_8: "Làm vườn"
-    cope_9: "Chế tạo"
-    cope_10: "Thiền định"
-    cope_11: "Cầu nguyện"
-    cope_12: "Xem các chương trình tivi hoặc các bộ phim giúp phấn chấn/bình tâm"
-    cope_13: "Truy cập các website giúp phấn chấn/bình tâm"
-    cope_14: "Chơi các game giúp phấn chấn/bình tâm"
-    cope_15: "Khác:"
-    distract_title: "Bước 4: Những người và địa điểm giúp bạn phân tán sự tập trung"
-    distract_p_1: "Những người xung quanh có thể giúp bạn phân tán sự tập trung mỗi khi bạn có cảm giác muốn tự sát. Họ chính là nhân tố giúp bạn thôi không suy nghĩ về những phiền muộn nữa. Họ có thể giúp bạn ngay cả khi bạn chưa một lần chia sẻ với họ về cảm giác đó. Ở bước này, bạn đừng vội thảo luận với họ về cảm giác đó (điều này sẽ được xem xét ở bước tiếp theo). Thay vào đó, bạn chỉ cần ở gần bên họ và dựa vào họ để giúp bạn phân tâm. Bạn và họ có thể cùng nhau làm điều gì đó thú vị. Nếu bên bạn không có ai, bạn có thể đi đến một nơi an toàn, nơi có đông người như công viên, cửa hàng, hoặc siêu thị. Đôi khi chỉ cần ở gần ai đó cũng có thể giúp bạn phân tán sự tập trung của mình."
-    distract_p_2: "Tự hỏi: <b>Ai giúp được tôi thôi không suy nghĩ về các vấn đề của mình nữa? Tôi có thể đi đâu để thôi không suy nghĩ về các vấn đề đó nữa?</b> (Không liệt kê những nơi có rượu bia hoặc thuốc)"
-    person_or_place: "Người hoặc địa điểm: "
-    social_title: "Bước 5: Sự hỗ trợ từ xã hội"
-    social_p_1: "Những người xung quanh cũng có thể hỗ trợ và giúp bạn giải quyết vấn đề của mình. Bạn có thể nhờ họ giúp đỡ khi rơi vào khủng hoảng tự sát bằng cách chia sẻ với họ vấn đề bạn đang gặp phải. Hãy chọn những người sống lạc quan và có thể giúp đỡ bạn."
-    social_p_2: "Tự hỏi: <b>Tôi có thể chia sẻ với ai trong gia đình hoặc đứa bạn nào có thể giúp tôi khá hơn? Ai có thể giúp tôi?</b>"
-    social_p_3: "(Đôi khi có người có cảm giác rằng không ai trong gia đình, không người bạn nào có thể giúp họ vượt qua khủng hoảng tự sát cả. Nếu bạn rơi vào trường hợp này, hãy thực hiện bước kế tiếp, bước này gợi ý cho bạn những người có thể giúp được bạn.)"
-    name_and_number: "Tên và số điện thoại: "
-    prof_title: "Bước 6: Sự giúp đỡ từ chuyên gia"
-    prof_p_1: "Có những chuyên gia đủ năng lực và thực sự muốn giúp bạn. Hãy đến gặp bác sĩ, y tá, nhân viên y tế cộng đồng, tư vấn viên, hoặc lãnh đạo cộng đồng đáng tin cậy."
-    prof_p_2: "Tự hỏi: <b>Tôi có thể nhờ trợ giúp ở đâu?</b>"
-    prof_doctor: "Bác sĩ: <u>%{doctor}</u>"
-    prof_provider: "Dịch vụ chăm sóc sức khỏe khác: <u>%{provider}</u>"
-    prof_lifeline: "Lifeline: <u>%{lifeline}</u>"
-    prof_community: "Thành viên trong cộng đồng: <u>%{community}</u>"
-    prof_other: "Khác: <u>%{other}</u>"
-    matters_title: "Bước 7: Điều ý nghĩa trong cuộc đời tôi"
-    matters_p_1: "Việc tìm ra lý do để tồn tại là chìa khóa giúp bạn an toàn khi rơi vào khủng hoảng tâm thần. Hãy nghĩ về những điều có ý nghĩa nhất với bạn trong cuộc đời này."
-    matters_p_2: "Tự hỏi: <b>Điều gì, ai, dự định nào giúp tôi tồn tại trong cuộc đời này?</b>"
-    matters_1: "Thành viên trong gia đình: "
-    matters_4: "Bạn bè: "
-    matters_5: "Vật nuôi: "
-    matters_2: "Niềm đam mê: "
-    matters_3: "Ước mơ: "
-    matters_6: "Khả năng tìm được niềm vui trong tương lai"
-    matters_7: "Khả năng tìm được thỏa nguyện trong tương lai"
-    matters_8: "Khả năng tìm được tìm yêu trong tương lai"
-    matters_9: "Niềm tin về tự sát"
-    matters_10: "Xây đắp tình yêu cho chính mình"
-    matters_11: "Khác: "
-    conclusion_title: "Kết luận"
-    conclusion_p_1: "Khi bạn đã hoàn thành bản kế hoạch an toàn của mình, hãy cất giữ nó ở một nơi an toàn mà bạn luôn nhìn thấy được. Bạn có thể cập nhật bản kế hoạch này bất cứ khi nào bạn tìm được thêm các dấu hiệu cảnh báo và chiến lược ứng phó. Hãy xem bản kế hoạch này ít nhất 3 lần/tuần. Điều này giúp bạn biết được thời điểm và cách dùng bản kế hoạch đó."
-    conclusion_p_2: "Hãy luôn nhớ rằng khi bạn đang rơi vào khủng hoảng, bạn có thể sử dụng bản kế hoạch này để giúp mình được an toàn."
+    email_title: 'Biểu mẫu đã hoàn thành của bạn'
+    email_body: '<p><strong>Xin chào bạn,</strong></p> <p>Theo yêu cầu của bạn, xin gửi lại bản tóm tắt biểu mẫu mà bạn đã điền.</p> <p>Cảm ơn bạn!</p><p>Trân trọng,</p><p>Nhóm nghiên cứu SMILE</p>'
+    title: 'Kế hoạch An toàn'
+    intro_title: 'Giới thiệu'
+    intro_p_1: 'Bạn có dấu hiệu có ý nghĩ tự sát. Các câu hỏi dưới đây giúp bạn tự lên kế hoạch an toàn cho mình. Đây là cách tự bảo vệ mình trước các ý nghĩ tự sát. Quy trình an toàn được chứng minh giúp giảm nguy cơ khủng hoảng sức khỏe tâm thần. Quy trình cũng giúp bạn tự bảo vệ mình khi rơi vào khủng hoảng sức khỏe tâm thần.'
+    intro_p_2: 'Quy trình gồm 7 bước, tập trung vào:'
+    intro_step_1: '1) việc giữ khoảng cách với các vật nguy hiểm'
+    intro_step_2: '2) các dấu hiệu cảnh báo bạn đang rơi vào khủng hoảng'
+    intro_step_3: '3) các giải pháp giúp bạn tự ứng phó khi khủng hoảng'
+    intro_step_4: '4) những người và địa điểm giúp bạn phân tán sự tập trung'
+    intro_step_5: '5) những người bạn có thể nhờ giúp đỡ'
+    intro_step_6: '6) sự trợ giúp từ chuyên gia và cộng đồng'
+    intro_step_7: '7) điều giúp bạn tồn tại'
+    intro_p_3: 'Mục đích của biểu mẫu Kế hoạch An toàn này là cung cấp cho bạn cơ hội để lập kế hoạch trước và chuẩn bị cho những tình huống khó khăn trong tương lai mà bạn có thể gặp phải.'
+    intro_p_4: 'Tất cả thông tin bạn nhập vào đây sẽ KHÔNG được lưu lại hoặc chia sẻ với nhóm nghiên cứu SMILE. Vì thông tin này không được lưu trữ, xin đừng quên lưu một bản sao cho chính bạn khi bạn đến phần cuối nếu bạn muốn giữ lại Kế hoạch An toàn của mình cho sau này.'
+    access_title: 'Bước 1: Giữ khoảng cách'
+    access_p_1: 'Hãy giữ khoảng cách với các vật mà bạn có thể dùng để tự phương hại mình. Điều này giúp giảm rủi ro tự sát. Điều này cũng giúp kéo dài thời gian nhằm xoa dịu cảm giác muốn tự sát trong bạn. Tốt nhất hãy chủ động giữ khoảng cách với các vật mà bạn có thể dùng để tự phương hại mình. Chỉ sử dụng các vật này khi bạn không ở trạng thái khủng hoảng. Nếu đang rơi vào trạng thái đó, hãy nhờ ai đó vứt bỏ chúng đi hoặc cất chúng vào một nơi an toàn.'
+    access_p_2: 'Tự hỏi: <b>Tôi nên vứt bỏ hoặc giữ khoảng cách với vật nào? Tôi có thể dùng vật nào để tự phương hại mình?</b>'
+    access_1: '<b>​​​​Vứt bỏ các chất độc hại.</b>'
+    access_1_1: '• Cho đi hoặc bỏ hết tất cả chất độc có trong nhà.'
+    access_1_2: '• Nếu có loại chất độc nào đó mà tôi phải dùng, chỉ giữ lại một ít. Phần còn lại có thể nhờ người khác giữ.'
+    access_2: '<b>Vứt bỏ các loại thuốc tiềm ẩn mối nguy.</b>'
+    access_2_1: '• Tôi có thể hỏi ý kiến bác sĩ, dược sĩ hoặc các chuyên gia y tế khác.'
+    access_2_2: '• Nếu có loại thuốc tiềm ẩn mối nguy mà tôi phải dùng, chỉ giữ lại một ít. Phần còn lại có thể nhờ người khác giữ.'
+    access_3: '<b>Vứt bỏ hoặc giữ khoảng cách dao hoặc các vũ khí khác.</b>'
+    access_3_1: '• Tạm cất giữ vũ khí tại nhà bạn bè, người thân, két sắt, hoặc kho hàng; và nhờ người khác giữ giúp chìa khóa.'
+    access_4: '<b>Những hành động khác tôi có thể làm để tránh tự phương hại mình:</b>'
+    warning_title: 'Bước 2: Các dấu hiệu cảnh báo'
+    warning_p_1: 'Bất kì ai cũng thường có các dấu hiệu cảnh báo hoặc một tác nhân nào đó dẫn đến tự sát. Nhận biết các dấu hiệu này giúp bạn chủ động thực hiện kế hoạch an toàn. Giúp bạn tránh được khủng hoảng tự sát.'
+    warning_p_2: 'Tự hỏi: <b>Tác nhân hoặc dấu hiệu cảnh báo cụ thể nào khiến khủng hoảng trong tôi tăng lên?</b>'
+    warning_1: 'Cảm giác suy sụp, buồn bã, hay khóc'
+    warning_2: 'Cảm giác vô vọng hoặc cảm giác mọi thứ không thể tồi tệ hơn được nữa'
+    warning_3: 'Cảm giác vô dụng, hoặc thất bại'
+    warning_4: 'Cảm thấy bị xem nhẹ, hạ thấp, xấu hổ, giễu cợt'
+    warning_5: 'Đau đớn về mặt thể xác'
+    warning_6: 'Cảm giác cô đơn hoăc bị chối bỏ'
+    warning_7: 'Uống rượu bia hoặc dùng thuốc'
+    warning_8: 'Cảm giác bị mắc kẹt hoặc không lối thoát'
+    warning_9: 'Cảm giác lo âu, kích động'
+    warning_10: 'Cảm giác muốn bỏ cuộc, cô độc'
+    warning_11: 'Cảm giác tức giận, muốn tranh cãi, hoặc dễ cáu gắt'
+    warning_12: 'Cảm giác quá tải với hoàn cảnh sống hiện tại (chẳng hạn như áp lực tài chính)'
+    warning_13: 'Cảm thất bất lực'
+    warning_14: 'Cảm giác thất bại, bất lực trước mọi việc'
+    warning_15: 'Khác:'
+    cope_title: 'Bước 3: Các giải pháp ứng phó'
+    cope_p_1: 'Nếu bạn đang có cảm giác muốn tự sát, bạn có thể tự thực hiện các giải pháp ứng phó. Các giải pháp này giúp bạn thôi không suy nghĩ về nó nữa. Đừng chìm đắm vào những điều khiến bạn lo âu, buồn bã. Hãy làm mọi thứ giúp bạn phấn chấn hoặc giúp bạn bình tâm trở lại.'
+    cope_p_2: 'Tự hỏi: <b>Điều gì có thể giúp tôi phấn chấn hoặc giúp tôi bình tâm lại để phân tán sự tập trung của mình?</b>'
+    cope_1: 'Đọc các loại sách giúp phấn chấn/bình tâm'
+    cope_2: 'Nấu nướng'
+    cope_3: 'Nghe các loại nhạc giúp phấn chấn/bình tâm'
+    cope_4: 'Khiêu vũ'
+    cope_5: 'Ca hát / Karaoke'
+    cope_6: 'Co giãn cơ hoặc tập thể dục'
+    cope_7: 'Vẽ'
+    cope_8: 'Làm vườn'
+    cope_9: 'Chế tạo'
+    cope_10: 'Thiền định'
+    cope_11: 'Cầu nguyện'
+    cope_12: 'Xem các chương trình tivi hoặc các bộ phim giúp phấn chấn/bình tâm'
+    cope_13: 'Truy cập các website giúp phấn chấn/bình tâm'
+    cope_14: 'Chơi các game giúp phấn chấn/bình tâm'
+    cope_15: 'Khác:'
+    distract_title: 'Bước 4: Những người và địa điểm giúp bạn phân tán sự tập trung'
+    distract_p_1: 'Những người xung quanh có thể giúp bạn phân tán sự tập trung mỗi khi bạn có cảm giác muốn tự sát. Họ chính là nhân tố giúp bạn thôi không suy nghĩ về những phiền muộn nữa. Họ có thể giúp bạn ngay cả khi bạn chưa một lần chia sẻ với họ về cảm giác đó. Ở bước này, bạn đừng vội thảo luận với họ về cảm giác đó (điều này sẽ được xem xét ở bước tiếp theo). Thay vào đó, bạn chỉ cần ở gần bên họ và dựa vào họ để giúp bạn phân tâm. Bạn và họ có thể cùng nhau làm điều gì đó thú vị. Nếu bên bạn không có ai, bạn có thể đi đến một nơi an toàn, nơi có đông người như công viên, cửa hàng, hoặc siêu thị. Đôi khi chỉ cần ở gần ai đó cũng có thể giúp bạn phân tán sự tập trung của mình.'
+    distract_p_2: 'Tự hỏi: <b>Ai giúp được tôi thôi không suy nghĩ về các vấn đề của mình nữa? Tôi có thể đi đâu để thôi không suy nghĩ về các vấn đề đó nữa?</b> (Không liệt kê những nơi có rượu bia hoặc thuốc)'
+    person_or_place: 'Người hoặc địa điểm: '
+    social_title: 'Bước 5: Sự hỗ trợ từ xã hội'
+    social_p_1: 'Những người xung quanh cũng có thể hỗ trợ và giúp bạn giải quyết vấn đề của mình. Bạn có thể nhờ họ giúp đỡ khi rơi vào khủng hoảng tự sát bằng cách chia sẻ với họ vấn đề bạn đang gặp phải. Hãy chọn những người sống lạc quan và có thể giúp đỡ bạn.'
+    social_p_2: 'Tự hỏi: <b>Tôi có thể chia sẻ với ai trong gia đình hoặc đứa bạn nào có thể giúp tôi khá hơn? Ai có thể giúp tôi?</b>'
+    social_p_3: '(Đôi khi có người có cảm giác rằng không ai trong gia đình, không người bạn nào có thể giúp họ vượt qua khủng hoảng tự sát cả. Nếu bạn rơi vào trường hợp này, hãy thực hiện bước kế tiếp, bước này gợi ý cho bạn những người có thể giúp được bạn.)'
+    name_and_number: 'Tên và số điện thoại: '
+    prof_title: 'Bước 6: Sự giúp đỡ từ chuyên gia'
+    prof_p_1: 'Có những chuyên gia đủ năng lực và thực sự muốn giúp bạn. Hãy đến gặp bác sĩ, y tá, nhân viên y tế cộng đồng, tư vấn viên, hoặc lãnh đạo cộng đồng đáng tin cậy.'
+    prof_p_2: 'Tự hỏi: <b>Tôi có thể nhờ trợ giúp ở đâu?</b>'
+    prof_doctor: 'Bác sĩ: <u>%{doctor}</u>'
+    prof_provider: 'Dịch vụ chăm sóc sức khỏe khác: <u>%{provider}</u>'
+    prof_lifeline: 'Lifeline: <u>%{lifeline}</u>'
+    prof_community: 'Thành viên trong cộng đồng: <u>%{community}</u>'
+    prof_other: 'Khác: <u>%{other}</u>'
+    matters_title: 'Bước 7: Điều ý nghĩa trong cuộc đời tôi'
+    matters_p_1: 'Việc tìm ra lý do để tồn tại là chìa khóa giúp bạn an toàn khi rơi vào khủng hoảng tâm thần. Hãy nghĩ về những điều có ý nghĩa nhất với bạn trong cuộc đời này.'
+    matters_p_2: 'Tự hỏi: <b>Điều gì, ai, dự định nào giúp tôi tồn tại trong cuộc đời này?</b>'
+    matters_1: 'Thành viên trong gia đình: '
+    matters_4: 'Bạn bè: '
+    matters_5: 'Vật nuôi: '
+    matters_2: 'Niềm đam mê: '
+    matters_3: 'Ước mơ: '
+    matters_6: 'Khả năng tìm được niềm vui trong tương lai'
+    matters_7: 'Khả năng tìm được thỏa nguyện trong tương lai'
+    matters_8: 'Khả năng tìm được tìm yêu trong tương lai'
+    matters_9: 'Niềm tin về tự sát'
+    matters_10: 'Xây đắp tình yêu cho chính mình'
+    matters_11: 'Khác: '
+    conclusion_title: 'Kết luận'
+    conclusion_p_1: 'Khi bạn đã hoàn thành bản kế hoạch an toàn của mình, hãy cất giữ nó ở một nơi an toàn mà bạn luôn nhìn thấy được. Bạn có thể cập nhật bản kế hoạch này bất cứ khi nào bạn tìm được thêm các dấu hiệu cảnh báo và chiến lược ứng phó. Hãy xem bản kế hoạch này ít nhất 3 lần/tuần. Điều này giúp bạn biết được thời điểm và cách dùng bản kế hoạch đó.'
+    conclusion_p_2: 'Hãy luôn nhớ rằng khi bạn đang rơi vào khủng hoảng, bạn có thể sử dụng bản kế hoạch này để giúp mình được an toàn.'
+  rds:
+    invite_initial: 'SMILE Study Invitation'
+    invite_reminder: 'SMILE Study Invitation Reminder'
+    post_survey: 'SMILE Study - Invite Others'
+    post_survey_reminder: 'SMILE Study - Invite Others Reminder'
+    payment: 'SMILE Study - Payment'
+    gratitude: 'SMILE Study - Thank You'
+    sms:
+      seed_invite_initial: Thank you for previously participating in the SMILE research study. You indicated that you were willing to invite other people to participate. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 2 weeks to do so. Please use this link %{url} to find out more. The SMILE Research Team. To opt out of future messages, reply STOP.
+      seed_invite_reminder: Thank you for previously participating in the SMILE research study. You indicated that you were willing to invite other people to participate. You will receive a small compensation when up to 2 people you invite complete their surveys. You still have 1 week to do so. Please use this link %{url} to find out more. The SMILE Research Team.
+      seed_post_consent: 'Thank you for agreeing to invite other people to participate in the SMILE research study. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 2 weeks to do so. Please share this link %{url} with people you know who are: %{sgm_group}, have not taken the SMILE survey before, and are at least 18 years old. The SMILE Research Team. To opt out of future messages, reply STOP.'
+      seed_post_consent_reminder: 'Thank you for agreeing to invite other people to participate in the SMILE research study. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 1 week to do so. Please share this link %{url} with people you know who are: %{sgm_group}, have not taken the SMILE survey before, and are at least 18 years old. The SMILE Research Team.'
+      participant_post_consent: 'Thank you for agreeing to invite other people to participate in the SMILE research study. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 2 weeks to do so. Please share this link %{url} with people you know who are: %{sgm_group}, have not taken the SMILE survey before, and are at least 18 years old. Please note that the link is different from the one you used to start your survey. The SMILE Research Team. To opt out of future messages, reply STOP.'
+      participant_post_consent_reminder: 'Thank you for agreeing to invite other people to participate in the SMILE research study. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 1 week to do so. Please share this link %{url} with people you know who are: %{sgm_group}, have not taken the SMILE survey before, and are at least 18 years old. Please note that the link is different from the one you used to start your survey. The SMILE Research Team.'
+      payment: 'Thank you for participating in the SMILE research study. In the future we may reach out to request your participation in more surveys. Your compensation for participation in this survey is %{amount}. It will be paid out in the next 2 weeks through the phone number %{number}. If you have any questions, please reach out to your SMILE %{country} coordinator - %{contact}. The SMILE Research Team.'
+      gratitude: 'Thank you for participating in the SMILE research study. In the future we may reach out to request your participation in more surveys. If you have any questions, please reach out to your SMILE %{country} coordinator - %{contact}. The SMILE Research Team.'
+    email:
+      invite_initial_p0: 'Chào bạn,'
+      invite_initial_p1: 'Cảm ơn bạn đã tham gia khảo sát về sức khỏe tâm thần của nhóm thiểu số về giới và tính dục (SMILE).'
+      invite_initial_p2: 'Lúc hoàn thành bản khảo sát, bạn đã bày tỏ sẵn lòng giới thiệu người tham gia khảo sát. Nếu bạn đổi ý, thì hãy bỏ qua email này hoặc nhấp vào đây (%{opt_out_url}) để từ chối nhận tin nhắc trong tương lai.'
+      invite_initial_p3: 'Bạn có thể mời tối đa 2 người tham gia. Khi mỗi người họ hoàn thành bản khảo sát, bạn sẽ nhận được %{recruitment_amount} và họ nhận được %{survey_amount}.'
+      invite_initial_p4: 'Vui lòng nhấp vào liên kết dưới đây để tìm hiểu thêm thông tin.'
+      invite_initial_p5: 'Xin không chia sẻ liên kết này với bất kỳ ai khác.'
+      invite_initial_p6: 'Bạn có %{time} để mời người tham gia.'
+      invite_initial_p7: 'Cảm ơn bạn.'
+      invite_initial_p8: 'Trân trọng,'
+      invite_initial_p9: 'Thay mặt cho nhóm khảo sát'
+      invite_initial_p10: 'Please do not reply to this email. If you want to talk to someone, use the contacts provided above.'
+      one_week: 'một tuần'
+      two_weeks: 'hai tuần'
+      post_consent_p0: 'Bạn đã bày tỏ sẵn lòng giới thiệu người tham gia khảo sát sức khỏe tâm thần của nhóm thiểu số về giới và tính dục (SMILE).'
+      post_consent_p1: 'Bạn hãy gửi liên kết dưới đây cho họ. Liên kết này dành cho bạn mời người tham gia khảo sát và người nhận không nên chuyển tiếp nó cho người khác.'
+      post_consent_p2: 'Vui lòng chỉ chia sẻ liên kết này với người:'
+      post_consent_p3: '1) Thuộc nhóm'
+      post_consent_p4: '2) Chưa từng tham gia khảo sát SMILE trước đây,'
+      post_consent_p5: '3) Ít nhất 18 tuổi,'
+      post_consent_p6: '4) Bạn biết họ và họ cũng biết bạn,'
+      post_consent_p7: '5) VÀ bạn đã liên lạc với họ ít nhất một lần trong vòng 2 năm qua dưới bất kỳ hình thức nào.'
+      post_consent_p8: 'Bạn nhận được tin nhắc này vì bạn còn được mời ít nhất 1 người tham gia khảo sát sức khỏe tâm thần của nhóm thiểu số về giới và tính dục (SMILE).'
+      post_consent_p9: 'Bạn còn một tuần nữa để mời họ tham gia. Nếu bạn đã gửi liên kết khảo sát cho 02 người quen biết, vui lòng kiểm tra xem nếu họ chưa hoàn thành khảo sát, hoặc đã từ chối tham gia, hoặc đã thử nhưng không đủ điều kiện tham gia (vì đã tham gia trước đây hoặc không thỏa tiêu chí tham gia khảo sát).'
+      post_consent_p10: 'Trong tương lai, chúng tôi có thể liên hệ để mời bạn tham gia thêm các cuộc khảo sát khác.'
+      post_consent_p11: 'Phí bồi dưỡng tham gia khảo sát của bạn là %{payment_amount}. Bạn sẽ nhận được số tiền này trong vòng 2 tuần tới, thông qua số điện thoại di động %{phone_number}.'
+      post_consent_p12: 'Nếu bạn có bất kỳ câu hỏi liên quan đến phí bồi dưỡng, vui lòng liên hệ SMILE %{country} - %{contact}.'

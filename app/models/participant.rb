@@ -571,7 +571,9 @@ class Participant < ApplicationRecord
   end
 
   def locale
-    'en'
+    loc = 'en'
+    loc = 'vi' if country == 'Vietnam'
+    loc
   end
 
   private

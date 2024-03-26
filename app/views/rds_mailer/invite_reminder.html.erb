@@ -1,27 +1,22 @@
-Dear participant,
-<p>Thank you for participating in the SMILE research study.</p>
-<p>When you completed the survey, you stated that you may be willing to invite other 
-  people to take the survey. If you do not want to invite anyone, you can ignore this 
-  email or <a href="<%= admin_opt_out_url({code: @participant.code}) %>">opt out</a> of future reminders.
-</p>
-<p>You can invite up to 2 people. For each person you invite who successfully 
-  completes the survey, you will receive a small payment of <%= @participant.recruitment_amount %>, 
-  and the person completing the survey will receive a small payment 
-  (<%= @participant.survey_amount %>) as well.
-</p>
-<p>If you would like to invite other people to join the research study, please click 
-  on the link below to learn more.
-</p>
+<%= I18n.t('rds.email.invite_initial_p0', locale: @participant.locale) %>
+<p><%= I18n.t('rds.email.invite_initial_p1', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p2', locale: @participant.locale,
+  opt_out_url: admin_opt_out_url({code: @participant.code})) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p3', locale: @participant.locale,
+  recruitment_amount: @participant.recruitment_amount,
+  survey_amount: @participant.survey_amount) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p4', locale: @participant.locale) %></p>
 <b>
   <p><%= Rails.application.credentials.config[:seeds_consent_url] %>?code=<%= @participant.code %></p>
-  <p>Please do not share this link with anyone else.</p>
+  <p><%= I18n.t('rds.email.invite_initial_p5', locale: @participant.locale) %></p>
 </b>
-<p>You have one week to invite people to participate in the study.</p>
-<p>Thank you.</p>
-<p>Sincerely,</p>
+<p><%= I18n.t('rds.email.invite_initial_p6', locale: @participant.locale,
+ time: I18n.t('rds.email.one_week', locale: @participant.locale)) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p7', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p8', locale: @participant.locale) %></p>
 <%= @participant.country_contact %><br>
 <%= Rails.application.credentials.config[:from_name] %> - 
 <%= Rails.application.credentials.config[:from_email] %>
 (<%= Rails.application.credentials.config[:from_phone] %>)<br>
-On behalf of the SMILE Team<br>
-<em>Please do not reply to this email. If you want to talk to someone, use the contacts provided above.</em>
+<%= I18n.t('rds.email.invite_initial_p9', locale: @participant.locale) %><br>
+<em><%= I18n.t('rds.email.invite_initial_p10', locale: @participant.locale) %></em>
