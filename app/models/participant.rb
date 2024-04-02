@@ -31,6 +31,7 @@ require 'sorted_set'
 #  due_on                   :datetime
 #  derived_seed             :boolean          default(FALSE)
 #  chain_level              :integer          default(0)
+#  language_code            :string           default("en")
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
@@ -48,6 +49,7 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
+  before_save { self.language_code = language_code&.downcase&.strip }
   after_save :sgm_group_checks
 
   scope :excluded, -> { where(include: false) }
@@ -579,6 +581,8 @@ class Participant < ApplicationRecord
   end
 
   def locale
+    return language_code if language_code.present?
+
     loc = 'en'
     loc = 'vi' if country == 'Vietnam'
     loc
