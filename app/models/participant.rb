@@ -472,12 +472,12 @@ class Participant < ApplicationRecord
       RdsMailer.with(participant: self).post_consent.deliver_now
       RdsMailer.with(participant: self).post_consent_reminder.deliver_later(wait: REMINDERS[:one])
       RdsMailer.with(participant: self).payment.deliver_later(wait: REMINDERS[:two])
-      RdsMailer.with(participant: self).gratitude.deliver_later(wait: REMINDERS[:three])
+      RdsMailer.with(participant: self).gratitude.deliver_later(wait: REMINDERS[:two])
     elsif preferred_contact_method == '2' && phone_number.present?
       RecruitmentReminderJob.perform_now(id, 'seed_post_consent')
       RecruitmentReminderJob.set(wait: REMINDERS[:one]).perform_later(id, 'seed_post_consent_reminder')
       RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(id, 'payment')
-      RecruitmentReminderJob.set(wait: REMINDERS[:three]).perform_later(id, 'gratitude')
+      RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(id, 'gratitude')
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
@@ -495,7 +495,7 @@ class Participant < ApplicationRecord
   # rubocop:enable Style/CaseLikeIf
 
   def recruitment_amount
-    payments = { 'Vietnam' => '37,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' }
+    payments = { 'Vietnam' => '25,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' }
     payments[country]
   end
 
@@ -518,15 +518,23 @@ class Participant < ApplicationRecord
   end
 
   def max_amount
-    payments = { 'Vietnam' => '124,000 VND', 'Kenya' => 'KES 700', 'Brazil' => 'R$ 24' }
-    payments = { 'Vietnam' => '74,000 VND', 'Kenya' => 'KES 400', 'Brazil' => 'R$ 14' } if seed
+    payments = { 'Vietnam' => '100,000 VND', 'Kenya' => 'KES 700', 'Brazil' => 'R$ 24' }
+    payments = { 'Vietnam' => '50,000 VND', 'Kenya' => 'KES 400', 'Brazil' => 'R$ 14' } if seed
     payments[country]
   end
 
   def one_invite_amount
-    payments = { 'Vietnam' => '87,000 VND', 'Kenya' => 'KES 500', 'Brazil' => 'R$ 17' }
-    payments = { 'Vietnam' => '37,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' } if seed
+    payments = { 'Vietnam' => '75,000 VND', 'Kenya' => 'KES 500', 'Brazil' => 'R$ 17' }
+    payments = { 'Vietnam' => '25,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' } if seed
     payments[country]
+  end
+
+  def zero_payment_amount
+    ['0 VND', 'KES 0', 'R$ 0']
+  end
+
+  def participated?
+    zero_payment_amount.exclude?(payment_amount)
   end
 
   def sgm_group_enrolling
@@ -574,6 +582,14 @@ class Participant < ApplicationRecord
     loc = 'en'
     loc = 'vi' if country == 'Vietnam'
     loc
+  end
+
+  # Reminder communication conditions
+  def invite_reminder_met?
+    return true if seed && agree_to_recruit && remind && seed_consents.empty? &&
+                   !opt_out && !invite_expired?
+
+    false
   end
 
   private

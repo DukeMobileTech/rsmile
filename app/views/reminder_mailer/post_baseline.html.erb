@@ -1,37 +1,31 @@
-Dear participant,
-<p>Thank you for participating in the SMILE research study.</p>
-<p>You stated that you are willing to invite other people to take the survey.</p>
-<p>You can invite up to 2 people. For each person you invite who successfully 
-  completes the survey, you will receive a small payment of <%= @participant.recruitment_amount %>, 
-  and the person completing the survey will receive a small payment 
-  (<%= @participant.survey_amount %>) as well.
-</p>
-<p>The people you invite to participate in the study have to complete their surveys 
-  in the next two weeks.
-</p>
+<%= I18n.t('rds.email.invite_initial_p0', locale: @participant.locale) %>
+<p><%= I18n.t('rds.email.invite_initial_p1', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.post_consent_p0', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p3', locale: @participant.locale,
+  recruitment_amount: @participant.recruitment_amount,
+  survey_amount: @participant.survey_amount) %></p>
+<p><%= I18n.t('rds.email.post_baseline_p0', locale: @participant.locale) %></p>
 <b>
   <p>
-    Please only share this link with people who ... <br>
-    1) are <%= @participant.sgm_group_label %> <br>
-    2) are at least 18 years old, <br>
-    3) you know and who know you, <br>
-    4) AND whom you have communicated with at least once in the past 2 years by any form of communication
+    <%= I18n.t('rds.email.post_consent_p2', locale: @participant.locale) %><br>
+    <%= I18n.t('rds.email.post_consent_p3', locale: @participant.locale) %> <%= @participant.sgm_group_label %>,<br>
+    <%= I18n.t('rds.email.post_consent_p4', locale: @participant.locale) %><br>
+    <%= I18n.t('rds.email.post_consent_p5', locale: @participant.locale) %><br>
+    <%= I18n.t('rds.email.post_consent_p6', locale: @participant.locale) %><br>
+    <%= I18n.t('rds.email.post_consent_p7', locale: @participant.locale) %>
   </p>
 </b>
-<p>Please let each person know in your own words about the survey, and that they can 
-  learn more about it by clicking on their invitation link.
-</p>
+<p><%= I18n.t('rds.email.post_baseline_p1', locale: @participant.locale) %></p>
 <p>
-  <b>Please note:</b> <br>
-  The link below is different from the one you used to start your survey. Please only 
-  use this link to invite others to take their survey.
+  <b><%= I18n.t('rds.email.post_baseline_p2', locale: @participant.locale) %></b><br>
+  <%= I18n.t('rds.email.post_baseline_p3', locale: @participant.locale) %>
 </p>
-<p><%= Rails.application.credentials.config[:consent_url] %>?referrer_code=<%= @participant.code %></p>
-<p>Thank you.</p>
-<p>Sincerely,</p>
+<p><b><%= Rails.application.credentials.config[:consent_url] %>?referrer_code=<%= @participant.code %></b></p>
+<p><%= I18n.t('rds.email.invite_initial_p7', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p8', locale: @participant.locale) %></p>
 <%= @participant.country_contact %><br>
 <%= Rails.application.credentials.config[:from_name] %> - 
 <%= Rails.application.credentials.config[:from_email] %>
 (<%= Rails.application.credentials.config[:from_phone] %>)<br>
-On behalf of the SMILE Team<br>
-<em>Please do not reply to this email. If you want to talk to someone, use the contacts provided above.</em>
+<%= I18n.t('rds.email.invite_initial_p9', locale: @participant.locale) %><br>
+<em><%= I18n.t('rds.email.invite_initial_p10', locale: @participant.locale) %></em>

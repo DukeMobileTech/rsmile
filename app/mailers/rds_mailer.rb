@@ -11,44 +11,35 @@ class RdsMailer < ApplicationMailer
   end
 
   def invite_reminder
-    return unless @participant.seed_consents.empty?
-    return if @participant.opt_out
+    return unless @participant.invite_reminder_met?
 
     @participant.reminders.create(channel: 'Email', category: Participant::REMIND)
     mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))
   end
 
   def post_consent
-    return unless @participant.agree_to_recruit
-
     @participant.reminders.create(channel: 'Email', category: Participant::FIRST)
     mail(to: @participant.email, subject: I18n.t('rds.post_survey', locale: @language))
   end
 
   def post_consent_reminder
-    return unless @participant.agree_to_recruit
+    return if @participant.recruitment_quota_met || !@participant.agree_to_recruit
 
-    if @participant.recruitment_quota_met
-      payment
-    else
-      @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
-      mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
-    end
+    @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
+    mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
   end
 
   def payment
     return unless @participant.agree_to_recruit
+    return unless @participant.wants_payment
+    return unless @participant.participated?
 
-    if @participant.wants_payment
-      @participant.reminders.create(channel: 'Email', category: Participant::THIRD)
-      mail(to: @participant.email, subject: I18n.t('rds.payment', locale: @language))
-    else
-      gratitude
-    end
+    @participant.reminders.create(channel: 'Email', category: Participant::THIRD)
+    mail(to: @participant.email, subject: I18n.t('rds.payment', locale: @language))
   end
 
   def gratitude
-    return unless @participant.agree_to_recruit
+    return unless !@participant.agree_to_recruit || !@participant.wants_payment || !@participant.participated?
 
     @participant.reminders.create(channel: 'Email', category: Participant::FOURTH)
     mail(to: @participant.email, subject: I18n.t('rds.gratitude', locale: @language))

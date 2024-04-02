@@ -146,3 +146,7 @@ vi:
       post_consent_p10: 'Trong tương lai, chúng tôi có thể liên hệ để mời bạn tham gia thêm các cuộc khảo sát khác.'
       post_consent_p11: 'Phí bồi dưỡng tham gia khảo sát của bạn là %{payment_amount}. Bạn sẽ nhận được số tiền này trong vòng 2 tuần tới, thông qua số điện thoại di động %{phone_number}.'
       post_consent_p12: 'Nếu bạn có bất kỳ câu hỏi liên quan đến phí bồi dưỡng, vui lòng liên hệ SMILE %{country} - %{contact}.'
+      post_baseline_p0: 'Người được mời tham gia cần hoàn thành khảo sát trong vòng hai tuần tới.'
+      post_baseline_p1: 'Hãy giải thích ngắn gọn với họ về khảo sát và cho biết họ có thể tìm thêm thông tin chi tiết khi nhấp vào liên kết mà bạn gửi cho họ.'
+      post_baseline_p2: 'Lưu ý:'
+      post_baseline_p3: 'Liên kết dưới đây khác với liên kết bạn đã sử dụng để thực hiện khảo sát của bạn. Vui lòng chỉ sử dụng liên kết này để mời người khác tham gia khảo sát của họ.'

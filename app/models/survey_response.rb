@@ -536,7 +536,7 @@ class SurveyResponse < ApplicationRecord
 
   def seeds_reminder_conditions_met?
     seeds_consent_survey? && consented && !participant.nil? && participant.seed &&
-      participant.email.present? && participant.phone_number.present?
+      participant.agree_to_recruit && participant.email.present? && participant.phone_number.present?
   end
 
   def reminder_conditions_met?
@@ -574,7 +574,7 @@ class SurveyResponse < ApplicationRecord
     RecruitmentReminderJob.perform_now(participant_id, 'participant_post_consent')
     RecruitmentReminderJob.set(wait: REMINDERS[:one]).perform_later(participant_id, 'participant_post_consent_reminder')
     RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(participant_id, 'payment')
-    RecruitmentReminderJob.set(wait: REMINDERS[:three]).perform_later(participant_id, 'gratitude')
+    RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(participant_id, 'gratitude')
   end
 
   def one_two_three
