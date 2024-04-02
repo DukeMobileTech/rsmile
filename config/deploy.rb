@@ -13,7 +13,7 @@ set :linked_files, %w[config/database.yml config/master.key config/sidekiq.yml]
 set :linked_dirs, %w[data log tmp/pids tmp/cache tmp/sockets vendor/bundle public/packs .bundle node_modules]
 set :linked_dirs, fetch(:linked_dirs) + %w[storage]
 set :bundle_binstubs, nil
-set :rvm_ruby_version, '3.0.2'
+set :rvm_ruby_version, '3.2.3'
 set :passenger_restart_with_touch, true
 
 before 'deploy:assets:precompile', 'deploy:yarn_install'
