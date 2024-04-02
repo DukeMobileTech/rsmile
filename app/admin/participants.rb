@@ -145,10 +145,24 @@ ActiveAdmin.register Participant do
       row :country
       row :self_generated_id
       row :code
+      row :rds_id
       row :sgm_group
+      row :referrer_code
+      row :referrer_sgm_group
       row :verified
       row :verification_code
       row :include
+      row :match
+      row :seed
+      row :derived_seed
+      row :chain_level
+      row :remind
+      row :quota_met
+      row :agree_to_recruit
+      row :wants_payment
+      row :opt_out
+      row :language_code
+      row :due_on
       row :created_at
       row :updated_at
       row 'Contact Method', &:contact_method
