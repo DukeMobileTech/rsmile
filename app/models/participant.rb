@@ -151,7 +151,7 @@ class Participant < ApplicationRecord
 
       begin
         verification_check = client.verify.services(Rails.application.credentials.config[:TWILIO_SERVICE])
-                                   .verification_checks.create(to: to, code: v_code)
+                                   .verification_checks.create(to:, code: v_code)
         status = verification_check.status
         if status == 'approved'
           self.verified = true
@@ -203,7 +203,7 @@ class Participant < ApplicationRecord
     stats = {}
     COUNTRIES.each do |country|
       country_stats = {}
-      participants = eligible_participants.where(country: country).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
+      participants = eligible_participants.where(country:).group_by_week(:created_at, format: '%m/%d/%y', week_start: :monday).count
       participants.each do |week, count|
         next unless count.positive?
 
@@ -596,6 +596,18 @@ class Participant < ApplicationRecord
     false
   end
 
+  def url_params
+    params = { code:, Q_Language: language_code&.upcase }
+    enc = Base64.encode64 params.to_json
+    "Q_EED=#{enc}"
+  end
+
+  def url_params2
+    params = { referrer_code: code, Q_Language: language_code&.upcase }
+    enc = Base64.encode64 params.to_json
+    "Q_EED=#{enc}"
+  end
+
   private
 
   def update_duplicates(duplicates)
@@ -617,7 +629,7 @@ class Participant < ApplicationRecord
   def enforce_unique_code
     begin
       self.code = "#{country[0].upcase}-#{Random.rand(10_000_000...99_999_999)}"
-    end while self.class.exists?(code: code)
+    end while self.class.exists?(code:)
   end
 
   def sgm_group_checks

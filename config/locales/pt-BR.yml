@@ -1,105 +1,152 @@
 pt-BR:
-  copy: "Por favor, encontre em anexo uma cópia do formulário de consentimento que você solicitou."
-  thanks: "Obrigada"
-  sincerely: "Sinceramente"
-  team: "Equipe de Estudo SMILE"
-  form: "Formulário de Consentimento do Estudo SMILE"
+  copy: 'Por favor, encontre em anexo uma cópia do formulário de consentimento que você solicitou.'
+  thanks: 'Obrigada'
+  sincerely: 'Sinceramente'
+  team: 'Equipe de Estudo SMILE'
+  form: 'Formulário de Consentimento do Estudo SMILE'
 
   safety:
-    email_title: "Seu Formulário Preenchido"
-    email_body: "<p><strong>Olá,</strong></p> <p>Em anexo está um resumo do formulário que você preencheu, conforme solicitado.</p> <p>Obrigada.</p><p>Sinceramente,</p><p>Equipe de Estudo SMILE</p>"
-    title:  "Plano de Segurança"
-    intro_title: "Intrudução"
-    intro_p_1: "Você indicou que tem experienciado pensamentos suicidas. As próximas perguntas vão ajudar você a estabelecer um Plano de Segurança. Este é um modo de proteger você quando estiver experienciando pensamentos suicidas. Planejamento de segurança tem se mostrado eficaz em diminuir os riscos quando se tem uma crise de saúde mental. Também pode ajudar você a se sentir segura se estiver em uma crise de saúde mental."
-    intro_p_2: "Este plano vai levar você a focar em <b>7 passos</b>:"
-    intro_step_1: "1) Remover acesso a itens perigosos"
-    intro_step_2: "2) Sinais de alerta de que você está indo em direção a uma crise"
-    intro_step_3: "3) Formas de lidar com uma crise sozinha (o)"
-    intro_step_4: "4) Pessoas e lugares que vão te distrair"
-    intro_step_5: "5) Pessoas que você pode pedir ajuda e te dar suporte"
-    intro_step_6: "6) Ajuda comunitária e profissional"
-    intro_step_7: "7) Coisas que valem a pena viver"
-    intro_p_3: "O propósito deste formulário de Planejamento de Segurança pe dar a você a oportunidade de planejar e prepara para dificuldades futuras que você pode passar."
-    intro_p_4: "Nenhuma das informações que você inserir qui serão salvas ou compartilhadas com a equipe de estudo SMILE. Desde que esta informação não é salva, por favor não se esqueça de salvar uma cópia para você quando terminar se quiser guardar seu Plano de Segurança para mais tarde."
-    access_title: "Passo 1: Remover acesso"
-    access_p_1: "Ter certa distância entre você e as coisas que você pode usar para se machucar é importante. Pode ser menos provável que você aja sob pensamentos suicidas quando eles acontecerem, dando aos sentimentos suicidas um tempo de diluição. O melhor a se fazer é limitar seu acesso a coisas que você pode usar para se machucar."
-    access_p_2: "Pergunte a você mesma (o): <b><i>Quais coisas eu devo remover ou limitar meu acesso? O que eu poderia usar para machucar a mim mesma (o)?</i></b>"
-    access_1: "[ ] <b>Se livre de venenos.</b> <i>Estratégias:</i>"
-    access_1_1: "• Se livre de venenos que eu não preciso; manter apenas quantidades que não são perigosas."
-    access_1_2: "• Ter alguém que guarde meus venenos."
-    access_2: "[ ] <b>Se livre de remédios.</b> <i>Estratégias:</i>"
-    access_2_1: "• Meu medico, farmacêutico, ou outro profissional da saúde pode me orientar."
-    access_2_2: "• Se livre de remédios que eu não preciso; manter apenas quantidades que não são perigosas. Ter alguém que guarde meus remédios."
-    access_3: "[ ] <b>Remova ou limite o acesso a armas de fogo, facas, ou outras armas.</b> <i>Estratégias:</i>"
-    access_3_1: "• Temporariamente guarde todas as armas e ferramentas nocivas com um amigo, parente, loja de armas, cofre, ou almoxarifado; peça alguém que tenha as chaves de suas fechaduras / garagem / cofre."
-    access_4: "[ ] <b>Outras atitudes para limitar as maneiras que eu possa me machucar:</b> <i>Estratégias:</i>"
-    warning_title: "Passo 2: Sinais de perigo"
-    warning_p_1: "Pessoas geralmente têm sinais de perigo ou gatilho quando se tornam suicidas. Saber quais são seus sinais de perigo ajudará você a se lembrar de usar seu plano de segurança. Fazendo com que se evitem crises suicidas."
-    warning_p_2: "Pergunte-se: <b><i>Quais são meus gatilhos específicos ou sinais de perigo que estão se desenvolvendo em uma crise?</i></b>"
-    warning_1: "[ ] Tem se sentido para baixo, triste, ou chorando"
-    warning_2: "[ ] Sente-se sem esperança ou que as coisas nunca vão melhorar"
-    warning_3: "[ ] Sente-se sem valor ou como uma pessoa fracassada"
-    warning_4: "[ ] Sentido-se esquecido, condencente, envergonhado, ou ridicularizado"
-    warning_5: "[ ] Está com dores físicas"
-    warning_6: "[ ] Tem se sentido só ou rejeitada (o)"
-    warning_7: "[ ] Bebe álcool ou usa drogas"
-    warning_8: "[ ] Sente-se aprisionada (o), ou como se não houvesse saída"
-    warning_9: "[ ] Se sente ansiosa (o), agitada"
-    warning_10: "[ ] Desistindo, sentindo-se isolada (o)"
-    warning_11: "[ ] Sente raiva, argumentativa (o), ou com temperamento curto"
-    warning_12: "[ ] Sente-se sobrecarregada (o) pelas circunstancias da vida (situação financeira, por exemplo)"
-    warning_13: "[ ] Sentido-se vulnerável"
-    warning_14: "[ ] Desabando, pouco produtiva (o)"
-    warning_15: "[ ] Outros: <u>%{others}</u>"
-    cope_title: "Passo 3: Atividades de distração"
-    cope_p_1: "Se você está sentindo-se suicida, se distrair destes pensamentos e sentimentos pode ajudar você a passar por uma crise. Você pode fazer coisas sozinha (o) que podem ajudar você a tirar sua mente de problemas. Faça coisas que são engajadoras e que acalmam, ao invés de coisas que possam te chatear, por exemplo, escute uma musica calma e não uma que te chateie."
-    cope_p_2: "Pergunte-se: <b><i>Qual tipo de atividades eu posso fazer para me distrair?</i></b>"
-    cope_1: "[ ] Leia algo animador / que te acalme"
-    cope_2: "[ ] Cozinhe"
-    cope_3: "[ ] Escute musicas animadoras / que te acalmam"
-    cope_4: "[ ] Dance"
-    cope_5: "[ ] Cante / Caraoquê"
-    cope_6: "[ ] Alongue-se ou faça exercícios"
-    cope_7: "[ ] Desenhe"
-    cope_8: "[ ] Faça jardinagem"
-    cope_9: "[ ] Faça alguma coisa"
-    cope_10: "[ ] Meditar"
-    cope_11: "[ ] Orar"
-    cope_12: "[ ] Assista programas ou filmes animadores / que te acalmem"
-    cope_13: "[ ] Vá a lugares animadores / que te acalmem"
-    cope_14: "[ ] Jogue games animadores / que te acalmem"
-    cope_15: "[ ] Outros: <u>%{others}</u>"
-    distract_title: "Passo 4: Distraindo-se com pessoas e lugares"
-    distract_p_1: "As pessoas na sua vida podem ajudar você quando você estiver se sentindo suicida de duas formas. O passo 4 descreve o primeira forma e o passo seguinte descreve a segunda forma. Primeiramente, as pessoas podem servir como distração dos seus problemas ao desligar sua mente das coisas que estão lhe incomodando. Pessoas podem também ajudar a tirar os problemas da sua mente mesmo sem que você fale sobre seus sentimentos suicidas. Nesse passo, você não discute seus sentimentos suicidas. Ao invés disso, você pode apenas estar com alguma oura pessoa e aproveitar para se distrair. Talvez vocês possam faze algo interessante juntas. Se você não tem uma pessoa para se distrair, você pode ir a algum lugar onde tenha outras pessoas, como um café ou mercado. Às vezes, só de estar perto de outras pessoas pode te ajudar a se distrair de seus problemas."
-    distract_p_2: "Pergunte-se: <b><i>Quem ame ajuda a tirar minha mente dos meus problemas? Onde eu posso ir para tirar minha mente dos problemas?</i></b> (Não liste lugares onde drogas ou álcool sejam usados.)"
-    person_or_place: "Pessoa ou lugar: <u>%{person_or_place}</u>"
-    social_title: "Passo 5: Suporte Social"
-    social_p_1: "A segunda forma em que pessoas podem ajudar é providenciando suporte a lhe ajudando a resolver seus problemas. Em outras palavras, você pode torná-las ajudantes durante suas crises suicidas ao conversar com elas sobre os problemas que você está lidando. Escolha pessoas que são propicias ao pensamento positivo e solicitas."
-    social_p_2: "Pergunte-se: <b><i>Quais membros da família ou amigos eu posso conversar, para me ajudar a sentir melhor? Quem pode me auxiliar durante a crise? Quem é solicito?</i></b>"
-    social_p_3: "(Algumas pessoas sentem que não tem pessoas da família ou amigos que pode ajudar durante uma crise suicida. Se este for o seu caso, simplesmente passe para o próximo passo, que vai te dar idéias sobre outras pessoas que podem te ajudar.)"
-    name_and_number: "Nome e número de telefone: <u>%{name_and_number}</u>"
-    prof_title: "Passo 6: Ajuda profissional"
+    email_title: 'Seu Formulário Preenchido'
+    email_body: '<p><strong>Olá,</strong></p> <p>Em anexo está um resumo do formulário que você preencheu, conforme solicitado.</p> <p>Obrigada.</p><p>Sinceramente,</p><p>Equipe de Estudo SMILE</p>'
+    title: 'Plano de Segurança'
+    intro_title: 'Intrudução'
+    intro_p_1: 'Você indicou que tem experienciado pensamentos suicidas. As próximas perguntas vão ajudar você a estabelecer um Plano de Segurança. Este é um modo de proteger você quando estiver experienciando pensamentos suicidas. Planejamento de segurança tem se mostrado eficaz em diminuir os riscos quando se tem uma crise de saúde mental. Também pode ajudar você a se sentir segura se estiver em uma crise de saúde mental.'
+    intro_p_2: 'Este plano vai levar você a focar em <b>7 passos</b>:'
+    intro_step_1: '1) Remover acesso a itens perigosos'
+    intro_step_2: '2) Sinais de alerta de que você está indo em direção a uma crise'
+    intro_step_3: '3) Formas de lidar com uma crise sozinha (o)'
+    intro_step_4: '4) Pessoas e lugares que vão te distrair'
+    intro_step_5: '5) Pessoas que você pode pedir ajuda e te dar suporte'
+    intro_step_6: '6) Ajuda comunitária e profissional'
+    intro_step_7: '7) Coisas que valem a pena viver'
+    intro_p_3: 'O propósito deste formulário de Planejamento de Segurança pe dar a você a oportunidade de planejar e prepara para dificuldades futuras que você pode passar.'
+    intro_p_4: 'Nenhuma das informações que você inserir qui serão salvas ou compartilhadas com a equipe de estudo SMILE. Desde que esta informação não é salva, por favor não se esqueça de salvar uma cópia para você quando terminar se quiser guardar seu Plano de Segurança para mais tarde.'
+    access_title: 'Passo 1: Remover acesso'
+    access_p_1: 'Ter certa distância entre você e as coisas que você pode usar para se machucar é importante. Pode ser menos provável que você aja sob pensamentos suicidas quando eles acontecerem, dando aos sentimentos suicidas um tempo de diluição. O melhor a se fazer é limitar seu acesso a coisas que você pode usar para se machucar.'
+    access_p_2: 'Pergunte a você mesma (o): <b><i>Quais coisas eu devo remover ou limitar meu acesso? O que eu poderia usar para machucar a mim mesma (o)?</i></b>'
+    access_1: '[ ] <b>Se livre de venenos.</b> <i>Estratégias:</i>'
+    access_1_1: '• Se livre de venenos que eu não preciso; manter apenas quantidades que não são perigosas.'
+    access_1_2: '• Ter alguém que guarde meus venenos.'
+    access_2: '[ ] <b>Se livre de remédios.</b> <i>Estratégias:</i>'
+    access_2_1: '• Meu medico, farmacêutico, ou outro profissional da saúde pode me orientar.'
+    access_2_2: '• Se livre de remédios que eu não preciso; manter apenas quantidades que não são perigosas. Ter alguém que guarde meus remédios.'
+    access_3: '[ ] <b>Remova ou limite o acesso a armas de fogo, facas, ou outras armas.</b> <i>Estratégias:</i>'
+    access_3_1: '• Temporariamente guarde todas as armas e ferramentas nocivas com um amigo, parente, loja de armas, cofre, ou almoxarifado; peça alguém que tenha as chaves de suas fechaduras / garagem / cofre.'
+    access_4: '[ ] <b>Outras atitudes para limitar as maneiras que eu possa me machucar:</b> <i>Estratégias:</i>'
+    warning_title: 'Passo 2: Sinais de perigo'
+    warning_p_1: 'Pessoas geralmente têm sinais de perigo ou gatilho quando se tornam suicidas. Saber quais são seus sinais de perigo ajudará você a se lembrar de usar seu plano de segurança. Fazendo com que se evitem crises suicidas.'
+    warning_p_2: 'Pergunte-se: <b><i>Quais são meus gatilhos específicos ou sinais de perigo que estão se desenvolvendo em uma crise?</i></b>'
+    warning_1: '[ ] Tem se sentido para baixo, triste, ou chorando'
+    warning_2: '[ ] Sente-se sem esperança ou que as coisas nunca vão melhorar'
+    warning_3: '[ ] Sente-se sem valor ou como uma pessoa fracassada'
+    warning_4: '[ ] Sentido-se esquecido, condencente, envergonhado, ou ridicularizado'
+    warning_5: '[ ] Está com dores físicas'
+    warning_6: '[ ] Tem se sentido só ou rejeitada (o)'
+    warning_7: '[ ] Bebe álcool ou usa drogas'
+    warning_8: '[ ] Sente-se aprisionada (o), ou como se não houvesse saída'
+    warning_9: '[ ] Se sente ansiosa (o), agitada'
+    warning_10: '[ ] Desistindo, sentindo-se isolada (o)'
+    warning_11: '[ ] Sente raiva, argumentativa (o), ou com temperamento curto'
+    warning_12: '[ ] Sente-se sobrecarregada (o) pelas circunstancias da vida (situação financeira, por exemplo)'
+    warning_13: '[ ] Sentido-se vulnerável'
+    warning_14: '[ ] Desabando, pouco produtiva (o)'
+    warning_15: '[ ] Outros: <u>%{others}</u>'
+    cope_title: 'Passo 3: Atividades de distração'
+    cope_p_1: 'Se você está sentindo-se suicida, se distrair destes pensamentos e sentimentos pode ajudar você a passar por uma crise. Você pode fazer coisas sozinha (o) que podem ajudar você a tirar sua mente de problemas. Faça coisas que são engajadoras e que acalmam, ao invés de coisas que possam te chatear, por exemplo, escute uma musica calma e não uma que te chateie.'
+    cope_p_2: 'Pergunte-se: <b><i>Qual tipo de atividades eu posso fazer para me distrair?</i></b>'
+    cope_1: '[ ] Leia algo animador / que te acalme'
+    cope_2: '[ ] Cozinhe'
+    cope_3: '[ ] Escute musicas animadoras / que te acalmam'
+    cope_4: '[ ] Dance'
+    cope_5: '[ ] Cante / Caraoquê'
+    cope_6: '[ ] Alongue-se ou faça exercícios'
+    cope_7: '[ ] Desenhe'
+    cope_8: '[ ] Faça jardinagem'
+    cope_9: '[ ] Faça alguma coisa'
+    cope_10: '[ ] Meditar'
+    cope_11: '[ ] Orar'
+    cope_12: '[ ] Assista programas ou filmes animadores / que te acalmem'
+    cope_13: '[ ] Vá a lugares animadores / que te acalmem'
+    cope_14: '[ ] Jogue games animadores / que te acalmem'
+    cope_15: '[ ] Outros: <u>%{others}</u>'
+    distract_title: 'Passo 4: Distraindo-se com pessoas e lugares'
+    distract_p_1: 'As pessoas na sua vida podem ajudar você quando você estiver se sentindo suicida de duas formas. O passo 4 descreve o primeira forma e o passo seguinte descreve a segunda forma. Primeiramente, as pessoas podem servir como distração dos seus problemas ao desligar sua mente das coisas que estão lhe incomodando. Pessoas podem também ajudar a tirar os problemas da sua mente mesmo sem que você fale sobre seus sentimentos suicidas. Nesse passo, você não discute seus sentimentos suicidas. Ao invés disso, você pode apenas estar com alguma oura pessoa e aproveitar para se distrair. Talvez vocês possam faze algo interessante juntas. Se você não tem uma pessoa para se distrair, você pode ir a algum lugar onde tenha outras pessoas, como um café ou mercado. Às vezes, só de estar perto de outras pessoas pode te ajudar a se distrair de seus problemas.'
+    distract_p_2: 'Pergunte-se: <b><i>Quem ame ajuda a tirar minha mente dos meus problemas? Onde eu posso ir para tirar minha mente dos problemas?</i></b> (Não liste lugares onde drogas ou álcool sejam usados.)'
+    person_or_place: 'Pessoa ou lugar: <u>%{person_or_place}</u>'
+    social_title: 'Passo 5: Suporte Social'
+    social_p_1: 'A segunda forma em que pessoas podem ajudar é providenciando suporte a lhe ajudando a resolver seus problemas. Em outras palavras, você pode torná-las ajudantes durante suas crises suicidas ao conversar com elas sobre os problemas que você está lidando. Escolha pessoas que são propicias ao pensamento positivo e solicitas.'
+    social_p_2: 'Pergunte-se: <b><i>Quais membros da família ou amigos eu posso conversar, para me ajudar a sentir melhor? Quem pode me auxiliar durante a crise? Quem é solicito?</i></b>'
+    social_p_3: '(Algumas pessoas sentem que não tem pessoas da família ou amigos que pode ajudar durante uma crise suicida. Se este for o seu caso, simplesmente passe para o próximo passo, que vai te dar idéias sobre outras pessoas que podem te ajudar.)'
+    name_and_number: 'Nome e número de telefone: <u>%{name_and_number}</u>'
+    prof_title: 'Passo 6: Ajuda profissional'
     prof_p_1: "Existem profissionais que podem e querem ajudar você.Procure um médico, enfermeira, uma trabalhadora (o) da saúde, aconselhamento, ou uma líder comunitária. <span style='color:#c0392b;'>Você ode também falar com uma linha quente em sucídio:</span>"
-    prof_p_2: "Pergunte-se: <b><i>Onde eu posso ter ajuda?</i></b>"
-    prof_doctor: "Médico: <u>%{doctor}</u>"
-    prof_provider: "Outros provedores de cuidado em saúde: <u>%{provider}</u>"
-    prof_lifeline: "Linha da vida / Linha quente: <u>%{lifeline}</u>"
-    prof_community: "Membra (o) comunitária: <u>%{community}</u>"
-    prof_other: "Outro: <u>%{other}</u>"
-    matters_title: "Passo 7: O que importa para mim"
-    matters_p_1: "Encontrar razões para viver é importante para manter sua segurança durante uma crise em saúde mental. Pense sobre coisas na usa vida que tem significado para você."
-    matters_p_2: "Pergunte-se: <b><i>Quais são as coisas, pessoas, ou ideias em minha vida que valem a pena viver?</i></b>"
-    matters_1: "[ ] Uma pessoa da familia: <u>%{text}</u>"
-    matters_2: "[ ] Uma amiga (o): <u>%{text}</u>"
-    matters_3: "[ ] Um pet: <u>%{text}</u>"
-    matters_9: "[ ] Minha paixão por: <u>%{text}</u>"
-    matters_4: "[ ] Meu sonho em fazer: <u>%{text}</u>"
-    matters_5: "[ ] A possibilidade de ser feliz no futuro"
-    matters_7: "[ ] A possibilidade de se sentir realizada (o) no futuro"
-    matters_6: "[ ] A possibilidade de ser amada (o) no futuro"
-    matters_10: "[ ] Minhas crenças sobre suicídio"
-    matters_8: "[ ] Construir amor próprio"
-    matters_11: "[ ] Outros: <u>%{text}</u>"
-    conclusion_title: "Conclusão"
-    conclusion_p_1: "Quando voce estiver finalizado seu Plano de Segurança, salve em um lugar seguro onde você possar ver. Você pode atualizar seu Plano de Segurança em qualquer momento se existir sinais de alerta ou ideias ou estratégias para lidar com seus problemas. Olhe para seu Plano de Segurança pelo menos algumas vezes na semana. Isto vai ajudar você saber quando como usá-lo."
-    conclusion_p_2: "Relembrando, se você estiver em direção a uma crise, oce pode usar seu Plano de Segurança para ajudar a manter-se segura (o)."
+    prof_p_2: 'Pergunte-se: <b><i>Onde eu posso ter ajuda?</i></b>'
+    prof_doctor: 'Médico: <u>%{doctor}</u>'
+    prof_provider: 'Outros provedores de cuidado em saúde: <u>%{provider}</u>'
+    prof_lifeline: 'Linha da vida / Linha quente: <u>%{lifeline}</u>'
+    prof_community: 'Membra (o) comunitária: <u>%{community}</u>'
+    prof_other: 'Outro: <u>%{other}</u>'
+    matters_title: 'Passo 7: O que importa para mim'
+    matters_p_1: 'Encontrar razões para viver é importante para manter sua segurança durante uma crise em saúde mental. Pense sobre coisas na usa vida que tem significado para você.'
+    matters_p_2: 'Pergunte-se: <b><i>Quais são as coisas, pessoas, ou ideias em minha vida que valem a pena viver?</i></b>'
+    matters_1: '[ ] Uma pessoa da familia: <u>%{text}</u>'
+    matters_2: '[ ] Uma amiga (o): <u>%{text}</u>'
+    matters_3: '[ ] Um pet: <u>%{text}</u>'
+    matters_9: '[ ] Minha paixão por: <u>%{text}</u>'
+    matters_4: '[ ] Meu sonho em fazer: <u>%{text}</u>'
+    matters_5: '[ ] A possibilidade de ser feliz no futuro'
+    matters_7: '[ ] A possibilidade de se sentir realizada (o) no futuro'
+    matters_6: '[ ] A possibilidade de ser amada (o) no futuro'
+    matters_10: '[ ] Minhas crenças sobre suicídio'
+    matters_8: '[ ] Construir amor próprio'
+    matters_11: '[ ] Outros: <u>%{text}</u>'
+    conclusion_title: 'Conclusão'
+    conclusion_p_1: 'Quando voce estiver finalizado seu Plano de Segurança, salve em um lugar seguro onde você possar ver. Você pode atualizar seu Plano de Segurança em qualquer momento se existir sinais de alerta ou ideias ou estratégias para lidar com seus problemas. Olhe para seu Plano de Segurança pelo menos algumas vezes na semana. Isto vai ajudar você saber quando como usá-lo.'
+    conclusion_p_2: 'Relembrando, se você estiver em direção a uma crise, oce pode usar seu Plano de Segurança para ajudar a manter-se segura (o).'
+  rds:
+    invite_initial: 'SMILE Study Invitation'
+    invite_reminder: 'SMILE Study Invitation Reminder'
+    post_survey: 'SMILE Study - Invite Others'
+    post_survey_reminder: 'SMILE Study - Invite Others Reminder'
+    payment: 'SMILE Study - Payment'
+    gratitude: 'SMILE Study - Thank You'
+    sms:
+      seed_invite_initial: 'Thank you for previously participating in the SMILE research study. You indicated that you were willing to invite other people to participate. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 2 weeks to do so. Please use this link %{url} to find out more. The SMILE Research Team. To opt out of future messages, reply STOP.'
+      seed_invite_reminder: 'Thank you for previously participating in the SMILE research study. You indicated that you were willing to invite other people to participate. You will receive a small compensation when up to 2 people you invite complete their surveys. You still have 1 week to do so. Please use this link %{url} to find out more. The SMILE Research Team.'
+      seed_post_consent: 'Thank you for agreeing to invite other people to participate in the SMILE research study. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 2 weeks to do so. Please share this link %{url} with people you know who are: %{sgm_group}, have not taken the SMILE survey before, and are at least 18 years old. The SMILE Research Team. To opt out of future messages, reply STOP.'
+      seed_post_consent_reminder: 'Thank you for agreeing to invite other people to participate in the SMILE research study. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 1 week to do so. Please share this link %{url} with people you know who are: %{sgm_group}, have not taken the SMILE survey before, and are at least 18 years old. The SMILE Research Team.'
+      participant_post_consent: 'Thank you for agreeing to invite other people to participate in the SMILE research study. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 2 weeks to do so. Please share this link %{url} with people you know who are: %{sgm_group}, have not taken the SMILE survey before, and are at least 18 years old. Please note that the link is different from the one you used to start your survey. The SMILE Research Team. To opt out of future messages, reply STOP.'
+      participant_post_consent_reminder: 'Thank you for agreeing to invite other people to participate in the SMILE research study. You will receive a small compensation when up to 2 people you invite complete their surveys. You have 1 week to do so. Please share this link %{url} with people you know who are: %{sgm_group}, have not taken the SMILE survey before, and are at least 18 years old. Please note that the link is different from the one you used to start your survey. The SMILE Research Team.'
+      payment: 'Thank you for participating in the SMILE research study. In the future we may reach out to request your participation in more surveys. Your compensation for participation in this survey is %{amount}. It will be paid out in the next 2 weeks through the phone number %{number}. If you have any questions, please reach out to your SMILE %{country} coordinator - %{contact}. The SMILE Research Team.'
+      gratitude: 'Thank you for participating in the SMILE research study. In the future we may reach out to request your participation in more surveys. If you have any questions, please reach out to your SMILE %{country} coordinator - %{contact}. The SMILE Research Team.'
+    email:
+      invite_initial_p0: 'Dear participant,'
+      invite_initial_p1: 'Thank you for participating in the SMILE research study.'
+      invite_initial_p2: 'When you completed the survey, you stated that you may be willing to invite other people to take the survey. If you do not want to invite anyone, you can ignore this email or click here (%{opt_out_url}) to opt out of future reminders.'
+      invite_initial_p3: 'You can invite up to 2 people. For each person you invite who successfully completes the survey, you will receive a small payment of %{recruitment_amount}, and the person completing the survey will receive a small payment (%{survey_amount}) as well.'
+      invite_initial_p4: 'If you would like to invite other people to join the research study, please click on the link below to learn more.'
+      invite_initial_p5: 'Please do not share this link with anyone else.'
+      invite_initial_p6: 'You have %{time} to invite people to participate in the study.'
+      invite_initial_p7: 'Thank you.'
+      invite_initial_p8: 'Sincerely,'
+      invite_initial_p9: 'On behalf of the SMILE Team'
+      invite_initial_p10: 'Please do not reply to this email. If you want to talk to someone, use the contacts provided above.'
+      one_week: 'one week'
+      two_weeks: 'two weeks'
+      post_consent_p0: 'You stated that you are willing to invite other people to take the survey.'
+      post_consent_p1: 'Please share the link below with them. This invitation link is specific to you and they should not forward it to other people.'
+      post_consent_p2: 'Please only share this link with people who ...'
+      post_consent_p3: '1) are'
+      post_consent_p4: '2) have not taken the SMILE survey before,'
+      post_consent_p5: '3) are at least 18 years old,'
+      post_consent_p6: '4) you know and who know you,'
+      post_consent_p7: '5) AND whom you have communicated with at least once in the past 2 years by any form of communication'
+      post_consent_p8: 'You are receiving this because you have at least 1 remaining invitation open.'
+      post_consent_p9: 'You have one more week to invite people to participate in the study. If you have already sent the survey link to people, it could be that they have not yet finished the survey, or that they declined to participate, or that they tried but were not eligible to take the survey (because they previously participated, or did not fit the study participant criteria). Please remind your contacts to participate using the link below.'
+      post_consent_p10: 'In the future we may reach out to request your participation in more surveys.'
+      post_consent_p11: 'Your compensation for participating in the study is %{payment_amount}. It will be paid out in the next 2 weeks using the mobile phone number %{phone_number}.'
+      post_consent_p12: 'If you have any questions, please reach out to your SMILE %{country} coordinator - %{contact}.'
+      post_baseline_p0: 'The people you invite to participate in the study have to complete their surveys in the next two weeks.'
+      post_baseline_p1: 'Please let each person know in your own words about the survey, and that they can learn more about it by clicking on their invitation link.'
+      post_baseline_p2: 'Please note:'
+      post_baseline_p3: 'The link below is different from the one you used to start your survey. Please only use this link to invite others to take their survey.'

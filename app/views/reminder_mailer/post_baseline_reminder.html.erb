@@ -20,7 +20,7 @@
   <b><%= I18n.t('rds.email.post_baseline_p2', locale: @participant.locale) %></b><br>
   <%= I18n.t('rds.email.post_baseline_p3', locale: @participant.locale) %>
 </p>
-<p><b><%= Rails.application.credentials.config[:consent_url] %>?referrer_code=<%= @participant.code %></b></p>
+<p><b><%= Rails.application.credentials.config[:consent_url] %>?<%= @participant.url_params2 %></b></p>
 <p><%= I18n.t('rds.email.invite_initial_p7', locale: @participant.locale) %></p>
 <p><%= I18n.t('rds.email.invite_initial_p8', locale: @participant.locale) %></p>
 <%= @participant.country_contact %><br>

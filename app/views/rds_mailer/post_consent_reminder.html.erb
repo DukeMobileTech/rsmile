@@ -7,7 +7,7 @@
 <p><%= I18n.t('rds.email.post_consent_p9', locale: @participant.locale) %></p>
 <p><%= I18n.t('rds.email.post_consent_p1', locale: @participant.locale) %></p>
 <b>
-  <p><%= Rails.application.credentials.config[:consent_url] %>?referrer_code=<%= @participant.code %></p>
+  <p><%= Rails.application.credentials.config[:consent_url] %>?<%= @participant.url_params2 %></p>
   <p>
     <%= I18n.t('rds.email.post_consent_p2', locale: @participant.locale) %><br>
     <%= I18n.t('rds.email.post_consent_p3', locale: @participant.locale) %> <%= @participant.sgm_group_label %>,<br>

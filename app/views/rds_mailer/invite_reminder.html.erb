@@ -7,7 +7,7 @@
   survey_amount: @participant.survey_amount) %></p>
 <p><%= I18n.t('rds.email.invite_initial_p4', locale: @participant.locale) %></p>
 <b>
-  <p><%= Rails.application.credentials.config[:seeds_consent_url] %>?code=<%= @participant.code %></p>
+  <p><%= Rails.application.credentials.config[:seeds_consent_url] %>?<%= @participant.url_params %></p>
   <p><%= I18n.t('rds.email.invite_initial_p5', locale: @participant.locale) %></p>
 </b>
 <p><%= I18n.t('rds.email.invite_initial_p6', locale: @participant.locale,

@@ -27,48 +27,48 @@ class RecruitmentReminderJob < ApplicationJob
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Style/CaseLikeIf, Metrics/PerceivedComplexity
 
   def seed_invite_initial(participant)
-    url = "#{Rails.application.credentials.config[:seeds_consent_url]}?code=#{participant.code}"
-    body = I18n.t('rds.sms.seed_invite_initial', url: url, locale: participant.locale)
+    url = "#{Rails.application.credentials.config[:seeds_consent_url]}?#{participant.url_params}"
+    body = I18n.t('rds.sms.seed_invite_initial', url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
   end
 
   def seed_invite_reminder(participant)
     return unless participant.invite_reminder_met?
 
-    url = "#{Rails.application.credentials.config[:seeds_consent_url]}?code=#{participant.code}"
-    body = I18n.t('rds.sms.seed_invite_reminder', url: url, locale: participant.locale)
+    url = "#{Rails.application.credentials.config[:seeds_consent_url]}?#{participant.url_params}"
+    body = I18n.t('rds.sms.seed_invite_reminder', url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
   end
 
   def seed_post_consent(participant)
-    url = "#{Rails.application.credentials.config[:consent_url]}?referrer_code=#{participant.code}"
+    url = "#{Rails.application.credentials.config[:consent_url]}?#{participant.url_params2}"
     body = I18n.t('rds.sms.seed_post_consent', sgm_group: participant.sgm_group_label,
-                                               url: url, locale: participant.locale)
+                                               url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
   end
 
   def seed_post_consent_reminder(participant)
     return if participant.recruitment_quota_met || !participant.agree_to_recruit
 
-    url = "#{Rails.application.credentials.config[:consent_url]}?referrer_code=#{participant.code}"
+    url = "#{Rails.application.credentials.config[:consent_url]}?#{participant.url_params2}"
     body = I18n.t('rds.sms.seed_post_consent_reminder', sgm_group: participant.sgm_group_label,
-                                                        url: url, locale: participant.locale)
+                                                        url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
   end
 
   def participant_post_consent(participant)
-    url = "#{Rails.application.credentials.config[:consent_url]}?referrer_code=#{participant.code}"
+    url = "#{Rails.application.credentials.config[:consent_url]}?#{participant.url_params2}"
     body = I18n.t('rds.sms.participant_post_consent', sgm_group: participant.sgm_group_label,
-                                                      url: url, locale: participant.locale)
+                                                      url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
   end
 
   def participant_post_consent_reminder(participant)
     return if participant.recruitment_quota_met || !participant.agree_to_recruit
 
-    url = "#{Rails.application.credentials.config[:consent_url]}?referrer_code=#{participant.code}"
+    url = "#{Rails.application.credentials.config[:consent_url]}?#{participant.url_params2}"
     body = I18n.t('rds.sms.participant_post_consent_reminder', sgm_group: participant.sgm_group_label,
-                                                               url: url, locale: participant.locale)
+                                                               url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
   end
 
@@ -101,9 +101,9 @@ class RecruitmentReminderJob < ApplicationJob
     auth_token = Rails.application.credentials.config[:TWILIO_AUTH]
     client = Twilio::REST::Client.new(account_sid, auth_token)
     client.messages.create(
-      from: from,
-      to: to,
-      body: body
+      from:,
+      to:,
+      body:
     )
   rescue Twilio::REST::RestError => e
     Rails.logger.error e.message
