@@ -60,20 +60,26 @@ class ResponseExport < ApplicationRecord
   end
 
   def process_csv
+    uuids = SurveyResponse.baselines.where(survey_uuid: survey_id).pluck(:response_uuid)
     filename = "#{file_path}/#{country}-raw.csv"
     array = CSV.generate do |csv|
       index = 0
-      invalid_ids = duplicate_identifiers + excluded_identifiers
       CSV.foreach(filename) do |row|
-        next if invalid_ids.include?(row[8]&.strip)
-
         if index.zero?
           @headers = row
           csv << column_data(row, index)
           csv << renamed_headers(row)
+          index += 1
+          next
         end
+
+        if !uuids.include?(row[8]&.strip) || invalid_ids.include?(row[8]&.strip)
+          index += 1
+          next
+        end
+
         csv << column_data(row, index) if index > 2
-        puts row[8] if index < 10
+        # puts row[8] if index < 10
         index += 1
       end
     end
@@ -149,7 +155,7 @@ class ResponseExport < ApplicationRecord
   end
 
   def included_columns
-    [0, 1, (4..8).to_a, 1126, 1160, 1135, 16, (29..71).to_a, (80..1118).to_a].flatten
+    [0, 1, (4..8).to_a, 1134, 1164, 1139, 16, (29..79).to_a, (88..1126).to_a].flatten
   end
 
   def column_data(row, index)
@@ -198,4 +204,23 @@ class ResponseExport < ApplicationRecord
                   .where(survey_uuid: survey_id)
                   .pluck(:response_uuid)
   end
+
+  def no_participant_identifiers
+    SurveyResponse.baselines
+                  .where(participant_id: nil)
+                  .where(survey_uuid: survey_id)
+                  .pluck(:response_uuid)
+  end
+
+  def blank_sgm_group_identifiers
+    SurveyResponse.baselines
+                  .where('(metadata -> :key) IN (:values)', key: 'sgm_group', values: [nil, '', 'blank'])
+                  .where(survey_uuid: survey_id)
+                  .pluck(:response_uuid)
+  end
+
+  def invalid_ids
+    duplicate_identifiers + excluded_identifiers + no_participant_identifiers + blank_sgm_group_identifiers
+  end
+
 end
