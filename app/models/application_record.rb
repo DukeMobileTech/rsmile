@@ -67,9 +67,9 @@ class ApplicationRecord < ActiveRecord::Base
 
   if Rails.env.production?
     REMINDERS = {
-      one: 1.day,
-      two: 2.days,
-      three: 3.days
+      one: 5.days,
+      two: 10.days,
+      three: 14.days
     }.freeze
   end
 
