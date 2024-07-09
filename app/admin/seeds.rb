@@ -25,7 +25,7 @@ ActiveAdmin.register Participant, as: 'Seed' do
       link_to participant.code, admin_participant_path(participant.id)
     end
     column :sgm_group
-    column :quota_met
+    column :quota_met, &:recruitment_quota_met
     column :remind
     column 'Contact Method', &:contact_method
     column 'Consent' do |participant|

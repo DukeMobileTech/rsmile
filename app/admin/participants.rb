@@ -89,7 +89,7 @@ ActiveAdmin.register Participant do
     column :sgm_group
     column :referrer_sgm_group
     column :match
-    column :quota_met
+    column :quota_met, &:recruitment_quota_met
     column :verified
     column :verification_code
     column :remind
@@ -147,7 +147,9 @@ ActiveAdmin.register Participant do
       row :code
       row :rds_id
       row :sgm_group
-      row :referrer_code
+      row 'Invited By' do |participant|
+        link_to participant.referrer_code, admin_participant_path(participant.recruiter.id) if participant.recruiter
+      end
       row :referrer_sgm_group
       row :verified
       row :verification_code
@@ -157,7 +159,7 @@ ActiveAdmin.register Participant do
       row :derived_seed
       row :chain_level
       row :remind
-      row :quota_met
+      row :quota_met, &:recruitment_quota_met
       row :agree_to_recruit
       row :wants_payment
       row :opt_out
@@ -196,6 +198,13 @@ ActiveAdmin.register Participant do
       end
       row 'Reminders' do |participant|
         link_to participant.reminders.size, admin_participant_reminders_path(participant.id)
+      end
+      row 'Invitees' do |participant|
+        ul do
+          participant.recruits.each do |recruit|
+            li { link_to recruit.code, admin_participant_path(recruit.id) }
+          end
+        end
       end
     end
   end
