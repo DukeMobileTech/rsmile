@@ -76,6 +76,7 @@ class Participant < ApplicationRecord
       .where('metadata @> hstore(:key, :value)', key: 'can_contact', value: 'true')
   }
   scope :seeds, -> { where(seed: true) }
+  scope :rds_participants, -> { where(baseline_participant_id: nil).where(seed: false) }
 
   def consents
     survey_responses.where(survey_title: 'SMILE Consent - RDS').order(:created_at)
@@ -240,6 +241,10 @@ class Participant < ApplicationRecord
     "#{self_generated_id} #{email}"
   end
 
+  def self.rds_enrollment
+    Participants::RdsEnrollment.new.file
+  end
+
   def self.enrollment
     Participants::EnrollmentLogbook.new.file
   end
@@ -384,6 +389,30 @@ class Participant < ApplicationRecord
                      .where(survey_responses: { survey_complete: true })
                      .where(survey_responses: { duplicate: false })
                      .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
+  end
+
+  def level_one
+    recruits.pluck(:code)
+  end
+
+  def level_two
+    recruits = Participant.where(referrer_code: level_one)
+    recruits.pluck(:code)
+  end
+
+  def level_three
+    recruits = Participant.where(referrer_code: level_two)
+    recruits.pluck(:code)
+  end
+
+  def level_four
+    recruits = Participant.where(referrer_code: level_three)
+    recruits.pluck(:code)
+  end
+
+  def level_five
+    recruits = Participant.where(referrer_code: level_four)
+    recruits.pluck(:code)
   end
 
   def reminder_quota_met

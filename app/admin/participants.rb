@@ -14,6 +14,10 @@ ActiveAdmin.register Participant do
   actions :all, except: %i[new]
   permit_params :include, :seed
 
+  collection_action :rds_enrollment, method: :get do
+    redirect_to resource_path
+  end
+
   collection_action :enrollment, method: :get do
     redirect_to resource_path
   end
@@ -30,6 +34,10 @@ ActiveAdmin.register Participant do
     redirect_to resource_path
   end
 
+  action_item :rds_enrollment, only: :index do
+    link_to 'RDS Enrollment', rds_enrollment_admin_participants_path
+  end
+
   action_item :enrollment, only: :index do
     link_to 'Enrollment Logbook', enrollment_admin_participants_path
   end
@@ -44,6 +52,11 @@ ActiveAdmin.register Participant do
 
   controller do
     skip_before_action :require_login, only: %i[opt_out]
+
+    def rds_enrollment
+      send_file Participant.rds_enrollment, type: 'text/xlsx',
+                                            filename: "RDS-Recruitment-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+    end
 
     def enrollment
       send_file Participant.enrollment, type: 'text/xlsx',
