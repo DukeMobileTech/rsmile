@@ -80,7 +80,7 @@ class RecruitmentReminderJob < ApplicationJob
     to = participant.formatted_phone_number
     body = I18n.t('rds.sms.payment', amount: participant.payment_amount,
                                      country: participant.country, number: to,
-                                     contact: participant.country_contact,
+                                     contact: participant.country_contact2,
                                      locale: participant.locale)
     send_message(to, body)
   end

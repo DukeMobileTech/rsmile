@@ -525,6 +525,18 @@ class Participant < ApplicationRecord
   end
   # rubocop:enable Style/CaseLikeIf
 
+  # rubocop:disable Style/CaseLikeIf
+  def country_contact2
+    if country == 'Vietnam'
+      Rails.application.credentials.config[:VIETNAM_CONTACTS2]
+    elsif country == 'Kenya'
+      Rails.application.credentials.config[:KENYA_CONTACTS]
+    elsif country == 'Brazil'
+      Rails.application.credentials.config[:BRAZIL_CONTACTS]
+    end
+  end
+  # rubocop:enable Style/CaseLikeIf
+
   def recruitment_amount
     payments = { 'Vietnam' => '25,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' }
     payments[country]
