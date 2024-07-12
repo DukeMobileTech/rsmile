@@ -8,7 +8,7 @@ gem 'rails', '~> 6.1', '>= 6.1.7.6'
 # Use PostgreSQL as the database for Active Record
 gem 'pg', '~> 1.5', '>= 1.5.4'
 # Use Puma as the app server
-gem 'puma', '~> 5.6', '>= 5.6.7'
+gem 'puma', '~> 5.6', '>= 5.6.8'
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -28,7 +28,7 @@ gem 'bcrypt', '~> 3.1.16'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '~> 1.16', require: false
 
-gem 'activeadmin', '~> 2.13'
+gem 'activeadmin', '~> 2.14'
 gem 'active_model_serializers', '~> 0.10.12'
 gem 'caxlsx', '~> 3.3'
 gem 'clearance', '~> 2.6', '>= 2.6.1'
@@ -47,7 +47,7 @@ group :development, :test do
   gem 'annotate', '~> 3.1', '>= 3.1.1'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'faker', '~> 2.23'
-  gem 'rexml', '~> 3.2', '>= 3.2.5'
+  gem 'rexml', '~> 3.3', '>= 3.3.1'
   gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
   gem 'rswag-specs', '~> 2.8'
 end
