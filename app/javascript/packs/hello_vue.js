@@ -20,7 +20,7 @@ if (process.env.NODE_ENV !== 'development') {
 Vue.prototype.$basePrefix = prefix;
 
 Vue.prototype.$SOURCES = {
-  0: 'Not indicated',
+  0: 'Unknown',
   1: 'Radio advertisement',
   2: 'TV advertisement',
   3: 'Podcast',

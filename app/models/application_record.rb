@@ -20,7 +20,7 @@ class ApplicationRecord < ActiveRecord::Base
     'blank' => 'BL'
   }.freeze
   SOURCES = {
-    '0' => 'Not indicated',
+    '0' => 'Unknown',
     '1' => 'Radio advertisement',
     '2' => 'TV advertisement',
     '3' => 'Podcast',
