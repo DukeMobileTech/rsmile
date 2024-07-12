@@ -2,7 +2,7 @@ module SurveyResponses
   class Source
     def stats(country)
       source_count = {}
-      27.times do |hf|
+      37.times do |hf|
         next if skip(country, hf)
 
         count1, count2, count3 = category_counts(hf, country)
@@ -21,7 +21,7 @@ module SurveyResponses
     private
 
     def skip(country, num)
-      ([3, 25, 26, 27, 28, 29].include?(num) && country != 'Brazil') ||
+      ([3, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37].include?(num) && country != 'Brazil') ||
         (num == 9 && country == 'Vietnam') ||
         (country != 'Vietnam' && [10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].include?(num))
     end
@@ -52,7 +52,7 @@ module SurveyResponses
 
     def weekly_recruitment_by_source(country, weeks)
       sources = {}
-      27.times do |num|
+      37.times do |num|
         next if skip(country, num)
 
         baselines = baselines_by_source(num, eligible(country))

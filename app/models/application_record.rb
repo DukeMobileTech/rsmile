@@ -48,8 +48,16 @@ class ApplicationRecord < ActiveRecord::Base
     '25' => 'Influencers',
     '26' => 'Instagram',
     '27' => 'Parade',
-    '28' => 'Conference',
-    '29' => 'Subway exposition'
+    '28' => 'Conference / webinar',
+    '29' => 'Subway exposition',
+    '30' => 'University Events',
+    '31' => 'Reference Centers',
+    '32' => 'Community Sport Teams',
+    '33' => 'LGBTI shelters',
+    '34' => 'Dating app',
+    '35' => 'WhatsApp / Telegram',
+    '36' => 'TikTok',
+    '37' => 'Twitter / X',
   }.freeze
   CITIES = {
     1 => 'São Paulo',
