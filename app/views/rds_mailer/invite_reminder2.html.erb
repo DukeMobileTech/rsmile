@@ -1,0 +1,22 @@
+<%= I18n.t('rds.email.invite_initial_p0', locale: @participant.locale) %>
+<p><%= I18n.t('rds.email.invite_initial_p1', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p2', locale: @participant.locale,
+  opt_out_url: admin_opt_out_url({code: @participant.code})) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p3', locale: @participant.locale,
+  recruitment_amount: @participant.recruitment_amount,
+  survey_amount: @participant.survey_amount) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p4', locale: @participant.locale) %></p>
+<b>
+  <p><%= Rails.application.credentials.config[:seeds_consent_url] %>?<%= @participant.url_params %></p>
+  <p><%= I18n.t('rds.email.invite_initial_p5', locale: @participant.locale) %></p>
+</b>
+<p><%= I18n.t('rds.email.invite_initial_p6', locale: @participant.locale,
+ time: I18n.t('rds.email.one_week', locale: @participant.locale)) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p7', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p8', locale: @participant.locale) %></p>
+<%= @participant.country_contact %><br>
+<%= Rails.application.credentials.config[:from_name] %> - 
+<%= Rails.application.credentials.config[:from_email] %>
+(<%= Rails.application.credentials.config[:from_phone] %>)<br>
+<%= I18n.t('rds.email.invite_initial_p9', locale: @participant.locale) %><br>
+<em><%= I18n.t('rds.email.invite_initial_p10', locale: @participant.locale) %></em>

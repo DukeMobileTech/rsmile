@@ -53,6 +53,10 @@ ActiveAdmin.register Participant do
   controller do
     skip_before_action :require_login, only: %i[opt_out]
 
+    def scoped_collection
+      Participant.where(baseline_participant_id: nil).or(Participant.where(seed: true))
+    end
+
     def rds_enrollment
       send_file Participant.rds_enrollment, type: 'text/xlsx',
                                             filename: "RDS-Recruitment-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"

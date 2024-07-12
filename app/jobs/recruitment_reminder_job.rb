@@ -10,14 +10,20 @@ class RecruitmentReminderJob < ApplicationJob
       seed_invite_initial(participant)
     elsif round == 'seed_reminder'
       seed_invite_reminder(participant)
+    elsif round == 'seed_reminder2'
+      seed_invite_reminder2(participant)
     elsif round == 'seed_post_consent'
       seed_post_consent(participant)
     elsif round == 'seed_post_consent_reminder'
       seed_post_consent_reminder(participant)
+    elsif round == 'seed_post_consent_reminder2'
+      seed_post_consent_reminder2(participant)
     elsif round == 'participant_post_consent'
       participant_post_consent(participant)
     elsif round == 'participant_post_consent_reminder'
       participant_post_consent_reminder(participant)
+    elsif round == 'participant_post_consent_reminder2'
+      participant_post_consent_reminder2(participant)
     elsif round == 'payment'
       payment(participant)
     elsif round == 'gratitude'
@@ -30,6 +36,7 @@ class RecruitmentReminderJob < ApplicationJob
     url = "#{Rails.application.credentials.config[:seeds_consent_url]}?#{participant.url_params}"
     body = I18n.t('rds.sms.seed_invite_initial', url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::INITIAL)
   end
 
   def seed_invite_reminder(participant)
@@ -38,6 +45,17 @@ class RecruitmentReminderJob < ApplicationJob
     url = "#{Rails.application.credentials.config[:seeds_consent_url]}?#{participant.url_params}"
     body = I18n.t('rds.sms.seed_invite_reminder', url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::REMIND)
+    RdsMailer.with(participant:).invite_reminder2.deliver_now
+  end
+
+  def seed_invite_reminder2(participant)
+    return unless participant.invite_reminder_met?
+
+    url = "#{Rails.application.credentials.config[:seeds_consent_url]}?#{participant.url_params}"
+    body = I18n.t('rds.sms.seed_invite_reminder', url:, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::REMIND)
   end
 
   def seed_post_consent(participant)
@@ -45,15 +63,28 @@ class RecruitmentReminderJob < ApplicationJob
     body = I18n.t('rds.sms.seed_post_consent', sgm_group: participant.sgm_group_label,
                                                url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::FIRST)
   end
 
   def seed_post_consent_reminder(participant)
     return if participant.recruitment_quota_met || !participant.agree_to_recruit
 
     url = "#{Rails.application.credentials.config[:consent_url]}?#{participant.url_params2}"
+    body = I18n.t('rds.sms.seed_post_consent_reminder', sgm_group: participant.sgm_group_label, url:, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::SECOND)
+    RdsMailer.with(participant:).post_consent_reminder2.deliver_now if participant.eligible_completed_recruits.empty?
+  end
+
+  def seed_post_consent_reminder2(participant)
+    return unless participant.agree_to_recruit
+    return if participant.recruitment_quota_met
+
+    url = "#{Rails.application.credentials.config[:consent_url]}?#{participant.url_params2}"
     body = I18n.t('rds.sms.seed_post_consent_reminder', sgm_group: participant.sgm_group_label,
                                                         url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::SECOND)
   end
 
   def participant_post_consent(participant)
@@ -61,15 +92,27 @@ class RecruitmentReminderJob < ApplicationJob
     body = I18n.t('rds.sms.participant_post_consent', sgm_group: participant.sgm_group_label,
                                                       url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::FIRST)
   end
 
   def participant_post_consent_reminder(participant)
     return if participant.recruitment_quota_met || !participant.agree_to_recruit
 
     url = "#{Rails.application.credentials.config[:consent_url]}?#{participant.url_params2}"
+    body = I18n.t('rds.sms.participant_post_consent_reminder', sgm_group: participant.sgm_group_label, url:, locale: participant.locale)
+    send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::SECOND)
+    RecruitmentReminderJob.perform_now(participant.id, 'participant_post_consent_reminder2') if participant.eligible_completed_recruits.empty?
+  end
+
+  def participant_post_consent_reminder2(participant)
+    return if participant.recruitment_quota_met || !participant.agree_to_recruit
+
+    url = "#{Rails.application.credentials.config[:consent_url]}?#{participant.url_params2}"
     body = I18n.t('rds.sms.participant_post_consent_reminder', sgm_group: participant.sgm_group_label,
                                                                url:, locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::SECOND)
   end
 
   def payment(participant)
@@ -83,6 +126,7 @@ class RecruitmentReminderJob < ApplicationJob
                                      contact: participant.country_contact2,
                                      locale: participant.locale)
     send_message(to, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::THIRD)
   end
 
   def gratitude(participant)
@@ -92,6 +136,7 @@ class RecruitmentReminderJob < ApplicationJob
                                        contact: participant.country_contact,
                                        locale: participant.locale)
     send_message(participant.formatted_phone_number, body)
+    participant.reminders.create(channel: 'SMS', category: Participant::FOURTH)
   end
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength

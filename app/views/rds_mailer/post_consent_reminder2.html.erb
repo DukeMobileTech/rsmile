@@ -1,0 +1,27 @@
+<%= I18n.t('rds.email.invite_initial_p0', locale: @participant.locale) %>
+<p><%= I18n.t('rds.email.invite_initial_p1', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.post_consent_p8', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p3', locale: @participant.locale,
+  recruitment_amount: @participant.recruitment_amount,
+  survey_amount: @participant.survey_amount) %></p>
+<p><%= I18n.t('rds.email.post_consent_p9', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.post_consent_p1', locale: @participant.locale) %></p>
+<b>
+  <p><%= Rails.application.credentials.config[:consent_url] %>?<%= @participant.url_params2 %></p>
+  <p>
+    <%= I18n.t('rds.email.post_consent_p2', locale: @participant.locale) %><br>
+    <%= I18n.t('rds.email.post_consent_p3', locale: @participant.locale) %> <%= @participant.sgm_group_label %>,<br>
+    <%= I18n.t('rds.email.post_consent_p4', locale: @participant.locale) %><br>
+    <%= I18n.t('rds.email.post_consent_p5', locale: @participant.locale) %><br>
+    <%= I18n.t('rds.email.post_consent_p6', locale: @participant.locale) %><br>
+    <%= I18n.t('rds.email.post_consent_p7', locale: @participant.locale) %>
+  </p>
+</b>
+<p><%= I18n.t('rds.email.invite_initial_p7', locale: @participant.locale) %></p>
+<p><%= I18n.t('rds.email.invite_initial_p8', locale: @participant.locale) %></p>
+<%= @participant.country_contact %><br>
+<%= Rails.application.credentials.config[:from_name] %> - 
+<%= Rails.application.credentials.config[:from_email] %>
+(<%= Rails.application.credentials.config[:from_phone] %>)<br>
+<%= I18n.t('rds.email.invite_initial_p9', locale: @participant.locale) %><br>
+<em><%= I18n.t('rds.email.invite_initial_p10', locale: @participant.locale) %></em>

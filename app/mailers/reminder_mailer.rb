@@ -14,6 +14,14 @@ class ReminderMailer < ApplicationMailer
 
     @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
     mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
+    RecruitmentReminderJob.perform_now(@participant.id, 'participant_post_consent_reminder2') if @participant.eligible_completed_recruits.empty?
+  end
+
+  def post_baseline_reminder2
+    return if @participant.recruitment_quota_met || !@participant.agree_to_recruit
+
+    @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
+    mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
   end
 
   def payment

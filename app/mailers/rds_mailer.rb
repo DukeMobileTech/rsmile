@@ -15,14 +15,32 @@ class RdsMailer < ApplicationMailer
 
     @participant.reminders.create(channel: 'Email', category: Participant::REMIND)
     mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))
+    RecruitmentReminderJob.perform_now(@participant.id, 'seed_reminder2')
+  end
+
+  def invite_reminder2
+    return unless @participant.invite_reminder_met?
+
+    @participant.reminders.create(channel: 'Email', category: Participant::REMIND)
+    mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))
   end
 
   def post_consent
+    return unless @participant.agree_to_recruit
+
     @participant.reminders.create(channel: 'Email', category: Participant::FIRST)
     mail(to: @participant.email, subject: I18n.t('rds.post_survey', locale: @language))
   end
 
   def post_consent_reminder
+    return if @participant.recruitment_quota_met || !@participant.agree_to_recruit
+
+    @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
+    mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
+    RecruitmentReminderJob.perform_now(@participant.id, 'seed_post_consent_reminder2') if @participant.eligible_completed_recruits.empty?
+  end
+
+  def post_consent_reminder2
     return if @participant.recruitment_quota_met || !@participant.agree_to_recruit
 
     @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
