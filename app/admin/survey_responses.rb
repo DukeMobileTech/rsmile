@@ -1,5 +1,5 @@
 ActiveAdmin.register SurveyResponse do
-  menu priority: 6
+  menu priority: 8
   config.per_page = [25, 50, 100]
   permit_params :duplicate
 

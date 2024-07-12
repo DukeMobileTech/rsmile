@@ -121,4 +121,8 @@ class ApplicationRecord < ActiveRecord::Base
   }.freeze
 
   BASELINE_TITLE = 'SMILE Survey - Baseline RDS'.freeze
+  SEEDS_CONSENT_TITLE = 'SMILE Consent - RDS Seeds'.freeze
+  CONSENT_TITLE = 'SMILE Consent - RDS'.freeze
+  CONTACT_TITLE = 'SMILE Contact Info Form - Baseline RDS'.freeze
+  RECRUITMENT_TITLE = 'SMILE Recruitment - RDS'.freeze
 end

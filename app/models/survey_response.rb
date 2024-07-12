@@ -37,10 +37,12 @@ class SurveyResponse < ApplicationRecord
                  :main_block, :group_a, :group_b, :group_c, :groups_done, :survey_counter,
                  :self_generated_id, :mobilizer_code
 
-  scope :consents, -> { where(survey_title: 'SMILE Consent') }
-  scope :contacts, -> { where(survey_title: 'SMILE Contact Info Form - Baseline') }
+  scope :consents, -> { where(survey_title: CONSENT_TITLE) }
+  scope :contacts, -> { where(survey_title: CONTACT_TITLE) }
   scope :baselines, -> { where(survey_title: BASELINE_TITLE) }
   scope :safety_plans, -> { where(survey_title: 'Safety Planning') }
+  scope :seed_consents, -> { where(survey_title: SEEDS_CONSENT_TITLE) }
+  scope :recruitments, -> { where(survey_title: RECRUITMENT_TITLE) }
   # An included baseline survey is one that is:
   # 1. Not a duplicate
   # 2. Belongs to a participant who is not excluded

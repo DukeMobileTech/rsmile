@@ -1,6 +1,6 @@
 ActiveAdmin.register SurveyResponse, as: 'Baseline' do
   menu label: 'Baseline Surveys'
-  menu priority: 4
+  menu priority: 6
   config.per_page = [50, 100, 250, 500, 1000, 2500, 5000, 10_000]
   permit_params :response_uuid, :participant_id, :country, :survey_complete, :eligible, :sgm_group, :source, :language, :duplicate
   preserve_default_filters!

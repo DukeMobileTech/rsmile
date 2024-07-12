@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant, as: 'Seed' do
   menu label: 'RDS Seeds'
-  menu priority: 2
+  menu priority: 1
 
   member_action :send_invite, method: :get do
     redirect_to resource_path

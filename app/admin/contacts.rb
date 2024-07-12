@@ -1,6 +1,6 @@
 ActiveAdmin.register SurveyResponse, as: 'Contact' do
   menu label: 'Contact Form Surveys'
-  menu priority: 3
+  menu priority: 5
   config.per_page = [25, 50, 100]
   preserve_default_filters!
   filter :participant, collection: -> { Participant.where(id: SurveyResponse.contacts.pluck(:participant_id).uniq) }

@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant do
-  menu priority: 1
+  menu priority: 2
   config.per_page = [25, 50, 100, 250, 500, 1000, 2500, 5000, 10_000]
   config.clear_action_items! # Removes the link to 'New' action
   filter :seed
