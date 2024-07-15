@@ -15,4 +15,8 @@ class Reminder < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     ["category", "channel", "created_at", "id", "participant_id", "updated_at"]
   end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["participant"]
+  end
 end

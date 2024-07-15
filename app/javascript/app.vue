@@ -69,7 +69,7 @@ export default {
       this.country = value;
     },
     linkToAdmin() {
-      window.location.href = this.admin;
+      window.open(this.admin, '_blank');
     },
     reload() {
       window.location.reload();
