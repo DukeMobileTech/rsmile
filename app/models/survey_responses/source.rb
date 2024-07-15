@@ -31,22 +31,46 @@ module SurveyResponses
     end
 
     def eligible(country)
-      SurveyResponse.eligible_completed_main_block.where(country: country)
+      id = SurveyResponse.eligible_completed_main_block
+                         .where(country: country)
+                         .order(created_at: :desc)
+                         .first&.id
+      key = "#{country}/#{id}/eligible_completed_main_block"
+      Rails.cache.fetch(key, expires_in: 12.hours) do
+        SurveyResponse.eligible_completed_main_block.where(country: country)
+      end
     end
 
     def ineligible(country)
-      SurveyResponse.ineligible_baselines.where(country: country)
+      id = SurveyResponse.ineligible_baselines
+                          .where(country: country)
+                          .order(created_at: :desc)
+                          .first&.id
+      key = "#{country}/#{id}/ineligible_baselines"
+      Rails.cache.fetch(key, expires_in: 12.hours) do
+        SurveyResponse.ineligible_baselines.where(country: country)
+      end
     end
 
     def derived(country)
-      SurveyResponse.attraction_eligible_baselines.where(country: country)
+      id = SurveyResponse.attraction_eligible_baselines
+                          .where(country: country)
+                          .order(created_at: :desc)
+                          .first&.id
+      key = "#{country}/#{id}/attraction_eligible_baselines"
+      Rails.cache.fetch(key, expires_in: 12.hours) do
+        SurveyResponse.attraction_eligible_baselines.where(country: country)
+      end
     end
 
     def source_counts(num, baselines)
-      if num.zero?
-        baselines.select { |b| b.source&.blank? }.size
-      else
-        baselines.select { |b| b.source&.split(',')&.include?(num.to_s) }.size
+      key = "#{num}/#{baselines.last&.id}/source_counts"
+      Rails.cache.fetch(key, expires_in: 12.hours) do
+        if num.zero?
+          baselines.select { |b| b.source&.blank? }.size
+        else
+          baselines.select { |b| b.source&.split(',')&.include?(num.to_s) }.size
+        end
       end
     end
 
@@ -63,10 +87,13 @@ module SurveyResponses
     end
 
     def baselines_by_source(num, baselines)
-      if num.zero?
-        blanks(baselines)
-      else
-        non_blanks(baselines, num)
+      key = "#{num}/#{baselines.last&.id}/baselines_by_source"
+      Rails.cache.fetch(key, expires_in: 12.hours) do
+        if num.zero?
+          blanks(baselines)
+        else
+          non_blanks(baselines, num)
+        end
       end
     end
 

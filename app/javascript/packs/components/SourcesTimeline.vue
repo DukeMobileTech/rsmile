@@ -88,7 +88,7 @@ export default {
             });
           }
           let list = [];
-          for (let i = 0; i < 25; i++) {
+          for (let i = 0; i < 37; i++) {
             list.push(i);
           }
           list.forEach((index) => {
