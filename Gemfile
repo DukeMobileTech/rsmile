@@ -4,11 +4,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '~> 3.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
-gem 'rails', '~> 6.1', '>= 6.1.7.7'
+gem 'rails', '~> 6.1', '>= 6.1.7.8'
 # Use PostgreSQL as the database for Active Record
 gem 'pg', '~> 1.5', '>= 1.5.6'
 # Use Puma as the app server
-gem 'puma', '~> 5.6', '>= 5.6.7'
+gem 'puma', '~> 5.6', '>= 5.6.8'
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -28,10 +28,10 @@ gem 'bcrypt', '~> 3.1.16'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '~> 1.18', require: false
 
-gem 'activeadmin', '~> 2.13'
-gem 'active_model_serializers', '~> 0.10.12'
-gem 'caxlsx', '~> 3.3'
-gem 'clearance', '~> 2.6', '>= 2.6.1'
+gem 'activeadmin', '~> 2.14'
+gem 'active_model_serializers', '~> 0.10.14'
+gem 'caxlsx', '~> 3.4', '>= 3.4.1'
+gem 'clearance', '~> 2.7', '>= 2.7.2'
 gem 'country_select', '~> 8.0'
 gem 'exception_notification', '~> 4.5'
 gem 'groupdate', '~> 6.2'
