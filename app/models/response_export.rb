@@ -80,6 +80,10 @@ class ResponseExport < ApplicationRecord
     File.new("#{file_path}/#{country}-processed.csv", 'w').write(array)
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["country", "created_at", "file_id", "file_path", "id", "percent_complete", "progress_id", "status", "survey_id", "updated_at"]
+  end
+
   private
 
   def load_yaml_files

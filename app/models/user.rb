@@ -19,4 +19,12 @@ class User < ApplicationRecord
   def admin?
     admin
   end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["api_keys"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["admin", "confirmation_token", "created_at", "email", "id", "remember_token", "updated_at"]
+  end
 end

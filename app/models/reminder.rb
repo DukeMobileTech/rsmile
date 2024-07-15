@@ -11,4 +11,8 @@
 #
 class Reminder < ApplicationRecord
   belongs_to :participant
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["category", "channel", "created_at", "id", "participant_id", "updated_at"]
+  end
 end

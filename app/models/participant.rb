@@ -649,6 +649,14 @@ class Participant < ApplicationRecord
     "Q_EED=#{enc}"
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["agree_to_recruit", "baseline_participant_id", "chain_level", "code", "country", "created_at", "derived_seed", "due_on", "email", "id", "include", "language_code", "match", "opt_out", "phone_number", "preferred_contact_method", "quota_met", "rds_id", "referrer_code", "referrer_sgm_group", "remind", "seed", "self_generated_id", "sgm_group", "updated_at", "verification_code", "verified", "wants_payment"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["reminders", "survey_responses"]
+  end
+
   private
 
   def update_duplicates(duplicates)

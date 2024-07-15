@@ -623,4 +623,12 @@ class SurveyResponse < ApplicationRecord
     request['X-API-TOKEN'] = Rails.application.credentials.config[:QUALTRICS_TOKEN]
     request
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["consented", "country", "created_at", "duplicate", "eligible", "id", "metadata", "participant_id", "response_uuid", "survey_complete", "survey_title", "survey_uuid", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["participant"]
+  end
 end

@@ -39,4 +39,8 @@ class Invite < ApplicationRecord
   def user_exists?
     User.find_by(email: email)
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["admin", "created_at", "email", "first_name", "id", "invite_code", "invited_at", "last_name", "redeemed_at", "updated_at"]
+  end
 end

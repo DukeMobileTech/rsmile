@@ -28,7 +28,7 @@ gem 'bcrypt', '~> 3.1.16'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '~> 1.18', require: false
 
-gem 'activeadmin', '~> 2.14'
+gem 'activeadmin', '~> 3.2.2'
 gem 'active_model_serializers', '~> 0.10.14'
 gem 'caxlsx', '~> 3.4', '>= 3.4.1'
 gem 'clearance', '~> 2.7', '>= 2.7.2'

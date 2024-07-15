@@ -32,6 +32,14 @@ class ApiKey < ApplicationRecord
     h
   end
 
+  def self.ransackable_associations(auth_object = nil)
+    ["bearer"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["bearer_id", "bearer_type", "created_at", "id", "token_digest", "updated_at"]
+  end
+
   private
 
   def generate_token_hmac_digest
