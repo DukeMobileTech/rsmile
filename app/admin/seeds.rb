@@ -17,7 +17,7 @@ ActiveAdmin.register Participant, as: 'Seed' do
       link_to participant.id, admin_participant_path(participant.id)
     end
     column :email
-    column :phone_number
+    column :phone_number, &:formatted_phone_number
     column :country
     column :self_generated_id
     column :seed

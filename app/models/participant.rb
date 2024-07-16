@@ -38,7 +38,7 @@ class Participant < ApplicationRecord
   has_many :reminders, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
-  validates :phone_number, presence: true, uniqueness: true
+  validates :phone_number, presence: true, uniqueness: true, phone: true
   validates :country, presence: true
 
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
@@ -51,6 +51,7 @@ class Participant < ApplicationRecord
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.language_code = language_code&.downcase&.strip }
+  before_save :normalize_phone_number
   after_save :sgm_group_checks
 
   scope :excluded, -> { where(include: false) }
@@ -615,11 +616,10 @@ class Participant < ApplicationRecord
   end
 
   def formatted_phone_number
-    return if phone_number.blank?
+    parsed_phone = Phonelib.parse(phone_number)
+    return phone_number if parsed_phone.invalid?
 
-    number = phone_number
-    number.prepend('+1') if number[0] != '+'
-    number
+    parsed_phone.full_international
   end
 
   def locale
@@ -714,5 +714,11 @@ class Participant < ApplicationRecord
     else
       SGM_GROUP_RECRUITMENT[country][sgm_group]
     end
+  end
+
+  def normalize_phone_number
+    return if phone_number.blank?
+
+    self.phone_number = Phonelib.parse(phone_number).full_e164
   end
 end
