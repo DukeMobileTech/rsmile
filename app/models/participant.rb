@@ -38,7 +38,8 @@ class Participant < ApplicationRecord
   has_many :reminders, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
-  validates :phone_number, :country, presence: true
+  validates :phone_number, presence: true, uniqueness: true
+  validates :country, presence: true
 
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
 

@@ -26,7 +26,7 @@ gem 'bcrypt', '~> 3.1.16'
 # gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '~> 1.18', require: false
+gem 'bootsnap', '~> 1.18', '>= 1.18.3', require: false
 
 gem 'activeadmin', '~> 3.2.2'
 gem 'active_model_serializers', '~> 0.10.14'
@@ -38,8 +38,8 @@ gem 'groupdate', '~> 6.2'
 gem 'matrix', '~> 0.4.2'
 gem 'prawn', '~> 2.5'
 gem 'rack-cors', '~> 1.1', '>= 1.1.1'
-gem 'rswag-api', '~> 2.8'
-gem 'rswag-ui', '~> 2.8'
+gem 'rswag-api', '~> 2.13'
+gem 'rswag-ui', '~> 2.13'
 gem 'sidekiq', '~> 6.5', '>= 6.5.10'
 gem 'sorted_set', '~> 1.0', '>= 1.0.3'
 gem 'twilio-ruby', '~> 5.59.0'

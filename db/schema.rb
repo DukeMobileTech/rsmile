@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_02_164101) do
+ActiveRecord::Schema.define(version: 2024_07_16_160938) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(version: 2024_04_02_164101) do
     t.string "language_code", default: "en"
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
+    t.index ["phone_number"], name: "index_participants_on_phone_number", unique: true
   end
 
   create_table "reminders", force: :cascade do |t|
