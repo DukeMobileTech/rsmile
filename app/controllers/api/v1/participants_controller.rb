@@ -140,6 +140,15 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  def phone_check
+    participant = Participant.find_by(phone_number: sanitized_phone)
+    if participant&.previous_participant
+      render json: { exists: true, id: participant.id }, status: :ok
+    else
+      render json: { exists: false, id: nil }, status: :ok
+    end
+  end
+
   private
 
   def participant_params
@@ -151,5 +160,9 @@ class Api::V1::ParticipantsController < Api::ApiController
 
   def sanitized_email
     params[:email]&.downcase&.strip
+  end
+
+  def sanitized_phone
+    Phonelib.parse(params[:phone_number]).full_e164
   end
 end

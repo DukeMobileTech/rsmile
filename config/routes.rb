@@ -25,6 +25,7 @@ Rails.application.routes.draw do
         end
         collection do
           post '/email_check' => 'participants#email_check', as: 'email_check'
+          post '/phone_check' => 'participants#phone_check', as: 'phone_check'
           post '/verify' => 'participants#verify', as: 'verify'
           post '/check' => 'participants#check', as: 'check'
           post '/referrer_check' => 'participants#referrer_check', as: 'referrer_check'
