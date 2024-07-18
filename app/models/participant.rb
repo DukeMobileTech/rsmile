@@ -38,20 +38,20 @@ class Participant < ApplicationRecord
   has_many :reminders, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
-  validates :phone_number, presence: true, uniqueness: true, phone: true
+  validates :phone_number, presence: true, uniqueness: true #, phone: true
   validates :country, presence: true
 
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
 
-  before_create :assign_identifiers
-  before_create :enforce_unique_code
-  after_create :non_seed_rds_attributes
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
   before_save { self.sgm_group = 'blank' if sgm_group.blank? }
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.language_code = language_code&.downcase&.strip }
   before_save :normalize_phone_number
+  before_create :assign_identifiers
+  before_create :enforce_unique_code
+  after_create :non_seed_rds_attributes
   after_save :sgm_group_checks
 
   scope :excluded, -> { where(include: false) }
