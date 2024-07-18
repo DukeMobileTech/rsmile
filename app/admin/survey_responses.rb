@@ -11,6 +11,22 @@ ActiveAdmin.register SurveyResponse do
     link_to 'Update Metadata', baseline_metadata_admin_survey_responses_path
   end
 
+  index do
+    column :id
+    column :participant_id
+    column :response_uuid do |sr|
+      link_to sr.response_uuid, "#{Rails.application.credentials.config[:QUALTRICS_RESPONSE_VIEW_BASE_URL]}RID=#{sr.response_uuid}&SID=#{sr.survey_uuid}", { target: '_blank', rel: 'noopener' }
+    end
+    column :survey_uuid
+    column :survey_title
+    column :survey_complete
+    column :country
+    column :duplicate
+    column :created_at
+    column :updated_at
+    actions
+  end
+
   form do |f|
     f.semantic_errors
     f.inputs do

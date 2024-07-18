@@ -11,7 +11,9 @@ ActiveAdmin.register SurveyResponse, as: 'Baseline' do
 
   index row_class: ->(elem) { elem.mismatch_class if elem.sgm_group_mismatch? } do
     column :id
-    column 'Response', :response_uuid
+    column 'Response', :response_uuid do |sr|
+      link_to sr.response_uuid, "#{Rails.application.credentials.config[:QUALTRICS_RESPONSE_VIEW_BASE_URL]}RID=#{sr.response_uuid}&SID=#{sr.survey_uuid}", { target: '_blank', rel: 'noopener' }
+    end
     column :participant, sortable: 'participant_id'
     column :country
     column 'Complete', :survey_complete
