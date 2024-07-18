@@ -640,13 +640,13 @@ class Participant < ApplicationRecord
 
   def url_params
     params = { code:, Q_Language: language_code&.upcase }
-    enc = Base64.encode64 params.to_json
+    enc = Base64.urlsafe_encode64 params.to_json
     "Q_EED=#{enc}"
   end
 
   def url_params2
     params = { referrer_code: code, Q_Language: language_code&.upcase }
-    enc = Base64.encode64 params.to_json
+    enc = Base64.urlsafe_encode64 params.to_json
     "Q_EED=#{enc}"
   end
 
