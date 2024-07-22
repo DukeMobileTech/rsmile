@@ -1,17 +1,17 @@
 module Participants
   class Sgm
-    def eligible_stats(country)
+    def eligible_stats(kountry)
       stats = {}
-      participants = Participant.eligible_completed_main_block.where(country: country)
+      participants = Participant.rds_participants.eligible_completed_main_block.where(country: kountry)
       Participant::ELIGIBLE_SGM_GROUPS.each do |group|
         stats[group] = participants.count { |participant| participant.sgm_group == group }
       end
       stats
     end
 
-    def ineligible_stats(country)
+    def ineligible_stats(kountry)
       stats = {}
-      participants = Participant.ineligible.where(country: country)
+      participants = Participant.rds_participants.ineligible.where(country: kountry)
       Participant::INELIGIBLE_SGM_GROUPS.each do |group|
         stats[group] = participants.count { |participant| participant.sgm_group == group }
       end
@@ -19,7 +19,7 @@ module Participants
     end
 
     def blank_stats(kountry)
-      participants = Participant.blanks.where(country: kountry)
+      participants = Participant.rds_participants.blanks.where(country: kountry)
       no_baseline, baseline_started = baseline_status(participants)
       { 'Contact Info completed but Baseline not started': no_baseline.size,
         'Baseline started but SOGI not completed': baseline_started.size }

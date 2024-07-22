@@ -14,13 +14,13 @@ module Participants
 
     private
 
-    def add_country_sheet(workbook, country)
-      workbook.add_worksheet(name: country) do |sheet|
-        tab_color = Participant::COLORS[Participant::COUNTRIES.index(country)]
+    def add_country_sheet(workbook, kountry)
+      workbook.add_worksheet(name: kountry) do |sheet|
+        tab_color = Participant::COLORS[Participant::COUNTRIES.index(kountry)]
         sheet.sheet_pr.tab_color = tab_color
         sheet.add_row country_header
-        seeds = Participant.seeds.where(country: country)
-        participants = Participant.rds_participants.where(country: country)
+        seeds = Participant.seeds.where(country: kountry)
+        participants = Participant.rds_participants.where(country: kountry)
         participants = seeds + participants
         participants.each do |participant|
           sheet.add_row participant_row(participant)
