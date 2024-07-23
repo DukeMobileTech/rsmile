@@ -20,13 +20,42 @@ class ApplicationRecord < ActiveRecord::Base
     'blank' => 'BL'
   }.freeze
   SGM_GROUPS_PLURAL = {
-    'non-binary person' => 'non-binary people',
-    'transgender woman' => 'transgender women',
-    'transgender man' => 'transgender men',
-    'woman attracted to women' => 'women attracted to women',
-    'man attracted to men' => 'men attracted to men',
-    'multi-attracted woman' => 'multi-attracted women',
-    'multi-attracted man' => 'multi-attracted men'
+    'en' => {
+      'non-binary person' => 'non-binary people',
+      'transgender woman' => 'transgender women',
+      'transgender man' => 'transgender men',
+      'woman attracted to women' => 'lesbian women',
+      'man attracted to men' => 'gay men',
+      'multi-attracted woman' => 'bisexual / pansexual women',
+      'multi-attracted man' => 'bisexual / pansexual men'
+    },
+    'pt-BR' => {
+      'non-binary person' => 'indivíduos não-binário',
+      'transgender woman' => 'mulheres transgenero',
+      'transgender man' => 'homens transgenero',
+      'woman attracted to women' => 'mulheres lésbicas',
+      'man attracted to men' => 'homens gays',
+      'multi-attracted woman' => 'mulheres bisexuais / pansexuais',
+      'multi-attracted man' => 'homens bisexuais / pansexuais'
+    },
+    'sw' => {
+      'non-binary person' => 'watu wasiojitambulisha na jinsia ya kike au kiume',
+      'transgender woman' => 'wanawake wanaohisi walizaliwa na jinsia ya kiume',
+      'transgender man' => 'wanaume waliozaliwa na jinsia ya kike',
+      'woman attracted to women' => 'wanawake wasagaji',
+      'man attracted to men' => 'wanaume mashoga',
+      'multi-attracted woman' => 'wanawake wanaovutiwa na jinsia zaidi ya moja',
+      'multi-attracted man' => 'wanaume wanaovutiwa na jinsia zaidi ya moja'
+    },
+    'vi' => {
+      'non-binary person' => 'người phi nhị giới',
+      'transgender woman' => 'chuyển giới nữ',
+      'transgender man' => 'chuyển giới nam',
+      'woman attracted to women' => 'đồng tính nữ',
+      'man attracted to men' => 'đồng tính nam',
+      'multi-attracted woman' => 'phụ nữ bị thu hút bởi cả nam lẫn nữ',
+      'multi-attracted man' => 'đàn ông bị thu hút bởi cả nam lẫn nữ'
+    }
   }.freeze
   SOURCES = {
     '0' => 'Not indicated',

@@ -430,7 +430,9 @@ class Participant < ApplicationRecord
   end
 
   def sgm_group_label
-    SGM_GROUPS_PLURAL[sgm_group]
+    locale = language_code
+    locale = 'en' if locale.blank?
+    SGM_GROUPS_PLURAL[locale][sgm_group]
   end
 
   def self.parse_country(code)
