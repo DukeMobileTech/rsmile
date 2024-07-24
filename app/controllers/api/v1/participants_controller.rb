@@ -87,7 +87,7 @@ class Api::V1::ParticipantsController < Api::ApiController
       render json: { continue: false, sgm_group: nil, id: nil, country: nil },
              status: :ok
     else
-      render json: { continue: true, sgm_group: participant.sgm_group_label,
+      render json: { continue: true, sgm_group: participant.sgm_group_label(params[:language]),
                      id: participant.id, country: participant.country },
              status: :ok
     end
@@ -125,7 +125,7 @@ class Api::V1::ParticipantsController < Api::ApiController
     if params[:id].blank? || participant.nil? || participant.recruiter.nil?
       render json: { sgm_group: nil, quota_met: nil, code: nil }, status: :not_found
     else
-      render json: { sgm_group: participant.sgm_group_label,
+      render json: { sgm_group: participant.sgm_group_label(params[:language]),
                      quota_met: participant.recruiter_quota_met?, code: participant.code },
              status: :ok
     end

@@ -29,7 +29,7 @@ class ApplicationRecord < ActiveRecord::Base
       'multi-attracted woman' => 'bisexual / pansexual women',
       'multi-attracted man' => 'bisexual / pansexual men'
     },
-    'pt-BR' => {
+    'pt-br' => {
       'non-binary person' => 'indivíduos não-binário',
       'transgender woman' => 'mulheres transgenero',
       'transgender man' => 'homens transgenero',

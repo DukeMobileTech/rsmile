@@ -429,9 +429,10 @@ class Participant < ApplicationRecord
     sgm_group == referrer_sgm_group
   end
 
-  def sgm_group_label
-    locale = language_code
+  def sgm_group_label(locale = nil)
+    locale = language_code if locale.blank?
     locale = 'en' if locale.blank?
+    locale = locale&.downcase&.strip
     SGM_GROUPS_PLURAL[locale][sgm_group]
   end
 
