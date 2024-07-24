@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_16_160938) do
+ActiveRecord::Schema.define(version: 2024_07_23_180442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -101,6 +101,7 @@ ActiveRecord::Schema.define(version: 2024_07_16_160938) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "category"
     t.string "channel"
+    t.text "message"
   end
 
   create_table "response_exports", force: :cascade do |t|

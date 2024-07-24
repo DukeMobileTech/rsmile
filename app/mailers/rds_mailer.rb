@@ -6,45 +6,45 @@ class RdsMailer < ApplicationMailer
   before_action :set_language
 
   def invite_initial
-    @participant.reminders.create(channel: 'Email', category: Participant::INITIAL)
-    mail(to: @participant.email, subject: I18n.t('rds.invite_initial', locale: @language))
+    @mail = mail(to: @participant.email, subject: I18n.t('rds.invite_initial', locale: @language))
+    @participant.reminders.create(channel: 'Email', category: Participant::INITIAL, message: @mail.body.encoded)
   end
 
   def invite_reminder
     return unless @participant.invite_reminder_met?
 
-    @participant.reminders.create(channel: 'Email', category: Participant::REMIND)
-    mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))
+    @mail = mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))
     RecruitmentReminderJob.perform_now(@participant.id, 'seed_reminder2')
+    @participant.reminders.create(channel: 'Email', category: Participant::REMIND, message: @mail.body.encoded)
   end
 
   def invite_reminder2
     return unless @participant.invite_reminder_met?
 
-    @participant.reminders.create(channel: 'Email', category: Participant::REMIND)
-    mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))
+    @mail = mail(to: @participant.email, subject: I18n.t('rds.invite_reminder', locale: @language))
+    @participant.reminders.create(channel: 'Email', category: Participant::REMIND, message: @mail.body.encoded)
   end
 
   def post_consent
     return unless @participant.agree_to_recruit
 
-    @participant.reminders.create(channel: 'Email', category: Participant::FIRST)
-    mail(to: @participant.email, subject: I18n.t('rds.post_survey', locale: @language))
+    @mail = mail(to: @participant.email, subject: I18n.t('rds.post_survey', locale: @language))
+    @participant.reminders.create(channel: 'Email', category: Participant::FIRST, message: @mail.body.encoded)
   end
 
   def post_consent_reminder
     return if @participant.recruitment_quota_met || !@participant.agree_to_recruit
 
-    @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
-    mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
+    @mail = mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
     RecruitmentReminderJob.perform_now(@participant.id, 'seed_post_consent_reminder2') if @participant.eligible_completed_recruits.empty?
+    @participant.reminders.create(channel: 'Email', category: Participant::SECOND, message: @mail.body.encoded)
   end
 
   def post_consent_reminder2
     return if @participant.recruitment_quota_met || !@participant.agree_to_recruit
 
-    @participant.reminders.create(channel: 'Email', category: Participant::SECOND)
-    mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
+    @mail = mail(to: @participant.email, subject: I18n.t('rds.post_survey_reminder', locale: @language))
+    @participant.reminders.create(channel: 'Email', category: Participant::SECOND, message: @mail.body.encoded)
   end
 
   def payment
@@ -52,15 +52,15 @@ class RdsMailer < ApplicationMailer
     return unless @participant.wants_payment
     return unless @participant.participated?
 
-    @participant.reminders.create(channel: 'Email', category: Participant::THIRD)
-    mail(to: @participant.email, subject: I18n.t('rds.payment', locale: @language))
+    @mail = mail(to: @participant.email, subject: I18n.t('rds.payment', locale: @language))
+    @participant.reminders.create(channel: 'Email', category: Participant::THIRD, message: @mail.body.encoded)
   end
 
   def gratitude
     return unless !@participant.agree_to_recruit || !@participant.wants_payment || !@participant.participated?
 
-    @participant.reminders.create(channel: 'Email', category: Participant::FOURTH)
-    mail(to: @participant.email, subject: I18n.t('rds.gratitude', locale: @language))
+    @mail = mail(to: @participant.email, subject: I18n.t('rds.gratitude', locale: @language))
+    @participant.reminders.create(channel: 'Email', category: Participant::FOURTH, message: @mail.body.encoded)
   end
 
   private

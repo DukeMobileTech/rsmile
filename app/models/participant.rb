@@ -503,12 +503,12 @@ class Participant < ApplicationRecord
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def seed_post_consent_communication
-    if preferred_contact_method == '1' && email.present?
+    if preferred_contact_method == '1'
       RdsMailer.with(participant: self).post_consent.deliver_now
       RdsMailer.with(participant: self).post_consent_reminder.deliver_later(wait: REMINDERS[:one])
       RdsMailer.with(participant: self).payment.deliver_later(wait: REMINDERS[:two])
       RdsMailer.with(participant: self).gratitude.deliver_later(wait: REMINDERS[:two])
-    elsif preferred_contact_method == '2' && phone_number.present?
+    elsif preferred_contact_method == '2'
       RecruitmentReminderJob.perform_now(id, 'seed_post_consent')
       RecruitmentReminderJob.set(wait: REMINDERS[:one]).perform_later(id, 'seed_post_consent_reminder')
       RecruitmentReminderJob.set(wait: REMINDERS[:two]).perform_later(id, 'payment')

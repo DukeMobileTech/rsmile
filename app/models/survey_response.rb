@@ -529,30 +529,29 @@ class SurveyResponse < ApplicationRecord
   # rubocop:enable Metrics/CyclomaticComplexity
 
   def recruitment_survey?
-    survey_title&.strip == 'SMILE Recruitment - RDS'
+    survey_title&.strip == RECRUITMENT_TITLE
   end
 
   def seeds_consent_survey?
-    survey_title&.strip == 'SMILE Consent - RDS Seeds'
+    survey_title&.strip == SEEDS_CONSENT_TITLE
   end
 
   def seeds_reminder_conditions_met?
-    seeds_consent_survey? && consented && !participant.nil? && participant.seed &&
-      participant.agree_to_recruit && participant.email.present? && participant.phone_number.present?
+    seeds_consent_survey? && survey_complete && consented &&
+      !participant.nil? && participant.seed && participant.agree_to_recruit
   end
 
   def reminder_conditions_met?
-    recruitment_survey? && !participant.nil? && participant.email.present? &&
-      participant.phone_number.present? && participant.remind &&
-      !participant.recruitment_quota_met # && !participant.reminder_quota_met
+    recruitment_survey? && survey_complete && !participant.nil? &&
+      participant.remind && !participant.recruitment_quota_met
   end
 
   def schedule_reminder
     return unless reminder_conditions_met?
 
-    if participant.preferred_contact_method == '1' && participant.email.present?
+    if participant.preferred_contact_method == '1'
       schedule_email
-    elsif participant.preferred_contact_method == '2' && participant.phone_number.present?
+    elsif participant.preferred_contact_method == '2'
       schedule_sms
     end
     participant.set_due_date
