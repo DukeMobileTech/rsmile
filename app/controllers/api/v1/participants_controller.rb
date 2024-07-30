@@ -149,6 +149,15 @@ class Api::V1::ParticipantsController < Api::ApiController
     end
   end
 
+  # Get the SGM group and the invitation url of a participant
+  # Uses params[:language] to determine the language of the SGM group.
+  def invitation
+    participant = Participant.find_by(id: params[:id])
+    render json: { sgm_group: nil, url: nil }, status: :not_found if participant.nil?
+    render json: { sgm_group: participant.sgm_group_label(params[:language]),
+                   url: participant.invitation_url }, status: :ok
+  end
+
   private
 
   def participant_params
