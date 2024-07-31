@@ -32,16 +32,19 @@ require 'sorted_set'
 #  derived_seed             :boolean          default(FALSE)
 #  chain_level              :integer          default(0)
 #  language_code            :string           default("en")
+#  alternate_phone_number   :string
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
   has_many :reminders, dependent: :destroy
 
-  validates :email, presence: true, uniqueness: true
-  validates :phone_number, presence: true, uniqueness: true #, phone: true
-  validates :country, presence: true
-
   accepts_nested_attributes_for :survey_responses, allow_destroy: true
+
+  validates :email, presence: true, uniqueness: true
+  validates :phone_number, presence: true, uniqueness: true # , phone: true
+  validates :country, presence: true
+  validate :alternate_phone_number_unique, on: :update
+  validate :phone_number_unique, on: :create
 
   before_save { self.email = email&.downcase&.strip }
   before_save { self.sgm_group = sgm_group&.downcase }
@@ -49,6 +52,7 @@ class Participant < ApplicationRecord
   before_save { self.referrer_sgm_group = referrer_sgm_group&.downcase }
   before_save { self.language_code = language_code&.downcase&.strip }
   before_save :normalize_phone_number
+  before_save :normalize_alternate_phone_number
   before_create :assign_identifiers
   before_create :enforce_unique_code
   after_create :non_seed_rds_attributes
@@ -727,5 +731,28 @@ class Participant < ApplicationRecord
     return if phone_number.blank?
 
     self.phone_number = Phonelib.parse(phone_number).full_e164
+  end
+
+  def normalize_alternate_phone_number
+    return if alternate_phone_number.blank?
+
+    self.alternate_phone_number = Phonelib.parse(alternate_phone_number).full_e164
+  end
+
+  def alternate_phone_number_unique
+    return if alternate_phone_number.blank?
+
+    normalize_alternate_phone_number
+    errors.add(:alternate_phone_number, 'must be unique') if alternate_phone_number == phone_number
+    errors.add(:alternate_phone_number, 'must be unique') if Participant.exists?(alternate_phone_number:)
+    errors.add(:alternate_phone_number, 'must be unique') if Participant.exists?(phone_number: alternate_phone_number)
+  end
+
+  def phone_number_unique
+    return if phone_number.blank?
+
+    normalize_phone_number
+    errors.add(:phone_number, 'must be unique') if phone_number == alternate_phone_number
+    errors.add(:phone_number, 'must be unique') if Participant.exists?(alternate_phone_number: phone_number)
   end
 end

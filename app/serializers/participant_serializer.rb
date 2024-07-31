@@ -30,6 +30,7 @@
 #  derived_seed             :boolean          default(FALSE)
 #  chain_level              :integer          default(0)
 #  language_code            :string           default("en")
+#  alternate_phone_number   :string
 #
 class ParticipantSerializer < ActiveModel::Serializer
   attributes :id, :email, :phone_number, :country, :self_generated_id, :wants_payment, :agree_to_recruit,
