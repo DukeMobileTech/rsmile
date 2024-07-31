@@ -23,6 +23,7 @@ Rails.application.routes.draw do
           get '/referrer' => 'participants#referrer', as: 'referrer'
           get '/recruitment' => 'participants#recruitment', as: 'recruitment'
           get '/invitation' => 'participants#invitation', as: 'invitation'
+          get '/payment' => 'participants#payment', as: 'payment'
         end
         collection do
           post '/email_check' => 'participants#email_check', as: 'email_check'

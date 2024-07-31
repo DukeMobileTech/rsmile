@@ -158,6 +158,13 @@ class Api::V1::ParticipantsController < Api::ApiController
                    url: participant.invitation_url }, status: :ok
   end
 
+  # Get whether a participant wants payment and the phone number to send payment to
+  def payment
+    participant = Participant.find_by(id: params[:id])
+    render json: { wants_payment: nil, phone_number: nil }, status: :not_found if participant.nil?
+    render json: { wants_payment: participant.wants_payment, phone_number: participant.phone_number }, status: :ok
+  end
+
   private
 
   def participant_params
