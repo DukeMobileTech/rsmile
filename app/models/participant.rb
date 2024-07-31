@@ -43,7 +43,7 @@ class Participant < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :phone_number, presence: true, uniqueness: true # , phone: true
   validates :country, presence: true
-  validate :alternate_phone_number_unique, on: :update
+  validate :alternate_phone_number_unique, on: :update, if: -> { alternate_phone_number_changed? }
   validate :phone_number_unique, on: :create
 
   before_save { self.email = email&.downcase&.strip }
@@ -661,12 +661,17 @@ class Participant < ApplicationRecord
     "#{Rails.application.credentials.config[:consent_url]}?#{url_params2}"
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["agree_to_recruit", "baseline_participant_id", "chain_level", "code", "country", "created_at", "derived_seed", "due_on", "email", "id", "include", "language_code", "match", "opt_out", "phone_number", "preferred_contact_method", "quota_met", "rds_id", "referrer_code", "referrer_sgm_group", "remind", "seed", "self_generated_id", "sgm_group", "updated_at", "verification_code", "verified", "wants_payment"]
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[agree_to_recruit alternate_phone_number baseline_participant_id
+       chain_level code country created_at derived_seed due_on email id include
+       language_code match opt_out phone_number preferred_contact_method
+       quota_met rds_id referrer_code referrer_sgm_group remind seed
+       self_generated_id sgm_group updated_at verification_code verified
+       wants_payment]
   end
 
-  def self.ransackable_associations(auth_object = nil)
-    ["reminders", "survey_responses"]
+  def self.ransackable_associations(_auth_object = nil)
+    %w[reminders survey_responses]
   end
 
   private

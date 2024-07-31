@@ -182,6 +182,7 @@ ActiveAdmin.register Participant do
       row :opt_out
       row :language_code
       row :due_on
+      row :alternate_phone_number
       row :created_at
       row :updated_at
       row 'Contact Method', &:contact_method

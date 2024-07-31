@@ -107,7 +107,7 @@ class Api::V1::ParticipantsController < Api::ApiController
   end
 
   def referrer
-    participant = Participant.find(params[:id])
+    participant = Participant.find_by(id: params[:id])
     render json: { referrer_sgm_group: nil, match: nil, quota_met: nil, group_enrolling: nil, derived_seed: nil }, status: :not_found if participant.nil?
     recruiter = participant.recruiter
     render json: { referrer_sgm_group: nil, match: nil, quota_met: nil, group_enrolling: nil, derived_seed: nil }, status: :not_found if recruiter.nil?
@@ -121,7 +121,7 @@ class Api::V1::ParticipantsController < Api::ApiController
   # Checks whether the participant's recruiter has met their quota. If the recruiter
   # has met their quota, the participant is not allowed to invite other participants.
   def recruitment
-    participant = Participant.find(params[:id])
+    participant = Participant.find_by(id: params[:id])
     if params[:id].blank? || participant.nil? || participant.recruiter.nil?
       render json: { sgm_group: nil, quota_met: nil, code: nil }, status: :not_found
     else
