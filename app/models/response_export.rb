@@ -80,8 +80,8 @@ class ResponseExport < ApplicationRecord
     File.new("#{file_path}/#{country}-processed.csv", 'w').write(array)
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["country", "created_at", "file_id", "file_path", "id", "percent_complete", "progress_id", "status", "survey_id", "updated_at"]
+  def self.ransackable_attributes(_auth_object = nil)
+    ResponseExport.column_names
   end
 
   private

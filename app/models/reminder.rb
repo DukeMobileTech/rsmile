@@ -14,7 +14,7 @@ class Reminder < ApplicationRecord
   belongs_to :participant
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[category channel created_at id message participant_id updated_at]
+    Reminder.column_names
   end
 
   def self.ransackable_associations(_auth_object = nil)

@@ -22,30 +22,30 @@ class ApiKey < ApplicationRecord
 
   def self.authenticate_by_token(token)
     authenticate_by_token! token
-    rescue ActiveRecord::RecordNotFound
-      nil
+  rescue ActiveRecord::RecordNotFound
+    nil
   end
 
   def serializable_hash(options = nil)
-    h = super options.merge(except: 'token_digest')
+    h = super(options.merge(except: 'token_digest'))
     h.merge! 'token' => token if token.present?
     h
   end
 
-  def self.ransackable_associations(auth_object = nil)
-    ["bearer"]
+  def self.ransackable_associations(_auth_object = nil)
+    ['bearer']
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["bearer_id", "bearer_type", "created_at", "id", "token_digest", "updated_at"]
+  def self.ransackable_attributes(_auth_object = nil)
+    ApiKey.column_names
   end
 
   private
 
   def generate_token_hmac_digest
-    raise ActiveRecord::RecordInvalid, 'token is required' unless token.present?
+    raise ActiveRecord::RecordInvalid, 'token is required' if token.blank?
+
     digest = OpenSSL::HMAC.hexdigest 'SHA256', HMAC_SECRET_KEY, token
     self.token_digest = digest
   end
-
 end

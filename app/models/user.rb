@@ -20,11 +20,11 @@ class User < ApplicationRecord
     admin
   end
 
-  def self.ransackable_associations(auth_object = nil)
-    ["api_keys"]
+  def self.ransackable_associations(_auth_object = nil)
+    ['api_keys']
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["admin", "confirmation_token", "created_at", "email", "id", "remember_token", "updated_at"]
+  def self.ransackable_attributes(_auth_object = nil)
+    User.column_names - ['encrypted_password']
   end
 end

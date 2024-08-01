@@ -10,8 +10,7 @@
 #  updated_at :datetime         not null
 #
 class EmailLog < ApplicationRecord
-
-  def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "id", "message", "recipient", "subject", "updated_at"]
+  def self.ransackable_attributes(_auth_object = nil)
+    EmailLog.column_names
   end
 end

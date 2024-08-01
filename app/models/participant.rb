@@ -662,12 +662,7 @@ class Participant < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[agree_to_recruit alternate_phone_number baseline_participant_id
-       chain_level code country created_at derived_seed due_on email id include
-       language_code match opt_out phone_number preferred_contact_method
-       quota_met rds_id referrer_code referrer_sgm_group remind seed
-       self_generated_id sgm_group updated_at verification_code verified
-       wants_payment]
+    Participant.column_names
   end
 
   def self.ransackable_associations(_auth_object = nil)
