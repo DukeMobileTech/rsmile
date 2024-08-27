@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_31_154810) do
+ActiveRecord::Schema.define(version: 2024_08_14_180336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -91,7 +91,9 @@ ActiveRecord::Schema.define(version: 2024_07_31_154810) do
     t.integer "chain_level", default: 0
     t.string "language_code", default: "en"
     t.string "alternate_phone_number"
+    t.boolean "alternate_seed", default: false
     t.index ["alternate_phone_number"], name: "index_participants_on_alternate_phone_number"
+    t.index ["baseline_participant_id"], name: "index_participants_on_baseline_participant_id"
     t.index ["code"], name: "index_participants_on_code", unique: true
     t.index ["email"], name: "index_participants_on_email", unique: true
     t.index ["phone_number"], name: "index_participants_on_phone_number", unique: true

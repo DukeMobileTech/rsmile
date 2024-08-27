@@ -1,9 +1,10 @@
 # rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant do
-  menu priority: 2
+  menu priority: 2, label: 'RDS Participants'
   config.per_page = [25, 50, 100, 250, 500, 1000, 2500, 5000, 10_000]
   config.clear_action_items! # Removes the link to 'New' action
   filter :seed
+  filter :alternate_seed
   filter :code
   filter :referrer_code
   filter :sgm_group, as: :select, collection: proc { Participant::ELIGIBLE_SGM_GROUPS }
@@ -12,7 +13,7 @@ ActiveAdmin.register Participant do
   filter :email
   filter :phone_number
   actions :all, except: %i[new]
-  permit_params :include, :seed
+  permit_params :include, :seed, :alternate_seed
 
   collection_action :rds_enrollment, method: :get do
     redirect_to resource_path
@@ -174,6 +175,7 @@ ActiveAdmin.register Participant do
       row :match
       row :seed
       row :derived_seed
+      row :alternate_seed
       row :chain_level
       row :remind
       row :quota_met, &:recruitment_quota_met
@@ -231,6 +233,7 @@ ActiveAdmin.register Participant do
     f.inputs 'Details' do
       f.input :include
       f.input :seed
+      f.input :alternate_seed
     end
     f.actions
   end

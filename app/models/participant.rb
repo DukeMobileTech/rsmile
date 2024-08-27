@@ -33,6 +33,7 @@ require 'sorted_set'
 #  chain_level              :integer          default(0)
 #  language_code            :string           default("en")
 #  alternate_phone_number   :string
+#  alternate_seed           :boolean          default(FALSE)
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
@@ -83,6 +84,7 @@ class Participant < ApplicationRecord
   }
   scope :seeds, -> { where(seed: true) }
   scope :rds_participants, -> { where(baseline_participant_id: nil).where(seed: false) }
+  scope :mm_participants, -> { where.not(baseline_participant_id: nil) }
 
   def consents
     survey_responses.where(survey_title: 'SMILE Consent - RDS').order(:created_at)
