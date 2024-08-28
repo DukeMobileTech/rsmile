@@ -102,6 +102,10 @@ class Participant < ApplicationRecord
     survey_responses.where(survey_title: BASELINE_TITLE).order(:created_at)
   end
 
+  def completed_baselines
+    baselines.where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
+  end
+
   def safety_plans
     survey_responses.where(survey_title: 'Safety Planning').order(:created_at)
   end
@@ -112,6 +116,10 @@ class Participant < ApplicationRecord
 
   def baseline
     baselines.where(duplicate: false).first
+  end
+
+  def completed_baseline
+    completed_baselines.where(duplicate: false).first
   end
 
   def consent
@@ -402,7 +410,7 @@ class Participant < ApplicationRecord
   def eligible_completed_recruits
     eligible_recruits.joins(:survey_responses)
                      .where(survey_responses: { survey_title: BASELINE_TITLE })
-                     .where(survey_responses: { survey_complete: true })
+                     #  .where(survey_responses: { survey_complete: true })
                      .where(survey_responses: { duplicate: false })
                      .where('metadata @> hstore(:key, :value)', key: 'main_block', value: 'true')
   end
@@ -567,15 +575,15 @@ class Participant < ApplicationRecord
   end
 
   def payment_amount
-    if recruits.size >= 2
+    rectruits_size = eligible_completed_recruits.size
+    if rectruits_size >= 2
       max_amount
-    elsif recruits.size == 1
+    elsif rectruits_size == 1
       one_invite_amount
-    elsif baseline
+    elsif completed_baseline
       survey_amount
     else
-      payments = { 'Vietnam' => '0 VND', 'Kenya' => 'KES 0', 'Brazil' => 'R$ 0' }
-      payments[country]
+      { 'Vietnam' => '0 VND', 'Kenya' => 'KES 0', 'Brazil' => 'R$ 0' }[country]
     end
   end
 
