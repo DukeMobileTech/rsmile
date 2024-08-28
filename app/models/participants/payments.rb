@@ -14,8 +14,7 @@ module Participants
     private
 
     def header
-      %w[ID Email PhoneNumber Code QuotaMet Seed DerivedSeed
-         AlternateSeed SurveyCompleted Invitees PaymentAmount Paid]
+      %w[ID Email PhoneNumber SurveyDone Invitees DueDate PaymentAmount Paid PaymentDate]
     end
 
     def participants
@@ -27,10 +26,8 @@ module Participants
 
     def row(participant)
       [participant.id, participant.email, participant.formatted_phone_number,
-       participant.code, participant.recruitment_quota_met,
-       participant.seed, participant.derived_seed, participant.alternate_seed,
-       participant.baseline_complete?, participant.recruits.pluck(:code).join('; '),
-       participant.payment_amount, false]
+       participant.baseline_complete?, participant.eligible_completed_recruits.size,
+       participant.due_on&.strftime('%Y-%m-%d'), participant.payment_amount, false, nil]
     end
   end
 end
