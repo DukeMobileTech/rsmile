@@ -122,6 +122,10 @@ class Participant < ApplicationRecord
     contacts.where(duplicate: false).first
   end
 
+  def baseline_complete?
+    baselines.exists?(['metadata @> hstore(:key, :value)', { key: 'main_block', value: 'true' }])
+  end
+
   def send_verification_message(language)
     # return if verified
     language = language&.downcase&.strip
@@ -247,6 +251,10 @@ class Participant < ApplicationRecord
 
   def to_s
     "#{self_generated_id} #{email}"
+  end
+
+  def self.payments
+    Participants::Payments.new.file
   end
 
   def self.rds_enrollment

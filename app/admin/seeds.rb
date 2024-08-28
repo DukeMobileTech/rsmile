@@ -1,6 +1,8 @@
 # rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant, as: 'Seed' do
   menu priority: 1
+  actions :all, except: %i[new destroy]
+  permit_params :seed, :alternate_seed
 
   member_action :send_invite, method: :get do
     redirect_to resource_path
@@ -11,7 +13,6 @@ ActiveAdmin.register Participant, as: 'Seed' do
   end
 
   index do
-    selectable_column
     column :id do |participant|
       link_to participant.id, admin_participant_path(participant.id)
     end
@@ -47,6 +48,14 @@ ActiveAdmin.register Participant, as: 'Seed' do
     column :created_at
     column :updated_at
     actions
+  end
+
+  form do |f|
+    f.inputs 'Details' do
+      f.input :seed
+      f.input :alternate_seed
+    end
+    f.actions
   end
 
   controller do

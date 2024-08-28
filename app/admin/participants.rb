@@ -12,22 +12,14 @@ ActiveAdmin.register Participant do
   filter :quota_met
   filter :email
   filter :phone_number
-  actions :all, except: %i[new]
+  actions :all, except: %i[new destroy]
   permit_params :include, :seed, :alternate_seed
 
   collection_action :rds_enrollment, method: :get do
     redirect_to resource_path
   end
 
-  collection_action :enrollment, method: :get do
-    redirect_to resource_path
-  end
-
-  collection_action :participant_level, method: :get do
-    redirect_to resource_path
-  end
-
-  collection_action :participant_duplicates, method: :get do
+  collection_action :payments, method: :get do
     redirect_to resource_path
   end
 
@@ -39,23 +31,17 @@ ActiveAdmin.register Participant do
     link_to 'RDS Enrollment', rds_enrollment_admin_participants_path
   end
 
-  action_item :enrollment, only: :index do
-    link_to 'Enrollment Logbook', enrollment_admin_participants_path
-  end
-
-  action_item :participant_level, only: :index do
-    link_to 'Participant Level Data', participant_level_admin_participants_path
-  end
-
-  action_item :participant_duplicates, only: :index do
-    link_to 'Filter Baseline Duplicates', participant_duplicates_admin_participants_path
+  action_item :payments, only: :index do
+    link_to 'Payments', payments_admin_participants_path
   end
 
   controller do
     skip_before_action :require_login, only: %i[opt_out]
 
     def scoped_collection
-      Participant.where(baseline_participant_id: nil).or(Participant.where(seed: true))
+      Participant.where(baseline_participant_id: nil)
+                 .or(Participant.where(seed: true))
+                 .or(Participant.where(alternate_seed: true))
     end
 
     def rds_enrollment
@@ -63,21 +49,9 @@ ActiveAdmin.register Participant do
                                             filename: "RDS-Recruitment-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
     end
 
-    def enrollment
-      send_file Participant.enrollment, type: 'text/xlsx',
-                                        filename: "Enrollment-Logbook-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
-    end
-
-    def participant_level
-      send_file Participant.participant_level, type: 'text/xlsx',
-                                               filename: "Participant-Level-Data-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
-    end
-
-    def participant_duplicates
-      Participant.find_each do |participant|
-        ParticipantDuplicatesJob.perform_later(participant.id)
-      end
-      redirect_to admin_participants_path
+    def payments
+      send_file Participant.payments, type: 'text/csv',
+                                      filename: "Payments-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
     end
 
     def opt_out
@@ -88,7 +62,6 @@ ActiveAdmin.register Participant do
   end
 
   index do
-    selectable_column
     column :id do |participant|
       link_to participant.id, admin_participant_path(participant.id)
     end
