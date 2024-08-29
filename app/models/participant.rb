@@ -687,6 +687,15 @@ class Participant < ApplicationRecord
     %w[reminders survey_responses]
   end
 
+  def reset
+    # rubocop:disable Rails/SkipsModelValidations
+    update_columns(quota_met: false, due_on: nil, remind: true, agree_to_recruit: true,
+                   wants_payment: true, opt_out: false, derived_seed: false)
+    survey_responses.update_all(participant_id: nil)
+    reminders.update_all(participant_id: nil)
+    # rubocop:enable Rails/SkipsModelValidations
+  end
+
   private
 
   def update_duplicates(duplicates)
