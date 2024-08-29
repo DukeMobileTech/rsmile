@@ -1,8 +1,8 @@
 # rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant, as: 'Seed' do
-  menu priority: 1
+  menu priority: 3, label: 'RDS Seeds'
   actions :all, except: %i[new destroy]
-  permit_params :seed, :alternate_seed
+  permit_params :seed, :alternate_seed, :preferred_contact_method
 
   member_action :send_invite, method: :get do
     redirect_to resource_path
@@ -62,6 +62,7 @@ ActiveAdmin.register Participant, as: 'Seed' do
     f.inputs 'Details' do
       f.input :seed
       f.input :alternate_seed
+      f.input :preferred_contact_method, as: :select, collection: [%w[Email 1], %w[Phone 2]]
     end
     f.actions
   end
