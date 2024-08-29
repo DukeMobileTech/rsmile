@@ -8,8 +8,16 @@ ActiveAdmin.register Participant, as: 'Seed' do
     redirect_to resource_path
   end
 
+  member_action :reset, method: :get do
+    redirect_to resource_path
+  end
+
   action_item :send_invite, only: :show do
     link_to 'Send Invite', send_invite_admin_seed_path(params[:id])
+  end
+
+  action_item :reset, only: :show do
+    link_to 'Reset', reset_admin_seed_path(resource)
   end
 
   index do
@@ -67,6 +75,12 @@ ActiveAdmin.register Participant, as: 'Seed' do
       @participant = Participant.find(params[:id])
       @participant.start_rds
       redirect_to(admin_seeds_path, notice: "RDS invite sent to #{@participant.email}")
+    end
+
+    def reset
+      participant = Participant.find(params[:id])
+      participant.reset
+      redirect_to admin_seed_path(participant)
     end
   end
 end
