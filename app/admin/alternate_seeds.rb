@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/BlockLength
-ActiveAdmin.register Participant, as: 'Seed' do
-  menu priority: 3, label: 'RDS Seeds'
+ActiveAdmin.register Participant, as: 'Alternate Seed' do
+  menu priority: 4, label: 'RDS Alt Seeds'
   actions :all, except: %i[new destroy]
   permit_params :seed, :alternate_seed, :preferred_contact_method, :language_code
 
@@ -13,11 +13,11 @@ ActiveAdmin.register Participant, as: 'Seed' do
   end
 
   action_item :send_invite, only: :show do
-    link_to 'Send Invite', send_invite_admin_seed_path(params[:id])
+    link_to 'Send Invite', send_invite_admin_alternate_seed_path(params[:id])
   end
 
   action_item :reset, only: :show do
-    link_to 'Reset', reset_admin_seed_path(resource)
+    link_to 'Reset', reset_admin_alternate_seed_path(resource)
   end
 
   index row_class: ->(elem) { elem.expired_class if elem.invite_expired? } do
@@ -69,19 +69,19 @@ ActiveAdmin.register Participant, as: 'Seed' do
 
   controller do
     def scoped_collection
-      Participant.seeds
+      Participant.alternate_seeds
     end
 
     def send_invite
       @participant = Participant.find(params[:id])
       @participant.start_rds
-      redirect_to(admin_seeds_path, notice: "RDS invite sent to #{@participant.email}")
+      redirect_to(admin_alternate_seeds_path, notice: "RDS invite sent to #{@participant.email}")
     end
 
     def reset
       participant = Participant.find(params[:id])
       participant.reset
-      redirect_to admin_seed_path(participant)
+      redirect_to admin_alternate_seed_path(participant)
     end
   end
 end

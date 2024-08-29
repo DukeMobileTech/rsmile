@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Participant do
-  menu priority: 3, label: 'RDS Participants'
+  menu priority: 5, label: 'RDS Participants'
   config.per_page = [25, 50, 100, 250, 500, 1000, 2500, 5000, 10_000]
   config.clear_action_items! # Removes the link to 'New' action
   filter :seed
@@ -39,9 +39,7 @@ ActiveAdmin.register Participant do
     skip_before_action :require_login, only: %i[opt_out]
 
     def scoped_collection
-      Participant.where(baseline_participant_id: nil)
-                 .or(Participant.where(seed: true))
-                 .or(Participant.where(alternate_seed: true))
+      Participant.rds_participants
     end
 
     def rds_enrollment
@@ -70,13 +68,14 @@ ActiveAdmin.register Participant do
     column :country
     column :self_generated_id
     column :seed
+    column :alternate_seed
+    column :chain_level
     column :code do |participant|
       link_to participant.code, admin_participant_path(participant.id)
     end
     column :referrer_code do |participant|
       link_to participant.referrer_code, admin_participant_path(participant.recruiter.id) if participant.recruiter
     end
-    column :include
     column :sgm_group
     column :referrer_sgm_group
     column :match

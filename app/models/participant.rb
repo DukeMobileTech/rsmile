@@ -83,7 +83,12 @@ class Participant < ApplicationRecord
       .where('metadata @> hstore(:key, :value)', key: 'can_contact', value: 'true')
   }
   scope :seeds, -> { where(seed: true) }
-  scope :rds_participants, -> { where(baseline_participant_id: nil).where(seed: false) }
+  scope :alternate_seeds, -> { where(alternate_seed: true) }
+  scope :rds_participants, lambda {
+    where(baseline_participant_id: nil)
+      .or(where(seed: true))
+      .or(where(alternate_seed: true))
+  }
   scope :mm_participants, -> { where.not(baseline_participant_id: nil) }
 
   def consents
@@ -481,7 +486,7 @@ class Participant < ApplicationRecord
   end
 
   def start_rds
-    return unless seed
+    return if !seed && !alternate_seed
 
     seed_rds_attributes
     schedule_seed_reminders
@@ -506,7 +511,7 @@ class Participant < ApplicationRecord
   end
 
   def non_seed_rds_attributes
-    return if seed
+    return if seed_or_alt?
 
     rds_code = code
     rds_code = "#{recruiter.rds_id}=#{code}" if recruiter
@@ -589,13 +594,13 @@ class Participant < ApplicationRecord
 
   def max_amount
     payments = { 'Vietnam' => '100,000 VND', 'Kenya' => 'KES 700', 'Brazil' => 'R$ 24' }
-    payments = { 'Vietnam' => '50,000 VND', 'Kenya' => 'KES 400', 'Brazil' => 'R$ 14' } if seed
+    payments = { 'Vietnam' => '50,000 VND', 'Kenya' => 'KES 400', 'Brazil' => 'R$ 14' } if seed_or_alt?
     payments[country]
   end
 
   def one_invite_amount
     payments = { 'Vietnam' => '75,000 VND', 'Kenya' => 'KES 500', 'Brazil' => 'R$ 17' }
-    payments = { 'Vietnam' => '25,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' } if seed
+    payments = { 'Vietnam' => '25,000 VND', 'Kenya' => 'KES 200', 'Brazil' => 'R$ 7' } if seed_or_alt?
     payments[country]
   end
 
@@ -657,7 +662,7 @@ class Participant < ApplicationRecord
 
   # Reminder communication conditions
   def invite_reminder_met?
-    return true if seed && agree_to_recruit && remind && seed_consents.empty? &&
+    return true if seed_or_alt? && agree_to_recruit && remind && seed_consents.empty? &&
                    !opt_out && !invite_expired?
 
     false
@@ -694,6 +699,18 @@ class Participant < ApplicationRecord
     survey_responses.update_all(participant_id: nil)
     reminders.update_all(participant_id: nil)
     # rubocop:enable Rails/SkipsModelValidations
+  end
+
+  def expired_class
+    if quota_met
+      'mismatch-reverse'
+    else
+      'mismatch'
+    end
+  end
+
+  def seed_or_alt?
+    seed || alternate_seed
   end
 
   private
@@ -747,7 +764,7 @@ class Participant < ApplicationRecord
   end
 
   def check_derived_seed
-    if seed || match
+    if seed_or_alt? || match
       false
     else
       SGM_GROUP_RECRUITMENT[country][sgm_group]
