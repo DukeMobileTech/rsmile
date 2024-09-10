@@ -26,4 +26,8 @@ class ParticipantsController < ApplicationController
   def sgm_timeline
     render json: Participants::SgmTimeline.new.stats(params[:country])
   end
+
+  def recruitment_stats
+    render json: Participants::Recruitment.new.stats(params[:country])
+  end
 end

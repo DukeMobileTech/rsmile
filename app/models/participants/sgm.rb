@@ -22,7 +22,7 @@ module Participants
       id = Participant.blanks.where(country: kountry)
                       .order(created_at: :desc).first&.id
       key = "#{kountry}/#{id}/blanks"
-      Rails.cache.fetch(key, expires_in: 12.hours) do
+      Rails.cache.fetch(key, expires_in: 24.hours) do
         participants = Participant.blanks.where(country: kountry)
         no_baseline, baseline_started = baseline_status(participants)
         { 'Contact Info completed but Baseline not started': no_baseline.size,

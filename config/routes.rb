@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       get '/blank_stats' => 'participants#blank_stats'
       get '/weekly_participants' => 'participants#weekly_participants'
       get '/sgm_timeline' => 'participants#sgm_timeline'
+      get '/recruitment_stats' => 'participants#recruitment_stats'
     end
   end
   resources :survey_responses, only: [] do
