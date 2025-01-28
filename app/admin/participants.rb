@@ -21,6 +21,14 @@ ActiveAdmin.register Participant do
     redirect_to resource_path
   end
 
+  collection_action :all, method: :get do
+    redirect_to resource_path
+  end
+
+  action_item :all, only: :index do
+    link_to 'All Participants', all_admin_participants_path
+  end
+
   action_item :rds_candidates, only: :index do
     link_to 'RDS Candidates', rds_candidates_admin_participants_path
   end
@@ -58,6 +66,11 @@ ActiveAdmin.register Participant do
     def rds_candidates
       send_file Participants::RdsCandidates.new.file,
                 type: 'text/xlsx', filename: "RDS-Candidates-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
+    end
+
+    def all
+      send_file Participants::All.new.file,
+                type: 'text/xlsx', filename: "All-Participants-#{Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')}.xlsx"
     end
   end
 
