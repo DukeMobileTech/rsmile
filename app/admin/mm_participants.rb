@@ -19,6 +19,7 @@ ActiveAdmin.register Participant, as: 'MM Participants' do
     column 'Contact Method', &:contact_method
     column :seed
     column :alternate_seed
+    column :can_contact
     column :created_at
     column :updated_at
     actions

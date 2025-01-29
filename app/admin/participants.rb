@@ -67,9 +67,12 @@ ActiveAdmin.register Participant do
     end
     column :email
     column :phone_number, &:formatted_phone_number
+    column 'Contact Method', &:contact_method
+    column :can_contact
     column :country
     column :self_generated_id
     column :seed
+    column :alternate_seed
     column :code do |participant|
       link_to participant.code, admin_participant_path(participant.id)
     end
@@ -84,7 +87,6 @@ ActiveAdmin.register Participant do
     column :verified
     column :verification_code
     column :remind
-    column 'Contact Method', &:contact_method
     column 'Consent' do |participant|
       ul do
         participant.consents.each do |consent|
