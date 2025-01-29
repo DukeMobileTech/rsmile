@@ -28,7 +28,7 @@ class Invite < ApplicationRecord
   end
 
   def self.find_redeemable(invite_code)
-    find_by(redeemed_at: nil, invite_code:)
+    find_by(redeemed_at: nil, invite_code: invite_code)
   end
 
   def redeemed!
@@ -37,7 +37,7 @@ class Invite < ApplicationRecord
   end
 
   def user_exists?
-    User.find_by(email:)
+    User.find_by(email: email)
   end
 
   def self.ransackable_attributes(_auth_object = nil)

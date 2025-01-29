@@ -32,6 +32,7 @@
 #  language_code            :string           default("en")
 #  alternate_phone_number   :string
 #  alternate_seed           :boolean          default(FALSE)
+#  can_contact              :boolean          default(FALSE)
 #
 class ParticipantSerializer < ActiveModel::Serializer
   attributes :id, :email, :phone_number, :country, :self_generated_id, :wants_payment, :agree_to_recruit,

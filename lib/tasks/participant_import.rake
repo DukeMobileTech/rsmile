@@ -15,42 +15,29 @@ task participant_import: :environment do |_t, _args|
   puts "Seed codes = #{seed_codes}"
   puts "Alternate seed codes = #{alt_seed_codes}"
 
-  phone_numbers = Set.new
   filename = Rails.root.join('data/vietnam.csv')
   puts "Importing participants from #{filename}"
   CSV.foreach(filename, headers: true) do |row|
     break if row[0].blank?
 
     puts "Importing #{row}"
-    participant = Participant.find_by(email: row[1])
-    phone_number = row[2]
-    phone_number = "#{row[2]};#{row[0]}" if phone_numbers.include?(phone_number)
-    phone_numbers.add(phone_number)
+    phone_number = Phonelib.parse(row[2]).full_e164
+    participants = Participant.where(phone_number: phone_number)
+    phone_number = "#{phone_number};#{row[0]}" if participants.size > 1
     # if participant is found, update it, otherwise create a new one
-    if participant.nil?
-      Participant.create!(country: Participant.parse_country(row[6]),
-                          email: row[1],
-                          phone_number:,
-                          self_generated_id: row[3],
-                          verified: Participant.parse_verification(row[5]),
-                          code: row[6],
-                          preferred_contact_method: Participant.parse_contact_method(row[7]),
-                          sgm_group: row[12],
-                          seed: seed_codes.include?(row[6]),
-                          alternate_seed: alt_seed_codes.include?(row[6]),
-                          baseline_participant_id: row[0])
-    else
-      participant.update!(country: Participant.parse_country(row[6]),
-                          email: row[1],
-                          phone_number:,
-                          self_generated_id: row[3],
-                          verified: Participant.parse_verification(row[5]),
-                          code: row[6],
-                          preferred_contact_method: Participant.parse_contact_method(row[7]),
-                          sgm_group: row[12],
-                          seed: seed_codes.include?(row[6]),
-                          alternate_seed: alt_seed_codes.include?(row[6]),
-                          baseline_participant_id: row[0])
+    Participant.find_or_create_by(phone_number: phone_number) do |participant|
+      participant.email = row[1]
+      participant.country = Participant.parse_country(row[6])
+      participant.self_generated_id = row[3]
+      participant.verified = Participant.parse_verification(row[5])
+      participant.code = row[6]
+      participant.preferred_contact_method = Participant.parse_contact_method(row[7])
+      participant.sgm_group = row[12]
+      participant.seed = seed_codes.include?(row[6])
+      participant.alternate_seed = alt_seed_codes.include?(row[6])
+      participant.baseline_participant_id = row[0]
+      participant.can_contact = row[21]
+      participant.save!
     end
   end
 end

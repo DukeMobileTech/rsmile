@@ -34,6 +34,7 @@ require 'sorted_set'
 #  language_code            :string           default("en")
 #  alternate_phone_number   :string
 #  alternate_seed           :boolean          default(FALSE)
+#  can_contact              :boolean          default(FALSE)
 #
 class Participant < ApplicationRecord
   has_many :survey_responses, dependent: :destroy, inverse_of: :participant
